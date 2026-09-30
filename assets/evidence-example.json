@@ -1,0 +1,24 @@
+{
+  "IN-DPDP-CONSENT-UX": [
+    {
+      "type": "source",
+      "result": "PASS",
+      "details": "Consent component and tracking gate reviewed."
+    },
+    {
+      "type": "config",
+      "result": "PASS",
+      "details": "Optional analytics disabled until affirmative choice."
+    },
+    {
+      "type": "runtime",
+      "result": "PASS",
+      "details": "Clean-browser test: required-only sends no consent-dependent analytics; accept enables expected analytics; withdrawal stops subsequent consent-based processing."
+    },
+    {
+      "type": "legal",
+      "result": "PASS",
+      "details": "Requirement interpretation checked against current primary sources for this release."
+    }
+  ]
+}
