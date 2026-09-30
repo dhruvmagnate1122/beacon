@@ -62,7 +62,7 @@ class Checks(unittest.TestCase):
   script=str(Path(__file__).with_name('check.py')); profile=self.put('profile.json','[]')
   p=subprocess.run([sys.executable,script,str(self.root),'--profile',str(profile)],capture_output=True,text=True); self.assertEqual(p.returncode,2)
  def test_profile_schema(self):
-  p=json.loads((Path(__file__).parents[1]/'assets/project-profile.json').read_text()); self.assertEqual(p['schema_version'],'0.4.0'); self.assertIn('consent_ui_default_state',p); self.assertIn('processing_digital_personal_data_within_india',p)
+  p=json.loads((Path(__file__).parents[1]/'assets/project-profile.json').read_text()); self.assertEqual(p['schema_version'],'0.5.0'); self.assertIn('consent_ui_default_state',p); self.assertIn('processing_digital_personal_data_within_india',p)
  def test_evidence_valid(self):
   self.assertEqual(validate_evidence({'IN-DPDP-CONSENT':[ev()]}),{'IN-DPDP-CONSENT':[ev()]})
  def test_evidence_accepts_reference_alias(self):
@@ -240,5 +240,50 @@ class Checks(unittest.TestCase):
   r=scan(self.root,profile,today=dt.date(2028,1,1))
   self.assertEqual(r['active_packs'],['india-dpdp','eu-gdpr-eprivacy','uk-gdpr-pecr'])
   self.assertIn('uk-gdpr-pecr',r['readiness_summary']['packs'])
+
+ def test_us_pack_schema(self):
+  p=json.loads((Path(__file__).parents[1]/'references/us-federal-digital.json').read_text()); ids=[x['id'] for x in p['checks']]
+  self.assertEqual(p['pack_id'],'us-federal-digital'); self.assertEqual(len(ids),len(set(ids)))
+  self.assertIn('US-COPPA-SCOPE',ids); self.assertIn('US-CANSPAM',ids); self.assertIn('US-DMCA512C-AGENT',ids); self.assertIn('US-ADA-T3-WEB',ids)
+ def test_us_coppa_independent_applicability(self):
+  profile={'jurisdiction_packs':['us-federal-digital'],'coppa_collects_personal_information':True,
+   'coppa_child_directed_service':True,'coppa_mixed_audience_service':False,'coppa_actual_knowledge_under13_collection':False,
+   'sends_us_commercial_email':False,'hosts_content_at_user_direction':False,'seeks_dmca_512c_safe_harbor':False,
+   'us_ada_title_iii_public_accommodation':False,'us_ada_title_ii_entity_size':'not_public_entity'}
+  r=scan(self.root,profile,today=dt.date(2026,10,1))
+  d={f['rule_id']:f for f in r['findings'] if f.get('pack_id')=='us-federal-digital'}
+  self.assertEqual(d['US-COPPA-SCOPE']['status'],'UNKNOWN')
+  self.assertEqual(d['US-CANSPAM']['status'],'NOT_APPLICABLE')
+  self.assertEqual(d['US-DMCA512C-AGENT']['status'],'NOT_APPLICABLE')
+ def test_us_can_spam_independent_applicability(self):
+  profile={'jurisdiction_packs':['us-federal-digital'],'coppa_collects_personal_information':False,
+   'coppa_child_directed_service':False,'coppa_mixed_audience_service':False,'coppa_actual_knowledge_under13_collection':False,
+   'sends_us_commercial_email':True,'hosts_content_at_user_direction':False,'seeks_dmca_512c_safe_harbor':False,
+   'us_ada_title_iii_public_accommodation':False,'us_ada_title_ii_entity_size':'not_public_entity'}
+  r=scan(self.root,profile)
+  d={f['rule_id']:f for f in r['findings'] if f.get('pack_id')=='us-federal-digital'}
+  self.assertEqual(d['US-CANSPAM']['status'],'UNKNOWN')
+  self.assertEqual(d['US-COPPA-SCOPE']['status'],'NOT_APPLICABLE')
+ def test_us_dmca_independent_applicability(self):
+  profile={'jurisdiction_packs':['us-federal-digital'],'coppa_collects_personal_information':False,
+   'coppa_child_directed_service':False,'coppa_mixed_audience_service':False,'coppa_actual_knowledge_under13_collection':False,
+   'sends_us_commercial_email':False,'hosts_content_at_user_direction':True,'seeks_dmca_512c_safe_harbor':True,
+   'us_ada_title_iii_public_accommodation':False,'us_ada_title_ii_entity_size':'not_public_entity'}
+  r=scan(self.root,profile)
+  d={f['rule_id']:f for f in r['findings'] if f.get('pack_id')=='us-federal-digital'}
+  self.assertEqual(d['US-DMCA512C-AGENT']['status'],'UNKNOWN')
+  self.assertEqual(d['US-CANSPAM']['status'],'NOT_APPLICABLE')
+ def test_us_ada_titleii_future_dates(self):
+  profile={'jurisdiction_packs':['us-federal-digital'],'coppa_collects_personal_information':False,
+   'coppa_child_directed_service':False,'coppa_mixed_audience_service':False,'coppa_actual_knowledge_under13_collection':False,
+   'sends_us_commercial_email':False,'hosts_content_at_user_direction':False,'seeks_dmca_512c_safe_harbor':False,
+   'us_ada_title_iii_public_accommodation':False,'us_ada_title_ii_entity_size':'50000_or_more'}
+  r=scan(self.root,profile,today=dt.date(2026,10,1))
+  d={f['rule_id']:f for f in r['findings'] if f.get('pack_id')=='us-federal-digital'}
+  self.assertEqual(d['US-ADA-T2-LARGE-WEB']['status'],'FUTURE_EFFECTIVE')
+  self.assertEqual(d['US-ADA-T2-SMALL-WEB']['status'],'NOT_APPLICABLE')
+ def test_us_evidence_isolated_from_other_packs(self):
+  profile={'jurisdiction_packs':['india-dpdp'],'processing_digital_personal_data_outside_india':True,'offers_goods_or_services_to_people_in_india':True}
+  with self.assertRaises(ValueError): scan(self.root,profile,{'US-CANSPAM':[ev('runtime','FAIL')]})
 
 if __name__=='__main__': unittest.main()
