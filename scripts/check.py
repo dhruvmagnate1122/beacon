@@ -171,6 +171,39 @@ def _uk_pecr_marketing_applicability(profile):
  if sends is False: return False
  return None
 
+def _us_coppa_applicability(profile):
+ if not profile: return None
+ operates=profile.get('operates_website_or_online_service')
+ child_directed=profile.get('us_service_directed_to_children_under_13')
+ actual=profile.get('us_actual_knowledge_collects_from_child_under_13')
+ third_party=profile.get('us_third_party_service_collects_on_child_directed_service')
+ if operates is False and third_party is not True: return False
+ if child_directed is True or actual is True or third_party is True: return True
+ if operates is True and child_directed is False and actual is False and third_party is False: return False
+ return None
+
+def _us_canspam_applicability(profile):
+ if not profile: return None
+ sends=profile.get('sends_us_commercial_email')
+ if sends is True: return True
+ if sends is False: return False
+ return None
+
+def _us_dmca_applicability(profile):
+ if not profile: return None
+ relies=profile.get('relies_on_dmca_512_safe_harbor')
+ if relies is True: return True
+ if relies is False: return False
+ return None
+
+def _us_ada_web_applicability(profile):
+ if not profile: return None
+ public=profile.get('us_title_iii_public_accommodation')
+ online=profile.get('website_or_app_offers_public_accommodation_goods_services')
+ if public is True and online is True: return True
+ if public is False or online is False: return False
+ return None
+
 
 def _us_coppa_applicability(profile):
  if not profile: return None
