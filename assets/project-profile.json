@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.6.0",
+  "schema_version": "0.7.0",
   "jurisdiction_packs": null,
   "project_name": null,
   "entity_establishments": null,
@@ -90,5 +90,14 @@
   "certin_general_directions_apply": null,
   "certin_incident_reporting_applies": null,
   "certin_provider_category": null,
-  "certin_virtual_asset_provider": null
+  "certin_virtual_asset_provider": null,
+  "eu_vat_supplies_tbe_to_eu_consumers": null,
+  "eu_vat_supplies_services_to_eu_businesses": null,
+  "eu_vat_supplier_established_in_single_member_state": null,
+  "eu_vat_crossborder_tbe_and_distance_sales_current_year_eur": null,
+  "eu_vat_crossborder_tbe_and_distance_sales_prior_year_eur": null,
+  "eu_vat_uses_or_plans_oss_for_crossborder_b2c": null,
+  "eu_vat_supplier_established_outside_eu": null,
+  "eu_vat_customer_location_evidence": null,
+  "eu_vat_customer_vat_id_validation": null
 }
