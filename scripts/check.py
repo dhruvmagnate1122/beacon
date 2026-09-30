@@ -3,7 +3,7 @@
 import argparse, datetime as dt, json, os, re, sys
 from pathlib import Path
 
-VERSION='0.2.0'
+VERSION='0.2.1'
 STATUSES={'PASS','FAIL','REVIEW','UNKNOWN','NOT_APPLICABLE','FUTURE_EFFECTIVE'}
 SKIP={'.git','node_modules','.next','dist','build','.venv','venv','__pycache__','vendor','coverage'}
 EXTENSIONS={'.js','.jsx','.ts','.tsx','.mjs','.cjs','.html','.css','.sql','.json','.py','.yml','.yaml','.toml'}
@@ -30,13 +30,15 @@ EVIDENCE_RESULTS={'PASS','FAIL','REVIEW'}
 EVIDENCE_TYPES={'source','config','questionnaire','runtime','legal'}
 PRODUCER_KINDS={'tool','external','manual'}
 
-def validate_evidence(evidence):
+def validate_evidence(evidence, allowed_rule_ids=None):
  """Validate the reusable evidence contract before any readiness derivation."""
  if not isinstance(evidence,dict):
   raise ValueError('Evidence must be an object mapping rule IDs to record arrays.')
  for rid,items in evidence.items():
   if not isinstance(rid,str) or not rid.strip():
    raise ValueError('Evidence rule ID must be a non-empty string.')
+  if allowed_rule_ids is not None and rid not in allowed_rule_ids:
+   raise ValueError('Unknown evidence rule ID: '+rid)
   if not isinstance(items,list):
    raise ValueError('Evidence records for '+rid+' must be an array.')
   for idx,item in enumerate(items):
@@ -77,19 +79,25 @@ def readiness_summary(findings,today=None):
  Pure arithmetic over existing statuses; not a legal determination."""
  today=today or dt.datetime.now(dt.timezone.utc).date()
  counts={}; dpdp_fail=[]; dpdp_review=[]; dpdp_future=[]; dpdp_unknown=0
+ future_fail=[]; future_review=[]
  for f in findings:
   st=f.get('status'); counts[st]=counts.get(st,0)+1
   rid=f.get('rule_id','')
   if not rid.startswith('IN-DPDP'): continue
   if st=='FAIL': dpdp_fail.append(rid)
   elif st=='REVIEW': dpdp_review.append(rid)
-  elif st=='FUTURE_EFFECTIVE': dpdp_future.append(rid)
+  elif st=='FUTURE_EFFECTIVE':
+   dpdp_future.append(rid)
+   if f.get('readiness_status')=='FAIL': future_fail.append(rid)
+   elif f.get('readiness_status')=='REVIEW': future_review.append(rid)
   elif st=='UNKNOWN': dpdp_unknown+=1
  return {
   'counts_by_status':counts,
   'dpdp_fail':dpdp_fail,
   'dpdp_review':dpdp_review,
   'dpdp_future_effective':dpdp_future,
+  'dpdp_future_readiness_fail':future_fail,
+  'dpdp_future_readiness_review':future_review,
   'dpdp_unknown_count':dpdp_unknown,
   'note':'Mechanical rollup only; not a compliance determination. Recheck current primary sources before legal conclusions.'}
 
@@ -97,57 +105,84 @@ def _date(v):
  if v=='current': return None
  return dt.date.fromisoformat(v)
 
-def _india_nexus(profile):
+def _tri(value_true, value_false):
+ if value_true: return True
+ if value_false: return False
+ return None
+
+def _india_applicability(profile):
+ """Return True/False/None for Act s3 material scope using explicit facts.
+
+ False is returned only when both statutory routes are affirmatively ruled out
+ or an exclusion is declared to cover all relevant processing. Missing facts
+ stay unknown.
+ """
  if not profile: return None
- nexus=profile.get('offers_goods_or_services_to_people_in_india')
- est=profile.get('entity_establishments')
- if nexus is True: return True
- if isinstance(est,list) and any(str(x).strip().lower()=='india' for x in est): return True
- if isinstance(est,str) and 'india' in est.lower(): return True
- if nexus is False and est is not None: return False
+ if profile.get('all_relevant_processing_personal_or_domestic') is True:
+  return False
+ if profile.get('all_relevant_data_publicly_available_under_section_3c') is True:
+  return False
+
+ within=profile.get('processing_digital_personal_data_within_india')
+ collected=profile.get('personal_data_collected_digitally_or_digitised_in_india')
+ outside=profile.get('processing_digital_personal_data_outside_india')
+ offered=profile.get('offers_goods_or_services_to_people_in_india')
+
+ route_a=True if within is True and collected is True else (False if within is False or collected is False else None)
+ route_b=True if outside is True and offered is True else (False if outside is False or offered is False else None)
+
+ if route_a is True or route_b is True: return True
+ if route_a is False and route_b is False: return False
  return None
 
 def _evidence_for(rule_id,evidence):
  items=evidence.get(rule_id,[]) if isinstance(evidence,dict) else []
  return items if isinstance(items,list) else []
 
-def _derive(rule, nexus, evidence_items, today):
+def _derive(rule, applicability, evidence_items, today):
  required=set(rule.get('required_evidence_types',[]))
- if rule['id']=='IN-DPDP-SCOPE':
-  if nexus is None: return 'UNKNOWN'
-  if nexus is False: return 'NOT_APPLICABLE'
- elif nexus is False:
-  return 'NOT_APPLICABLE'
- elif nexus is None:
-  return 'UNKNOWN'
+ if applicability is False:
+  return 'NOT_APPLICABLE',None
+ if applicability is None:
+  return 'UNKNOWN',None
+
  results=[str(x.get('result','')).upper() for x in evidence_items if isinstance(x,dict)]
- if any(x=='FAIL' for x in results): return 'FAIL'
- if any(x=='REVIEW' for x in results): return 'REVIEW'
+ if any(x=='FAIL' for x in results):
+  readiness='FAIL'
+ elif any(x=='REVIEW' for x in results):
+  readiness='REVIEW'
+ else:
+  types={x.get('type') for x in evidence_items if isinstance(x,dict) and str(x.get('result','')).upper()=='PASS'}
+  readiness='PASS' if required and required.issubset(types) else 'UNKNOWN'
+
  eff=_date(rule['effective'])
- future=eff is not None and today<eff
- if future: return 'FUTURE_EFFECTIVE'
- types={x.get('type') for x in evidence_items if isinstance(x,dict) and str(x.get('result','')).upper()=='PASS'}
- if required and required.issubset(types): return 'PASS'
- return 'UNKNOWN'
+ if eff is not None and today<eff:
+  return 'FUTURE_EFFECTIVE',readiness
+ return readiness,readiness
 
 def dpdp(profile, evidence, base, today=None):
  pack=json.loads((base/'references/india-dpdp.json').read_text())
- today=today or dt.datetime.now(dt.timezone.utc).date()
- nexus=_india_nexus(profile)
+ india_tz=dt.timezone(dt.timedelta(minutes=330))
+ today=today or dt.datetime.now(india_tz).date()
+ applicability=_india_applicability(profile)
  out=[]
  for c in pack['checks']:
   items=_evidence_for(c['id'],evidence)
-  status=_derive(c,nexus,items,today)
+  status,readiness=_derive(c,applicability,items,today)
   out.append({
-   'rule_id':c['id'],'status':status,'severity':'unassessed','title':c['title'],
+   'rule_id':c['id'],'status':status,'readiness_status':readiness,
+   'severity':'unassessed','title':c['title'],
    'effective':c['effective'],'required_evidence_types':c.get('required_evidence_types',[]),
    'runtime_tests':c.get('runtime_tests',[]),'evidence_count':len(items),
    'next_step':c['verify']})
  return out
 
 def scan(root,profile=None,evidence=None,today=None):
+ base=Path(__file__).parents[1]
  if evidence is not None:
-  validate_evidence(evidence)
+  pack=json.loads((base/'references/india-dpdp.json').read_text())
+  allowed={x['id'] for x in pack.get('checks',[])}
+  validate_evidence(evidence,allowed_rule_ids=allowed)
  root=Path(root).resolve()
  if not root.is_dir(): raise ValueError('Project root must be an existing directory.')
  findings=[]; omissions=[]; scanned=0
@@ -171,7 +206,7 @@ def scan(root,profile=None,evidence=None,today=None):
  for rid,title,task in MANUAL:
   findings.append({'rule_id':rid,'status':'UNKNOWN','severity':'unassessed','title':title,'next_step':task})
  if profile is not None:
-  findings.extend(dpdp(profile,evidence or {},Path(__file__).parents[1],today=today))
+  findings.extend(dpdp(profile,evidence or {},base,today=today))
  return {
   'version':VERSION,'generated_at':dt.datetime.now(dt.timezone.utc).isoformat(),
   'mode':'source-config-questionnaire-runtime-evidence',
@@ -180,7 +215,7 @@ def scan(root,profile=None,evidence=None,today=None):
   'scope':{'files_scanned':scanned,'excluded_directories':sorted(SKIP),'extensions':sorted(EXTENSIONS),'max_file_bytes':LIMIT,'max_files':MAX_FILES,'omissions':omissions},
   'profile_provided':profile is not None,'evidence_provided':bool(evidence),
   'readiness_summary':readiness_summary(findings,today=today),
-  'limitations':['No legal certification is performed.','Runtime PASS/FAIL requires user-supplied or tool-produced evidence; the CLI does not autonomously browse or operate third-party services.','FUTURE_EFFECTIVE is based on bundled dates and must be rechecked against current primary sources.','Source regex candidates can be false positives and are REVIEW, not violations.'],
+  'limitations':['No legal certification is performed.','Future-effective duties keep legal effective state separate from readiness evidence.','Runtime PASS/FAIL requires user-supplied or tool-produced evidence; the CLI does not autonomously browse or operate third-party services.','FUTURE_EFFECTIVE is based on bundled dates and must be rechecked against current primary sources.','Source regex candidates can be false positives and are REVIEW, not violations.'],
   'findings':findings}
 
 def _load_object(path,label):
