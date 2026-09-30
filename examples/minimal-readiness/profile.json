@@ -1,0 +1,11 @@
+{
+  "schema_version": "0.2.0",
+  "project_name": "canary-minimal-fixture",
+  "entity_establishments": ["US"],
+  "target_markets": ["India"],
+  "offers_goods_or_services_to_people_in_india": true,
+  "processing_connected_with_activity_outside_india": true,
+  "business_model_b2b_b2c": "B2C",
+  "child_users_expected": false,
+  "launch_date": "2027-06-01"
+}
