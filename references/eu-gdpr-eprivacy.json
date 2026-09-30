@@ -1,0 +1,310 @@
+{
+  "pack_id": "eu-gdpr-eprivacy",
+  "pack_version": "0.3.0",
+  "jurisdiction": "EU/EEA",
+  "as_of": "2026-10-01",
+  "applicability_model": "eu-gdpr-v1",
+  "timezone_offset_minutes": 0,
+  "status_model": [
+    "PASS",
+    "FAIL",
+    "REVIEW",
+    "UNKNOWN",
+    "NOT_APPLICABLE",
+    "FUTURE_EFFECTIVE"
+  ],
+  "applicability_profile_fields": [
+    "processes_personal_data",
+    "processing_in_context_of_eu_eea_establishment",
+    "offers_goods_or_services_to_people_in_eu_eea",
+    "monitors_behavior_of_people_in_eu_eea",
+    "all_relevant_processing_purely_personal_or_household"
+  ],
+  "checks": [
+    {
+      "id": "EU-GDPR-SCOPE",
+      "title": "GDPR territorial and material scope",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "legal"
+      ],
+      "runtime_tests": [],
+      "verify": "Review GDPR Articles 2-3 and current EDPB territorial-scope guidance. Establish the relevant processing activity, EU/EEA establishment context, offering/monitoring nexus, and exclusions. Do not infer scope solely from IP geolocation."
+    },
+    {
+      "id": "EU-GDPR-PRINCIPLES",
+      "title": "Processing principles and accountability",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "config",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Trace representative personal-data fields from collection through storage, use and retention; compare actual behavior with declared purpose, minimisation, accuracy and storage controls."
+      ],
+      "verify": "Review GDPR Articles 5 and 24. Confirm lawfulness/fairness/transparency, purpose limitation, data minimisation, accuracy, storage limitation, security and accountability are evidenced rather than asserted."
+    },
+    {
+      "id": "EU-GDPR-LAWFUL-BASIS",
+      "title": "Lawful basis by processing purpose",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "legal"
+      ],
+      "runtime_tests": [],
+      "verify": "Review GDPR Article 6 and document the specific lawful basis for each material processing purpose. Do not assume consent is always required or that legitimate interests applies without the necessary assessment."
+    },
+    {
+      "id": "EU-GDPR-NOTICE",
+      "title": "Transparency and privacy information",
+      "effective": "current",
+      "required_evidence_types": [
+        "source",
+        "questionnaire",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Open each material collection flow and verify the relevant privacy information is accessible at the appropriate time and matches the actual purposes, recipients, retention approach, rights and transfer information."
+      ],
+      "verify": "Review GDPR Articles 12-14 against the actual collection context, including direct and indirect collection."
+    },
+    {
+      "id": "EU-GDPR-CONSENT",
+      "title": "Consent validity and withdrawal",
+      "effective": "current",
+      "required_evidence_types": [
+        "source",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "With a clean test state, verify any consent relied upon is freely given, specific, informed and unambiguous; optional choices are not bundled by default; withdrawal is available and subsequent consent-based processing stops."
+      ],
+      "verify": "Review GDPR Articles 4(11), 6, 7 and current EDPB consent guidance. Treat consent as one lawful basis, not a universal default."
+    },
+    {
+      "id": "EU-GDPR-SPECIAL-CATEGORY",
+      "title": "Special-category and criminal-offence data",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "config",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Where special-category or criminal-offence data is processed, trace collection, access restrictions, purpose and downstream use with synthetic data."
+      ],
+      "verify": "Review GDPR Articles 9 and 10 and applicable Member State law. Identify the Article 9 condition or Article 10 legal basis where relevant."
+    },
+    {
+      "id": "EU-GDPR-CHILDREN",
+      "title": "Children and information-society services",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "source",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Where child users are relevant, test the age/parental-authorisation flow with synthetic accounts and verify child-facing information is understandable."
+      ],
+      "verify": "Review GDPR Article 8 and the applicable Member State age threshold for consent to information-society services; do not assume one EU-wide threshold below 16."
+    },
+    {
+      "id": "EU-GDPR-RIGHTS",
+      "title": "Data-subject rights workflow",
+      "effective": "current",
+      "required_evidence_types": [
+        "source",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Exercise synthetic access, rectification, erasure, restriction, portability and objection requests as applicable; verify identity checks, routing, response records and resulting data changes."
+      ],
+      "verify": "Review GDPR Articles 12 and 15-21. Applicability and exceptions differ by right and legal basis."
+    },
+    {
+      "id": "EU-GDPR-AUTOMATED",
+      "title": "Automated decision-making and profiling",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "source",
+        "config",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Where solely automated decisions may produce legal or similarly significant effects, exercise a synthetic case and verify the documented safeguards and human-intervention path where required."
+      ],
+      "verify": "Review GDPR Article 22 and applicable guidance. Do not label ordinary analytics or every AI feature as an Article 22 decision."
+    },
+    {
+      "id": "EU-GDPR-PROCESSORS",
+      "title": "Controller/processor roles and contracts",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "config",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Compare configured vendors/subprocessors and data flows with the processor inventory and contract instructions; verify deletion/return and security obligations where testable."
+      ],
+      "verify": "Review GDPR Articles 24, 26 and 28 plus current EDPB controller/processor guidance. Determine role per processing activity rather than by contract label alone."
+    },
+    {
+      "id": "EU-GDPR-RECORDS",
+      "title": "Records of processing and governance evidence",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "config",
+        "legal"
+      ],
+      "runtime_tests": [],
+      "verify": "Review GDPR Articles 24 and 30, including the Article 30(5) exception and its limits. Check whether processing records and accountability evidence reflect actual operations."
+    },
+    {
+      "id": "EU-GDPR-DESIGN",
+      "title": "Data protection by design and by default",
+      "effective": "current",
+      "required_evidence_types": [
+        "source",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Inspect default settings and a representative user journey; verify only personal data necessary for each specific purpose is processed by default and access/exposure is appropriately limited."
+      ],
+      "verify": "Review GDPR Article 25 and current EDPB data-protection-by-design/default guidance."
+    },
+    {
+      "id": "EU-GDPR-SECURITY",
+      "title": "Security of processing",
+      "effective": "current",
+      "required_evidence_types": [
+        "source",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "In an isolated environment, test authentication/authorisation boundaries, tenant separation where relevant, recovery, logging, encryption/pseudonymisation controls where appropriate, and processor security dependencies."
+      ],
+      "verify": "Review GDPR Article 32. Required measures are risk-based; Beacon does not prescribe one universal control set."
+    },
+    {
+      "id": "EU-GDPR-BREACH",
+      "title": "Personal-data breach response",
+      "effective": "current",
+      "required_evidence_types": [
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Run a tabletop or synthetic incident; verify detection, risk assessment, breach register, supervisory-authority decision path and affected-person communication path, including the 72-hour authority-notification rule where applicable."
+      ],
+      "verify": "Review GDPR Articles 33-34 and current EDPB breach-notification guidance. Not every breach requires notification, but controllers must assess and document the decision."
+    },
+    {
+      "id": "EU-GDPR-DPIA",
+      "title": "Data protection impact assessment",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "config",
+        "legal"
+      ],
+      "runtime_tests": [
+        "For a high-risk processing scenario, trace whether the DPIA workflow captures necessity/proportionality, risks to individuals and planned mitigations before deployment."
+      ],
+      "verify": "Review GDPR Articles 35-36, regulator lists and relevant guidance. DPIA applicability is risk- and context-dependent."
+    },
+    {
+      "id": "EU-GDPR-DPO-REP",
+      "title": "DPO and EU representative applicability",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "source",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Where a DPO or Article 27 representative is required, verify the published contact/representative information is reachable and matches governance records."
+      ],
+      "verify": "Review GDPR Articles 27 and 37-39. DPO and representative duties have different triggers and should not be conflated."
+    },
+    {
+      "id": "EU-GDPR-TRANSFERS",
+      "title": "International data transfers",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "config",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Compare actual storage/processing/support regions and subprocessors with the documented transfer map and selected transfer mechanism."
+      ],
+      "verify": "Review GDPR Chapter V, current adequacy decisions and any relied-on safeguards such as SCCs. A vendor's location alone does not establish whether a restricted transfer occurs or whether safeguards are sufficient."
+    },
+    {
+      "id": "EU-EPRIVACY-TRACKING",
+      "title": "Terminal-equipment storage/access and tracking",
+      "effective": "current",
+      "required_evidence_types": [
+        "source",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "In a clean browser profile, capture storage and network activity before and after user choice; identify cookies/local storage/device-access operations and distinguish strictly necessary operations from consent-dependent tracking."
+      ],
+      "verify": "Review ePrivacy Directive Article 5(3), GDPR consent standards, and the relevant Member State implementation/guidance. The Directive is implemented nationally, so Beacon must not treat one Member State's details as EU-wide."
+    },
+    {
+      "id": "EU-EPRIVACY-MARKETING",
+      "title": "Electronic direct marketing",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "source",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Use test recipients to verify the applicable consent/soft-opt-in path, sender identity, unsubscribe mechanism and persistent suppression. Separate email, SMS and other channels where national rules differ."
+      ],
+      "verify": "Review ePrivacy Directive Article 13, GDPR where personal data is processed, and the relevant Member State implementation. National rules and business-recipient treatment can differ."
+    }
+  ],
+  "primary_sources": [
+    "https://eur-lex.europa.eu/eli/reg/2016/679",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32002L0058",
+    "https://www.edpb.europa.eu/our-work-tools/our-documents/guidelines/guidelines-32018-territorial-scope-gdpr-article-3-version_en",
+    "https://www.edpb.europa.eu/documents/guideline/guidelines-052020-on-consent-under-regulation-2016679_en",
+    "https://www.edpb.europa.eu/our-work-tools/our-documents/guidelines/guidelines-92022-personal-data-breach-notification-under_en",
+    "https://www.edpb.europa.eu/documents/guideline/guidelines-42019-on-article-25-data-protection-by-design-and-by-default_en",
+    "https://www.edpb.europa.eu/documents/guideline/guidelines-072020-on-the-concepts-of-controller-and-processor-in-the-gdpr_en",
+    "https://commission.europa.eu/publications/publications-standard-contractual-clauses-sccs_en"
+  ],
+  "limitations": [
+    "This pack is a launch-readiness model, not legal advice or certification.",
+    "ePrivacy Directive duties are implemented through Member State law; national requirements must be checked for the markets and establishment involved.",
+    "National GDPR derogations, regulator lists and sector-specific laws are not exhaustively modeled.",
+    "A PASS reflects the supplied evidence contract for the modeled check, not a legal conclusion."
+  ]
+}
