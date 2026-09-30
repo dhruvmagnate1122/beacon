@@ -2,7 +2,7 @@
 
 ## Source and applicability
 
-Bundled legal records and executable packs are research assets, not legal opinions. India DPDP was reviewed 2026-09-30; the EU/EEA GDPR + ePrivacy, UK GDPR + PECR, US federal digital-product, and India CERT-In packs were reviewed 2026-10-01. Open current primary sources; distinguish statutes, rules, notifications, regulator guidance, decisions, vendor contracts and engineering recommendations.
+Bundled legal records and executable packs are research assets, not legal opinions. India DPDP was reviewed 2026-09-30; the EU/EEA GDPR + ePrivacy, UK GDPR + PECR, US federal digital-product, India CERT-In, and EU digital VAT packs were reviewed 2026-10-01. Open current primary sources; distinguish statutes, rules, notifications, regulator guidance, decisions, vendor contracts and engineering recommendations.
 
 For India, use `india-dpdp.json`. The 13 November 2025 Act commencement notification phases substantive provisions; the final DPDP Rules likewise phase commencement, and MeitY lists a December 2025 corrigendum. Therefore a missing future-effective control is a readiness gap, not automatically a present statutory violation. Recheck notifications on every release.
 
@@ -63,6 +63,16 @@ For India, use `india-dpdp.json`. The 13 November 2025 Act commencement notifica
 - Provider records: apply only to listed data-centre/VPS/cloud/VPN categories; verify the required customer/subscriber fields and five-year post-cancellation retention workflow.
 - Virtual assets: apply only to covered virtual-asset providers/exchanges/custodian wallets; verify five-year KYC/transaction record retention and transaction reconstruction fields.
 
+## EU digital VAT / OSS verification
+
+- Scope/classification: identify whether the supply is a telecommunications, broadcasting or electronically supplied service, another service, or something outside this pack; identify B2C vs B2B customer status.
+- B2C TBE: verify the customer-country place-of-supply logic and any relied-on exception rather than assuming supplier-country VAT.
+- EUR 10,000 threshold: apply only when the supplier satisfies the single-Member-State establishment condition and aggregate the relevant current and preceding calendar-year supplies; do not treat this as a universal SaaS revenue threshold.
+- Customer location: verify the evidence/presumption used under Implementing Regulation (EU) No 282/2011 and handle contradictory evidence. The number of qualifying evidence items can vary with the applicable presumption/turnover rules.
+- B2B: verify taxable-person status and the applicable place-of-supply/reverse-charge treatment, including VAT-ID validation where relevant.
+- OSS: reconcile representative transactions by Member State, rate, taxable amount and corrections; confirm the applicable OSS scheme and Member State of Identification.
+- Freshness: Commission guidance revised in July 2026 includes ViDA changes entering into force from 1 January 2027. Re-review before a release crossing that transition.
+
 ## Other verification recipes
 
 - Database: seed two tenants; test anonymous, owner, cross-tenant and privileged access in isolation.
@@ -76,9 +86,9 @@ For India, use `india-dpdp.json`. The 13 November 2025 Act commencement notifica
 
 State project/version, environment, profile unknowns, evidence date, scan coverage and omissions. Separate source candidates, verified behavior, legal applicability and future-effective readiness. For each item record ID, source/date, applicability rationale, sanitized evidence, confidence, fix/next action, test result and owner. Never sum hypothetical penalties.
 
-## v0.6.0 boundaries
+## v0.7.0 boundaries
 
-Automated source triage remains six regex signals. Beacon has five executable legal/regulatory packs: `india-dpdp`, `eu-gdpr-eprivacy`, `uk-gdpr-pecr`, `us-federal-digital`, and `india-certin`. Packs add profile-driven applicability, statuses and evidence prompts; the CLI does not parse privacy notices, make legal determinations or autonomously execute runtime tests. Tax and non-promoted US state/sector entries remain guided-review research seeds. No auto-fix engine, cloud adapter, scheduled monitoring, SARIF exporter or worldwide certification is included.
+Automated source triage remains six regex signals. Beacon has six executable legal/regulatory packs: `india-dpdp`, `eu-gdpr-eprivacy`, `uk-gdpr-pecr`, `us-federal-digital`, `india-certin`, and `eu-digital-vat`. Packs add profile-driven applicability, statuses and evidence prompts; the CLI does not parse privacy notices, make legal determinations or autonomously execute runtime tests. Non-promoted US state/sector entries and provider/technical seeds remain guided-review research assets. No auto-fix engine, cloud adapter, scheduled monitoring, SARIF exporter or worldwide certification is included.
 
 
 ## Evidence and status engine
