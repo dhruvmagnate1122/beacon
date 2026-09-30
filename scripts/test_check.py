@@ -74,6 +74,9 @@ class Checks(unittest.TestCase):
   with self.assertRaises(ValueError): validate_evidence({'IN-DPDP-CONSENT':[bad]})
  def test_evidence_rejects_bad_result(self):
   with self.assertRaises(ValueError): validate_evidence({'X':[ev('runtime','BOGUS')]})
+ def test_evidence_rejects_foreign_status_vocabulary(self):
+  for foreign in ('SUGGESTION','CLAIM_NEEDS_EVIDENCE'):
+   with self.assertRaises(ValueError,msg=foreign): validate_evidence({'X':[ev('runtime',foreign)]})
  def test_evidence_rejects_bad_producer(self):
   bad=ev(); bad['producer']={'kind':'ouija','name':'x'}
   with self.assertRaises(ValueError): validate_evidence({'X':[bad]})

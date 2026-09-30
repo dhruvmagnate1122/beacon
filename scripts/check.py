@@ -24,7 +24,9 @@ MANUAL=[
  ('LEGAL-001','Jurisdiction and effective-date applicability','Apply current primary sources using the project profile; do not treat bundled research as legal advice.'),
  ('PRIV-003','Consent, deletion and retention behavior','Check collection, withdrawal propagation, processor deletion and retention exceptions.')]
 
-EVIDENCE_RESULTS={'PASS','FAIL','REVIEW','NOT_APPLICABLE','SUGGESTION','CLAIM_NEEDS_EVIDENCE'}
+# Evidence results use the project's own status vocabulary — PASS, FAIL,
+# REVIEW, UNKNOWN, NOT_APPLICABLE, FUTURE_EFFECTIVE. No Litmus-only statuses.
+EVIDENCE_RESULTS={'PASS','FAIL','REVIEW','UNKNOWN','NOT_APPLICABLE','FUTURE_EFFECTIVE'}
 PRODUCER_KINDS={'tool','external','manual'}
 
 def validate_evidence(evidence):
