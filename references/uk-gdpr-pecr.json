@@ -1,0 +1,315 @@
+{
+  "pack_id": "uk-gdpr-pecr",
+  "pack_version": "0.4.0",
+  "jurisdiction": "United Kingdom",
+  "as_of": "2026-10-01",
+  "applicability_model": "uk-gdpr-v1",
+  "timezone_offset_minutes": 60,
+  "status_model": [
+    "PASS",
+    "FAIL",
+    "REVIEW",
+    "UNKNOWN",
+    "NOT_APPLICABLE",
+    "FUTURE_EFFECTIVE"
+  ],
+  "applicability_profile_fields": [
+    "processes_personal_data",
+    "processing_in_context_of_uk_establishment",
+    "offers_goods_or_services_to_people_in_uk",
+    "monitors_behavior_of_people_in_uk",
+    "uk_law_applies_by_public_international_law",
+    "all_relevant_processing_purely_personal_or_household",
+    "uses_storage_or_access_technologies_for_uk_users",
+    "sends_electronic_direct_marketing_to_uk_recipients"
+  ],
+  "checks": [
+    {
+      "id": "UK-GDPR-SCOPE",
+      "title": "UK GDPR territorial and material scope",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "legal"
+      ],
+      "runtime_tests": [],
+      "verify": "Review UK GDPR territorial/material scope, including UK establishment, targeted offering/monitoring and exclusions. Do not infer UK scope merely because a service is technically accessible from the UK."
+    },
+    {
+      "id": "UK-GDPR-PRINCIPLES",
+      "title": "Processing principles and accountability",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "config",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Trace representative personal-data fields through collection, use, sharing and retention; compare actual behavior with declared purposes, minimisation and storage controls."
+      ],
+      "verify": "Review UK GDPR principles and accountability obligations as amended by the Data (Use and Access) Act 2025."
+    },
+    {
+      "id": "UK-GDPR-LAWFUL-BASIS",
+      "title": "Lawful basis by processing purpose",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "legal"
+      ],
+      "runtime_tests": [],
+      "verify": "Identify the lawful basis for each material purpose under current UK GDPR rules, including any recognised legitimate interests introduced by DUAA where relevant. Do not assume consent is the default basis."
+    },
+    {
+      "id": "UK-GDPR-NOTICE",
+      "title": "Transparency and privacy information",
+      "effective": "current",
+      "required_evidence_types": [
+        "source",
+        "questionnaire",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Inspect material collection flows and confirm privacy information is accessible, timely and matches actual purposes, recipients, retention, rights and transfers."
+      ],
+      "verify": "Review current UK GDPR/DPA transparency requirements and any DUAA changes relevant to the processing context."
+    },
+    {
+      "id": "UK-GDPR-CONSENT",
+      "title": "Consent validity and withdrawal",
+      "effective": "current",
+      "required_evidence_types": [
+        "source",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Where consent is relied on, test affirmative choice, absence of default optional selection, withdrawal and cessation of subsequent consent-based processing."
+      ],
+      "verify": "Review current UK GDPR consent requirements and ICO guidance. Consent is only one possible lawful basis."
+    },
+    {
+      "id": "UK-GDPR-SPECIAL-CATEGORY",
+      "title": "Special-category and criminal-offence information",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "config",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Where sensitive categories are processed, trace collection, access controls and downstream use with synthetic data."
+      ],
+      "verify": "Review UK GDPR Articles 9-10 and DPA 2018 conditions/schedules applicable to the processing."
+    },
+    {
+      "id": "UK-GDPR-CHILDREN",
+      "title": "Children and higher-protection design duties",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "source",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Where services are likely to be accessed by children, test age/parental flows and child-facing defaults/information using synthetic accounts."
+      ],
+      "verify": "Review UK GDPR/DPA child provisions, the Children's Code where applicable, and DUAA higher-protection matters for design/default."
+    },
+    {
+      "id": "UK-GDPR-RIGHTS-COMPLAINTS",
+      "title": "Individual rights and complaints workflow",
+      "effective": "current",
+      "required_evidence_types": [
+        "source",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Exercise representative rights requests and a synthetic complaint; verify identity checks, acknowledgement, routing, response records and resulting data changes."
+      ],
+      "verify": "Review current UK GDPR rights plus DUAA complaints-procedure requirements, including current acknowledgement/response expectations."
+    },
+    {
+      "id": "UK-GDPR-AUTOMATED",
+      "title": "Significant automated decision-making",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "source",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Where solely automated significant decisions occur, exercise a synthetic case and verify information, representations, human intervention and contest mechanisms."
+      ],
+      "verify": "Review UK GDPR Articles 22A-22D as substituted by DUAA. Distinguish special-category restrictions from the broader safeguards that apply to significant solely automated decisions."
+    },
+    {
+      "id": "UK-GDPR-PROCESSORS",
+      "title": "Controller/processor roles and contracts",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "config",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Compare configured vendors/subprocessors and actual data flows with documented roles, instructions, security and deletion/return obligations."
+      ],
+      "verify": "Determine controller/processor/joint-controller roles per processing activity and review current UK GDPR/DPA contract duties."
+    },
+    {
+      "id": "UK-GDPR-RECORDS",
+      "title": "Records of processing and accountability evidence",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "config",
+        "legal"
+      ],
+      "runtime_tests": [],
+      "verify": "Review current UK GDPR/DPA recordkeeping and accountability requirements, including applicable exemptions."
+    },
+    {
+      "id": "UK-GDPR-DESIGN",
+      "title": "Data protection by design and by default",
+      "effective": "current",
+      "required_evidence_types": [
+        "source",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Inspect defaults and representative user journeys; verify data minimisation, access/exposure controls and child higher-protection considerations where relevant."
+      ],
+      "verify": "Review Article 25 as amended and current ICO design/default guidance, including children's higher-protection matters."
+    },
+    {
+      "id": "UK-GDPR-SECURITY",
+      "title": "Security of processing",
+      "effective": "current",
+      "required_evidence_types": [
+        "source",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "In an isolated environment, test authentication/authorisation boundaries, tenant separation where relevant, recovery, logging and proportionate protection measures."
+      ],
+      "verify": "Review risk-based UK GDPR security obligations and DPA requirements; Beacon does not prescribe one universal control set."
+    },
+    {
+      "id": "UK-GDPR-BREACH",
+      "title": "Personal-data breach response",
+      "effective": "current",
+      "required_evidence_types": [
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Run a synthetic incident; verify breach assessment, recordkeeping, ICO notification decision path and affected-person communication path where required."
+      ],
+      "verify": "Review current UK GDPR breach notification rules and ICO guidance."
+    },
+    {
+      "id": "UK-GDPR-DPIA",
+      "title": "Data protection impact assessment",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "config",
+        "legal"
+      ],
+      "runtime_tests": [
+        "For a high-risk scenario, verify the DPIA workflow captures necessity/proportionality, risks and mitigations before deployment."
+      ],
+      "verify": "Review current UK GDPR DPIA requirements and ICO high-risk guidance."
+    },
+    {
+      "id": "UK-GDPR-DPO-REP",
+      "title": "DPO and UK representative applicability",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "source",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Where required, verify the published DPO or UK representative contact is reachable and matches governance records."
+      ],
+      "verify": "Review current DPO triggers and Article 27 UK representative requirements for organisations outside the UK."
+    },
+    {
+      "id": "UK-GDPR-TRANSFERS",
+      "title": "International transfers from the UK",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "config",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Compare actual storage/processing/support regions and subprocessors with the transfer map and relied-on adequacy or safeguard mechanism."
+      ],
+      "verify": "Review current UK transfer rules, adequacy regulations and safeguards including the IDTA/UK Addendum where relevant."
+    },
+    {
+      "id": "UK-PECR-STORAGE",
+      "title": "Storage/access technologies on user devices",
+      "effective": "current",
+      "applicability_model": "uk-pecr-storage-v1",
+      "required_evidence_types": [
+        "source",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "In a clean browser state, capture cookies, local storage, pixels, scripts, fingerprinting or other terminal-equipment access before and after user choices; classify relied-on exceptions and objection/consent behavior."
+      ],
+      "verify": "Review PECR regulation 6 as amended by DUAA and current ICO storage/access guidance. Do not assume every technology requires consent; test the applicable exception and user information/choice requirements."
+    },
+    {
+      "id": "UK-PECR-MARKETING",
+      "title": "Electronic direct marketing",
+      "effective": "current",
+      "applicability_model": "uk-pecr-marketing-v1",
+      "required_evidence_types": [
+        "questionnaire",
+        "source",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Use test recipients to verify the applicable consent/soft-opt-in route, sender identity, unsubscribe mechanism and persistent suppression."
+      ],
+      "verify": "Review PECR electronic-marketing rules as amended by DUAA, including the charitable soft opt-in where relevant, and UK GDPR where personal information is used."
+    }
+  ],
+  "primary_sources": [
+    "https://www.legislation.gov.uk/eur/2016/679",
+    "https://www.legislation.gov.uk/ukpga/2018/12",
+    "https://www.legislation.gov.uk/ukpga/2025/18",
+    "https://ico.org.uk/about-the-ico/what-we-do/legislation-we-cover/data-use-and-access-act-2025/the-data-use-and-access-act-2025-what-does-it-mean-for-organisations/",
+    "https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/guidance-on-the-use-of-storage-and-access-technologies/",
+    "https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/guidance-on-direct-marketing-using-electronic-mail/",
+    "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/international-transfers/a-guide-to-international-transfers/"
+  ],
+  "limitations": [
+    "This pack is a launch-readiness model, not legal advice or certification.",
+    "DUAA 2025 changed multiple UK GDPR and PECR provisions; current legislation and ICO guidance must be rechecked before legal conclusions.",
+    "Sector-specific, law-enforcement, intelligence-service and some national-security regimes are outside this pack.",
+    "A PASS reflects the supplied evidence contract for the modeled check, not a legal conclusion."
+  ]
+}
