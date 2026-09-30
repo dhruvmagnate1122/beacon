@@ -3,12 +3,12 @@
 import argparse, datetime as dt, json, os, re, sys
 from pathlib import Path
 
-VERSION='0.4.0'
+VERSION='0.5.0'
 STATUSES={'PASS','FAIL','REVIEW','UNKNOWN','NOT_APPLICABLE','FUTURE_EFFECTIVE'}
 SKIP={'.git','node_modules','.next','dist','build','.venv','venv','__pycache__','vendor','coverage'}
 EXTENSIONS={'.js','.jsx','.ts','.tsx','.mjs','.cjs','.html','.css','.sql','.json','.py','.yml','.yaml','.toml'}
 LIMIT=1024*1024; MAX_FILES=10000
-PACK_FILES=('india-dpdp.json','eu-gdpr-eprivacy.json','uk-gdpr-pecr.json')
+PACK_FILES=('india-dpdp.json','eu-gdpr-eprivacy.json','uk-gdpr-pecr.json','us-federal-digital.json')
 PATTERNS=[
  ('SEC-001','high','Possible embedded private key or live credential',r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|\bsk_live_[A-Za-z0-9]{16,}|\bAKIA[A-Z0-9]{16}\b'),
  ('DB-001','high','SQL explicitly disables row-level security',r'\bDISABLE\s+ROW\s+LEVEL\s+SECURITY\b'),
@@ -171,12 +171,66 @@ def _uk_pecr_marketing_applicability(profile):
  if sends is False: return False
  return None
 
+
+def _us_coppa_applicability(profile):
+ if not profile: return None
+ collects=profile.get('coppa_collects_personal_information')
+ child_directed=profile.get('coppa_child_directed_service')
+ mixed=profile.get('coppa_mixed_audience_service')
+ knowledge=profile.get('coppa_actual_knowledge_under13_collection')
+ if collects is False: return False
+ if collects is True and (child_directed is True or mixed is True or knowledge is True): return True
+ if collects is True and child_directed is False and mixed is False and knowledge is False: return False
+ return None
+
+def _us_can_spam_applicability(profile):
+ if not profile: return None
+ sends=profile.get('sends_us_commercial_email')
+ if sends is True: return True
+ if sends is False: return False
+ return None
+
+def _us_dmca512c_applicability(profile):
+ if not profile: return None
+ hosted=profile.get('hosts_content_at_user_direction')
+ seeks=profile.get('seeks_dmca_512c_safe_harbor')
+ if hosted is True and seeks is True: return True
+ if hosted is False or seeks is False: return False
+ return None
+
+def _us_ada_titleiii_applicability(profile):
+ if not profile: return None
+ covered=profile.get('us_ada_title_iii_public_accommodation')
+ if covered is True: return True
+ if covered is False: return False
+ return None
+
+def _us_ada_titleii_large_applicability(profile):
+ if not profile: return None
+ kind=profile.get('us_ada_title_ii_entity_size')
+ if kind=='50000_or_more': return True
+ if kind in {'under_50000_or_special_district','not_public_entity'}: return False
+ return None
+
+def _us_ada_titleii_small_applicability(profile):
+ if not profile: return None
+ kind=profile.get('us_ada_title_ii_entity_size')
+ if kind=='under_50000_or_special_district': return True
+ if kind in {'50000_or_more','not_public_entity'}: return False
+ return None
+
 APPLICABILITY_MODELS={
  'india-dpdp-v1':_india_applicability,
  'eu-gdpr-v1':_eu_applicability,
  'uk-gdpr-v1':_uk_gdpr_applicability,
  'uk-pecr-storage-v1':_uk_pecr_storage_applicability,
  'uk-pecr-marketing-v1':_uk_pecr_marketing_applicability,
+ 'us-coppa-v1':_us_coppa_applicability,
+ 'us-can-spam-v1':_us_can_spam_applicability,
+ 'us-dmca512c-v1':_us_dmca512c_applicability,
+ 'us-ada-titleiii-v1':_us_ada_titleiii_applicability,
+ 'us-ada-titleii-large-v1':_us_ada_titleii_large_applicability,
+ 'us-ada-titleii-small-v1':_us_ada_titleii_small_applicability,
 }
 
 def _evidence_for(rule_id,evidence):
