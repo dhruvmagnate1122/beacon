@@ -7,14 +7,18 @@
       "jurisdiction": "India",
       "trigger": "Digital personal data processing with relevant India nexus",
       "source_url": "https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf",
-      "source_section": "Sections 3\u201317",
+      "source_section": "Sections 3–17",
       "last_research_date": "2026-09-30",
       "review_status": "research-seed-needs-current-verification",
       "effective_from": null,
       "effective_to": null,
       "automation": "guided-review-only",
       "limitations": "Check Act commencement and applicable exemption notifications; do not infer exemption from size.",
-      "evidence_required": ["project profile","current primary source","relevant configuration or workflow test"],
+      "evidence_required": [
+        "project profile",
+        "current primary source",
+        "relevant configuration or workflow test"
+      ],
       "reviewer": null
     },
     {
@@ -26,86 +30,256 @@
       "source_section": "Rules 1 and 3",
       "last_research_date": "2026-09-30",
       "review_status": "research-seed-needs-current-verification",
-      "effective_from": null,"effective_to": null,"automation": "guided-review-only",
+      "effective_from": null,
+      "effective_to": null,
+      "automation": "guided-review-only",
       "limitations": "Phased commencement; reconcile corrections and separate Act notification before enforcement conclusions.",
-      "evidence_required": ["project profile","current primary source","relevant configuration or workflow test"],"reviewer": null
+      "evidence_required": [
+        "project profile",
+        "current primary source",
+        "relevant configuration or workflow test"
+      ],
+      "reviewer": null
     },
     {
-      "id": "IN-INCIDENT","version": "0.1.0","jurisdiction": "India","trigger": "Covered entity and specified cyber incident",
-      "source_url": "https://cert-in.org.in/Directions70B.jsp","source_section": "Directions and FAQ","last_research_date": "2026-09-30",
-      "review_status": "research-seed-needs-current-verification","effective_from": null,"effective_to": null,"automation": "guided-review-only",
+      "id": "IN-INCIDENT",
+      "version": "0.1.0",
+      "jurisdiction": "India",
+      "trigger": "Covered entity and specified cyber incident",
+      "source_url": "https://cert-in.org.in/Directions70B.jsp",
+      "source_section": "Directions and FAQ",
+      "last_research_date": "2026-09-30",
+      "review_status": "research-seed-needs-current-verification",
+      "effective_from": null,
+      "effective_to": null,
+      "automation": "guided-review-only",
       "limitations": "Validate entity, incident category, reporting trigger and retention scope.",
-      "evidence_required": ["project profile","current primary source","relevant configuration or workflow test"],"reviewer": null
+      "evidence_required": [
+        "project profile",
+        "current primary source",
+        "relevant configuration or workflow test"
+      ],
+      "reviewer": null
     },
     {
-      "id": "EU-PRIVACY","version": "0.1.0","jurisdiction": "EU/EEA","trigger": "Establishment, offering or monitoring nexus",
-      "source_url": "https://commission.europa.eu/law/law-topic/data-protection/information-business-and-organisations/application-gdpr_en","source_section": "GDPR applicability guidance","last_research_date": "2026-09-30",
-      "review_status": "research-seed-needs-current-verification","effective_from": null,"effective_to": null,"automation": "guided-review-only",
-      "limitations": "Identify controller/processor role, processing grounds, transfers and exceptions.",
-      "evidence_required": ["project profile","current primary source","relevant configuration or workflow test"],"reviewer": null
+      "id": "EU-PRIVACY",
+      "version": "0.3.0",
+      "jurisdiction": "EU/EEA",
+      "trigger": "Establishment, offering or monitoring nexus",
+      "source_url": "https://commission.europa.eu/law/law-topic/data-protection/information-business-and-organisations/application-gdpr_en",
+      "source_section": "GDPR applicability guidance",
+      "last_research_date": "2026-10-01",
+      "review_status": "promoted-to-executable-pack",
+      "effective_from": null,
+      "effective_to": null,
+      "automation": "eu-gdpr-eprivacy",
+      "limitations": "Use references/eu-gdpr-eprivacy.json for executable GDPR/ePrivacy readiness. Member State ePrivacy implementation, national GDPR derogations and sector-specific overlays still require current legal review.",
+      "evidence_required": [
+        "project profile",
+        "current primary source",
+        "relevant configuration or workflow test"
+      ],
+      "reviewer": null
     },
     {
-      "id": "UK-TRACKING","version": "0.1.0","jurisdiction": "UK","trigger": "Storage/access technologies and personal data",
-      "source_url": "https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/guidance-on-the-use-of-storage-and-access-technologies/","source_section": "ICO guidance","last_research_date": "2026-09-30",
-      "review_status": "research-seed-needs-current-verification","effective_from": null,"effective_to": null,"automation": "guided-review-only",
+      "id": "UK-TRACKING",
+      "version": "0.1.0",
+      "jurisdiction": "UK",
+      "trigger": "Storage/access technologies and personal data",
+      "source_url": "https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/guidance-on-the-use-of-storage-and-access-technologies/",
+      "source_section": "ICO guidance",
+      "last_research_date": "2026-09-30",
+      "review_status": "research-seed-needs-current-verification",
+      "effective_from": null,
+      "effective_to": null,
+      "automation": "guided-review-only",
       "limitations": "Check current PECR/DUAA exceptions and separate UK GDPR analysis.",
-      "evidence_required": ["project profile","current primary source","relevant configuration or workflow test"],"reviewer": null
+      "evidence_required": [
+        "project profile",
+        "current primary source",
+        "relevant configuration or workflow test"
+      ],
+      "reviewer": null
     },
     {
-      "id": "US-CHILDREN","version": "0.1.0","jurisdiction": "US","trigger": "Child-directed service or relevant actual knowledge",
-      "source_url": "https://www.ftc.gov/business-guidance/resources/complying-coppa-frequently-asked-questions","source_section": "COPPA FAQ and revised rule","last_research_date": "2026-09-30",
-      "review_status": "research-seed-needs-current-verification","effective_from": null,"effective_to": null,"automation": "guided-review-only",
+      "id": "US-CHILDREN",
+      "version": "0.1.0",
+      "jurisdiction": "US",
+      "trigger": "Child-directed service or relevant actual knowledge",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/complying-coppa-frequently-asked-questions",
+      "source_section": "COPPA FAQ and revised rule",
+      "last_research_date": "2026-09-30",
+      "review_status": "research-seed-needs-current-verification",
+      "effective_from": null,
+      "effective_to": null,
+      "automation": "guided-review-only",
       "limitations": "An absent age field is not proof of violation; verify revised rule.",
-      "evidence_required": ["project profile","current primary source","relevant configuration or workflow test"],"reviewer": null
+      "evidence_required": [
+        "project profile",
+        "current primary source",
+        "relevant configuration or workflow test"
+      ],
+      "reviewer": null
     },
     {
-      "id": "US-MARKETING","version": "0.1.0","jurisdiction": "US","trigger": "Commercial email",
-      "source_url": "https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business","source_section": "CAN-SPAM guidance","last_research_date": "2026-09-30",
-      "review_status": "research-seed-needs-current-verification","effective_from": null,"effective_to": null,"automation": "guided-review-only",
+      "id": "US-MARKETING",
+      "version": "0.1.0",
+      "jurisdiction": "US",
+      "trigger": "Commercial email",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business",
+      "source_section": "CAN-SPAM guidance",
+      "last_research_date": "2026-09-30",
+      "review_status": "research-seed-needs-current-verification",
+      "effective_from": null,
+      "effective_to": null,
+      "automation": "guided-review-only",
       "limitations": "Classify primary purpose and test suppression; SMS is separate.",
-      "evidence_required": ["project profile","current primary source","relevant configuration or workflow test"],"reviewer": null
+      "evidence_required": [
+        "project profile",
+        "current primary source",
+        "relevant configuration or workflow test"
+      ],
+      "reviewer": null
     },
     {
-      "id": "US-COPYRIGHT","version": "0.1.0","jurisdiction": "US","trigger": "User-hosted content and safe-harbor role",
-      "source_url": "https://www.copyright.gov/512/","source_section": "Section 512 resources","last_research_date": "2026-09-30",
-      "review_status": "research-seed-needs-current-verification","effective_from": null,"effective_to": null,"automation": "guided-review-only",
+      "id": "US-COPYRIGHT",
+      "version": "0.1.0",
+      "jurisdiction": "US",
+      "trigger": "User-hosted content and safe-harbor role",
+      "source_url": "https://www.copyright.gov/512/",
+      "source_section": "Section 512 resources",
+      "last_research_date": "2026-09-30",
+      "review_status": "research-seed-needs-current-verification",
+      "effective_from": null,
+      "effective_to": null,
+      "automation": "guided-review-only",
       "limitations": "Registration alone is not sufficient; review takedown and repeat-infringer processes.",
-      "evidence_required": ["project profile","current primary source","relevant configuration or workflow test"],"reviewer": null
+      "evidence_required": [
+        "project profile",
+        "current primary source",
+        "relevant configuration or workflow test"
+      ],
+      "reviewer": null
     },
     {
-      "id": "US-ACCESS","version": "0.1.0","jurisdiction": "US","trigger": "Covered public-facing business/service",
-      "source_url": "https://www.ada.gov/resources/web-guidance/","source_section": "DOJ web guidance","last_research_date": "2026-09-30",
-      "review_status": "research-seed-needs-current-verification","effective_from": null,"effective_to": null,"automation": "guided-review-only",
+      "id": "US-ACCESS",
+      "version": "0.1.0",
+      "jurisdiction": "US",
+      "trigger": "Covered public-facing business/service",
+      "source_url": "https://www.ada.gov/resources/web-guidance/",
+      "source_section": "DOJ web guidance",
+      "last_research_date": "2026-09-30",
+      "review_status": "research-seed-needs-current-verification",
+      "effective_from": null,
+      "effective_to": null,
+      "automation": "guided-review-only",
       "limitations": "Determine legal scope separately from accessibility testing.",
-      "evidence_required": ["project profile","current primary source","relevant configuration or workflow test"],"reviewer": null
+      "evidence_required": [
+        "project profile",
+        "current primary source",
+        "relevant configuration or workflow test"
+      ],
+      "reviewer": null
     },
     {
-      "id": "EU-TAX","version": "0.1.0","jurisdiction": "EU","trigger": "Cross-border digital supplies",
-      "source_url": "https://europa.eu/youreurope/business/finance-and-tax/vat/one-stop-shop/index_en.htm","source_section": "OSS guidance","last_research_date": "2026-09-30",
-      "review_status": "research-seed-needs-current-verification","effective_from": null,"effective_to": null,"automation": "guided-review-only",
+      "id": "EU-TAX",
+      "version": "0.1.0",
+      "jurisdiction": "EU",
+      "trigger": "Cross-border digital supplies",
+      "source_url": "https://europa.eu/youreurope/business/finance-and-tax/vat/one-stop-shop/index_en.htm",
+      "source_section": "OSS guidance",
+      "last_research_date": "2026-09-30",
+      "review_status": "research-seed-needs-current-verification",
+      "effective_from": null,
+      "effective_to": null,
+      "automation": "guided-review-only",
       "limitations": "Determine establishment, B2B/B2C, supply classification and merchant role.",
-      "evidence_required": ["project profile","current primary source","relevant configuration or workflow test"],"reviewer": null
+      "evidence_required": [
+        "project profile",
+        "current primary source",
+        "relevant configuration or workflow test"
+      ],
+      "reviewer": null
     },
     {
-      "id": "DB-RLS","version": "0.1.0","jurisdiction": "Technical","trigger": "Supabase/Postgres exposed data",
-      "source_url": "https://supabase.com/docs/guides/database/postgres/row-level-security","source_section": "RLS guidance","last_research_date": "2026-09-30",
-      "review_status": "research-seed-needs-current-verification","effective_from": null,"effective_to": null,"automation": "guided-review-only",
+      "id": "DB-RLS",
+      "version": "0.1.0",
+      "jurisdiction": "Technical",
+      "trigger": "Supabase/Postgres exposed data",
+      "source_url": "https://supabase.com/docs/guides/database/postgres/row-level-security",
+      "source_section": "RLS guidance",
+      "last_research_date": "2026-09-30",
+      "review_status": "research-seed-needs-current-verification",
+      "effective_from": null,
+      "effective_to": null,
+      "automation": "guided-review-only",
       "limitations": "Review grants and policies with live isolated tests; public data may be intentional.",
-      "evidence_required": ["project profile","current primary source","relevant configuration or workflow test"],"reviewer": null
+      "evidence_required": [
+        "project profile",
+        "current primary source",
+        "relevant configuration or workflow test"
+      ],
+      "reviewer": null
     },
     {
-      "id": "HOST-COST","version": "0.1.0","jurisdiction": "Vendor","trigger": "Netlify credit plan",
-      "source_url": "https://docs.netlify.com/manage/accounts-and-billing/billing/billing-for-credit-based-plans/billing-faq-for-credit-based-plans/","source_section": "Credit billing FAQ","last_research_date": "2026-09-30",
-      "review_status": "research-seed-needs-current-verification","effective_from": null,"effective_to": null,"automation": "guided-review-only",
+      "id": "HOST-COST",
+      "version": "0.1.0",
+      "jurisdiction": "Vendor",
+      "trigger": "Netlify credit plan",
+      "source_url": "https://docs.netlify.com/manage/accounts-and-billing/billing/billing-for-credit-based-plans/billing-faq-for-credit-based-plans/",
+      "source_section": "Credit billing FAQ",
+      "last_research_date": "2026-09-30",
+      "review_status": "research-seed-needs-current-verification",
+      "effective_from": null,
+      "effective_to": null,
+      "automation": "guided-review-only",
       "limitations": "Check actual plan and recharge; legacy plan behavior differs.",
-      "evidence_required": ["project profile","current primary source","relevant configuration or workflow test"],"reviewer": null
+      "evidence_required": [
+        "project profile",
+        "current primary source",
+        "relevant configuration or workflow test"
+      ],
+      "reviewer": null
     },
     {
-      "id": "CLOUD-COST","version": "0.1.0","jurisdiction": "Vendor","trigger": "Google Cloud budget configuration",
-      "source_url": "https://docs.cloud.google.com/billing/docs/how-to/budgets","source_section": "Budgets documentation","last_research_date": "2026-09-30",
-      "review_status": "research-seed-needs-current-verification","effective_from": null,"effective_to": null,"automation": "guided-review-only",
+      "id": "CLOUD-COST",
+      "version": "0.1.0",
+      "jurisdiction": "Vendor",
+      "trigger": "Google Cloud budget configuration",
+      "source_url": "https://docs.cloud.google.com/billing/docs/how-to/budgets",
+      "source_section": "Budgets documentation",
+      "last_research_date": "2026-09-30",
+      "review_status": "research-seed-needs-current-verification",
+      "effective_from": null,
+      "effective_to": null,
+      "automation": "guided-review-only",
       "limitations": "Distinguish alert-only and supported spend caps; inspect scope and delays.",
-      "evidence_required": ["project profile","current primary source","relevant configuration or workflow test"],"reviewer": null
+      "evidence_required": [
+        "project profile",
+        "current primary source",
+        "relevant configuration or workflow test"
+      ],
+      "reviewer": null
+    },
+    {
+      "id": "EU-EPRIVACY",
+      "version": "0.3.0",
+      "jurisdiction": "EU/EEA + Member State law",
+      "trigger": "Terminal-equipment storage/access or electronic direct marketing in a relevant Member State",
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32002L0058",
+      "source_section": "Articles 5(3) and 13",
+      "last_research_date": "2026-10-01",
+      "review_status": "promoted-to-executable-pack",
+      "effective_from": null,
+      "effective_to": null,
+      "automation": "eu-gdpr-eprivacy",
+      "limitations": "Directive 2002/58/EC is implemented through Member State law; national implementation and regulator guidance must be checked.",
+      "evidence_required": [
+        "project profile",
+        "current EU and Member State primary source",
+        "relevant configuration or runtime test"
+      ],
+      "reviewer": null
     }
   ]
 }
