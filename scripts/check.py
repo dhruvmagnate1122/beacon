@@ -3,12 +3,12 @@
 import argparse, datetime as dt, json, os, re, sys
 from pathlib import Path
 
-VERSION='0.5.0'
+VERSION='0.6.0'
 STATUSES={'PASS','FAIL','REVIEW','UNKNOWN','NOT_APPLICABLE','FUTURE_EFFECTIVE'}
 SKIP={'.git','node_modules','.next','dist','build','.venv','venv','__pycache__','vendor','coverage'}
 EXTENSIONS={'.js','.jsx','.ts','.tsx','.mjs','.cjs','.html','.css','.sql','.json','.py','.yml','.yaml','.toml'}
 LIMIT=1024*1024; MAX_FILES=10000
-PACK_FILES=('india-dpdp.json','eu-gdpr-eprivacy.json','uk-gdpr-pecr.json','us-federal-digital.json')
+PACK_FILES=('india-dpdp.json','eu-gdpr-eprivacy.json','uk-gdpr-pecr.json','us-federal-digital.json','india-certin.json')
 PATTERNS=[
  ('SEC-001','high','Possible embedded private key or live credential',r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|\bsk_live_[A-Za-z0-9]{16,}|\bAKIA[A-Z0-9]{16}\b'),
  ('DB-001','high','SQL explicitly disables row-level security',r'\bDISABLE\s+ROW\s+LEVEL\s+SECURITY\b'),
@@ -219,6 +219,35 @@ def _us_ada_titleii_small_applicability(profile):
  if kind in {'50000_or_more','not_public_entity'}: return False
  return None
 
+
+def _certin_general_applicability(profile):
+ if not profile: return None
+ covered=profile.get('certin_general_directions_apply')
+ if covered is True: return True
+ if covered is False: return False
+ return None
+
+def _certin_incident_applicability(profile):
+ if not profile: return None
+ covered=profile.get('certin_incident_reporting_applies')
+ if covered is True: return True
+ if covered is False: return False
+ return None
+
+def _certin_provider_records_applicability(profile):
+ if not profile: return None
+ kind=profile.get('certin_provider_category')
+ if kind in {'data_centre','vps','cloud_service','vpn_service'}: return True
+ if kind=='not_applicable': return False
+ return None
+
+def _certin_virtual_asset_applicability(profile):
+ if not profile: return None
+ covered=profile.get('certin_virtual_asset_provider')
+ if covered is True: return True
+ if covered is False: return False
+ return None
+
 APPLICABILITY_MODELS={
  'india-dpdp-v1':_india_applicability,
  'eu-gdpr-v1':_eu_applicability,
@@ -231,6 +260,10 @@ APPLICABILITY_MODELS={
  'us-ada-titleiii-v1':_us_ada_titleiii_applicability,
  'us-ada-titleii-large-v1':_us_ada_titleii_large_applicability,
  'us-ada-titleii-small-v1':_us_ada_titleii_small_applicability,
+ 'india-certin-general-v1':_certin_general_applicability,
+ 'india-certin-incident-v1':_certin_incident_applicability,
+ 'india-certin-provider-records-v1':_certin_provider_records_applicability,
+ 'india-certin-virtual-asset-v1':_certin_virtual_asset_applicability,
 }
 
 def _evidence_for(rule_id,evidence):
