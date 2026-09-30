@@ -2,7 +2,7 @@
 
 The roadmap prioritizes evidence quality and jurisdiction freshness over checklist size.
 
-## v0.2.x — strengthen the baseline
+## v0.3 — multi-jurisdiction baseline
 
 - evidence provenance/freshness validation;
 - accepted/deferred readiness records;
@@ -10,9 +10,12 @@ The roadmap prioritizes evidence quality and jurisdiction freshness over checkli
 - synthetic fixture projects;
 - false-positive regression cases;
 - rule-pack version compatibility;
-- generic jurisdiction-pack loader and pack-level summaries.
+- ✅ generic jurisdiction-pack loader and pack-level summaries;
+- ✅ EU/EEA GDPR + ePrivacy executable pack;
+- national-law overlays for ePrivacy and GDPR derogations;
+- pack schema/version migration tests.
 
-## v0.3 — evidence adapters
+## v0.4 — evidence adapters
 
 - browser/runtime consent checks;
 - provider cost/budget evidence adapters;
@@ -23,9 +26,8 @@ The roadmap prioritizes evidence quality and jurisdiction freshness over checkli
 
 ## Jurisdiction expansion
 
-India DPDP is the first executable pack. The next jurisdiction should be used to remove remaining India-specific engine paths and prove the pack interface. Promote a research seed only when there is a maintained primary-source pack:
+India DPDP and EU/EEA GDPR + ePrivacy are executable packs. Jurisdiction #2 proved the shared loader, applicability registry and pack-level summary interface. Promote a research seed only when there is a maintained primary-source pack:
 
-- EU/EEA privacy/ePrivacy;
 - UK privacy/PECR;
 - selected US privacy/marketing/subscription regimes;
 - tax/digital-supply research packs.
