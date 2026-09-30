@@ -45,7 +45,7 @@ class Checks(unittest.TestCase):
  def test_future_effective(self):
   r=scan(self.root,{'jurisdiction_packs':['india-dpdp'],'processing_digital_personal_data_outside_india':True,'offers_goods_or_services_to_people_in_india':True},today=dt.date(2026,9,30)); d={f['rule_id']:f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')}
   self.assertEqual(d['IN-DPDP-NOTICE']['status'],'FUTURE_EFFECTIVE'); self.assertEqual(d['IN-DPDP-CONSENT-MANAGER']['status'],'FUTURE_EFFECTIVE')
- def test_fail_beats_future(self):
+ def test_future_effective_keeps_readiness_fail(self):
   item=ev('runtime','FAIL'); item['details']='optional consent preselected'
   evidence={'IN-DPDP-CONSENT-UX':[item]}
   r=scan(self.root,{'jurisdiction_packs':['india-dpdp'],'processing_digital_personal_data_outside_india':True,'offers_goods_or_services_to_people_in_india':True},evidence,today=dt.date(2026,9,30)); d={f['rule_id']:f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')}
@@ -62,11 +62,18 @@ class Checks(unittest.TestCase):
   script=str(Path(__file__).with_name('check.py')); profile=self.put('profile.json','[]')
   p=subprocess.run([sys.executable,script,str(self.root),'--profile',str(profile)],capture_output=True,text=True); self.assertEqual(p.returncode,2)
  def test_profile_schema(self):
-  p=json.loads((Path(__file__).parents[1]/'assets/project-profile.json').read_text()); self.assertEqual(p['schema_version'],'0.3.0'); self.assertIn('consent_ui_default_state',p); self.assertIn('processing_digital_personal_data_within_india',p)
+  p=json.loads((Path(__file__).parents[1]/'assets/project-profile.json').read_text()); self.assertEqual(p['schema_version'],'0.3.1'); self.assertIn('consent_ui_default_state',p); self.assertIn('processing_digital_personal_data_within_india',p)
  def test_evidence_valid(self):
   self.assertEqual(validate_evidence({'IN-DPDP-CONSENT':[ev()]}),{'IN-DPDP-CONSENT':[ev()]})
  def test_evidence_accepts_reference_alias(self):
   item=ev(); item['reference']=item.pop('artifact'); validate_evidence({'IN-DPDP-CONSENT':[item]})
+ def test_evidence_accepts_case_insensitive_type(self):
+  item=ev('Runtime','pass')
+  result=validate_evidence({'IN-DPDP-CONSENT':[item]})
+  self.assertEqual(result['IN-DPDP-CONSENT'][0]['type'],'runtime')
+ def test_profile_drops_unused_outside_activity_field(self):
+  p=json.loads((Path(__file__).parents[1]/'assets/project-profile.json').read_text())
+  self.assertNotIn('processing_connected_with_activity_outside_india',p)
  def test_evidence_rejects_missing_key(self):
   bad=ev(); del bad['details']
   with self.assertRaises(ValueError): validate_evidence({'IN-DPDP-CONSENT':[bad]})
