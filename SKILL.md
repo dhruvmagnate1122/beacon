@@ -1,22 +1,22 @@
 ---
 name: beacon
-description: Assess app launch readiness with source checks, executable India DPDP, EU/EEA GDPR + ePrivacy, UK GDPR + PECR, and selected US federal digital-product jurisdiction packs, project-specific privacy/legal scoping, cost controls, and tested remediation. Use for monetizable apps, release reviews, AI-built or traditional products, or checks of data isolation, tracking, email, subscriptions, accessibility and jurisdiction requirements. Does not certify legal compliance.
+description: Assess app launch readiness with source checks, executable India DPDP, EU/EEA GDPR + ePrivacy, UK GDPR + PECR, and selected US federal digital-product, and India CERT-In regulatory packs, project-specific privacy/legal scoping, cost controls, and tested remediation. Use for monetizable apps, release reviews, AI-built or traditional products, or checks of data isolation, tracking, email, subscriptions, accessibility and jurisdiction requirements. Does not certify legal compliance.
 ---
 
 # Beacon — Launch Readiness
 
-Treat Beacon v0.5.0 as an evidence pipeline: source → config → questionnaire → runtime → legal-source verification → status. Never equate a clean scan with a secure or compliant app.
+Treat Beacon v0.6.0 as an evidence pipeline: source → config → questionnaire → runtime → legal-source verification → status. Never equate a clean scan with a secure or compliant app.
 
 ## Workflow
 
 1. Resolve the project and read its instructions. Use `assets/project-profile.json`; leave unknown facts unknown. Never infer establishment from user location or jurisdiction solely from visitor IP.
 2. Run `python3 <skill-dir>/scripts/check.py <project-root> [--profile <profile.json>] [--evidence <evidence.json>]`. Python 3.9+, no dependencies. Exit 0 means execution succeeded, not compliance.
 3. Inspect source candidates in context. Never echo a matched secret. Regex signals can match comments, tests and intentional public data.
-4. Select the applicable executable packs in `jurisdiction_packs`. For India, use `references/india-dpdp.json` and explicit section 3 route/exclusion facts. For EU/EEA, use `references/eu-gdpr-eprivacy.json` and explicit GDPR Article 3 establishment/offering/monitoring facts. For the UK, use `references/uk-gdpr-pecr.json`; UK GDPR scope and PECR storage/access or marketing applicability are evaluated separately. For the US federal pack, use `references/us-federal-digital.json`; COPPA, CAN-SPAM, DMCA §512(c), ADA Title III and ADA Title II each have independent applicability. Partial applicability facts remain unknown.
+4. Select the applicable executable packs in `jurisdiction_packs`. For India, use `references/india-dpdp.json` and explicit section 3 route/exclusion facts. For EU/EEA, use `references/eu-gdpr-eprivacy.json` and explicit GDPR Article 3 establishment/offering/monitoring facts. For the UK, use `references/uk-gdpr-pecr.json`; UK GDPR scope and PECR storage/access or marketing applicability are evaluated separately. For the US federal pack, use `references/us-federal-digital.json`; COPPA, CAN-SPAM, DMCA §512(c), ADA Title III and ADA Title II each have independent applicability. For CERT-In, use `references/india-certin.json`; general directions, incident reporting, provider-record and virtual-asset-record duties have separate applicability signals. Partial applicability facts remain unknown.
 5. Re-check the pack's current primary sources before legal conclusions. For ePrivacy, also check the relevant Member State implementation and regulator guidance. Read `references/rules.json` only as guided-review research seeds for regimes that are not yet executable packs.
 6. Verify actual behavior in local/isolated environments: authorization boundaries, consent/withdrawal, rights requests, retention/erasure, breach-response readiness, suppression, cancellation and accessibility. If runtime/provider evidence is unavailable, leave unknown.
 7. Prepare reversible fixes and targeted tests only within authorized scope. Do not manufacture legal policies, exemption/designation evidence, Consent Manager registration, or production results.
-8. Report checked scope, source candidates, observed controls/issues, applicability rationale, future-effective duties and unknowns. Use the normalized statuses `PASS`, `FAIL`, `REVIEW`, `UNKNOWN`, `NOT_APPLICABLE`, and `FUTURE_EFFECTIVE`. For future-effective duties, keep legal effective state separate from implementation readiness via `readiness_status`. `PASS` requires the rule's declared evidence types; `FAIL` means a technical/behavioral check failed and is not automatically a legal violation. Never issue a blanket compliance badge or automatic fine total. Reference version 0.5.0, active pack IDs and evidence dates.
+8. Report checked scope, source candidates, observed controls/issues, applicability rationale, future-effective duties and unknowns. Use the normalized statuses `PASS`, `FAIL`, `REVIEW`, `UNKNOWN`, `NOT_APPLICABLE`, and `FUTURE_EFFECTIVE`. For future-effective duties, keep legal effective state separate from implementation readiness via `readiness_status`. `PASS` requires the rule's declared evidence types; `FAIL` means a technical/behavioral check failed and is not automatically a legal violation. Never issue a blanket compliance badge or automatic fine total. Reference version 0.6.0, active pack IDs and evidence dates.
 
 ## India DPDP
 
@@ -35,6 +35,10 @@ Assess UK GDPR/DPA scope, principles, lawful basis, notices, consent, sensitive 
 ## US federal digital-product regimes
 
 Assess COPPA only when the audience/actual-knowledge and personal-information facts support it; assess CAN-SPAM only for commercial email; assess DMCA §512(c) only where the service hosts material at user direction and seeks that conditional safe harbor; assess ADA Title III and Title II accessibility under their own scope rules. Do not imply coverage of US state privacy, biometric, health, employment or consumer-protection laws.
+
+## India CERT-In
+
+Assess whether the general 28 April 2022 Directions apply, then separately determine incident-reporting, provider-record and virtual-asset-record applicability. Test time synchronisation, six-hour incident workflow, CERT-In point-of-contact readiness, ability to respond to CERT-In directions, and 180-day logging/storage in India. Do not infer that every alert is a reportable Annexure-I incident or that every hosting product is a covered provider category.
 
 ## Lifecycle and safety
 
