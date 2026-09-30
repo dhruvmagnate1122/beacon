@@ -1,0 +1,16 @@
+{
+  "schema_version": "0.5.0",
+  "jurisdiction_packs": [
+    "us-federal-digital"
+  ],
+  "project_name": "Synthetic US federal fixture",
+  "coppa_collects_personal_information": true,
+  "coppa_child_directed_service": true,
+  "coppa_mixed_audience_service": false,
+  "coppa_actual_knowledge_under13_collection": true,
+  "sends_us_commercial_email": true,
+  "hosts_content_at_user_direction": true,
+  "seeks_dmca_512c_safe_harbor": true,
+  "us_ada_title_iii_public_accommodation": true,
+  "us_ada_title_ii_entity_size": "not_public_entity"
+}
