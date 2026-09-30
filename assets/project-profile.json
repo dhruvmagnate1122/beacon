@@ -1,0 +1,22 @@
+{
+  "schema_version": "0.1.0",
+  "project_name": null,
+  "entity_establishments": null,
+  "target_markets": null,
+  "business_model_b2b_b2c": null,
+  "stack_and_hosting_plan": null,
+  "customer_age_groups": null,
+  "personal_data_categories": null,
+  "processing_purposes_and_grounds": null,
+  "vendors_and_processing_regions": null,
+  "tracking_and_session_replay": null,
+  "marketing_channels": null,
+  "payments_subscriptions_and_tax_provider": null,
+  "uploads_or_user_generated_content": null,
+  "ai_features_and_decision_use": null,
+  "health_finance_employment_or_education": null,
+  "revenue_and_relevant_user_transaction_counts": null,
+  "retention_deletion_and_incident_owners": null,
+  "existing_exemptions_with_official_evidence": null,
+  "launch_date": null
+}
