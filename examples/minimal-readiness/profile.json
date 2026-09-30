@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.2.1",
+  "schema_version": "0.3.0",
   "project_name": "canary-minimal-fixture",
   "entity_establishments": [
     "US"
@@ -16,5 +16,8 @@
   "processing_digital_personal_data_within_india": false,
   "personal_data_collected_digitally_or_digitised_in_india": false,
   "all_relevant_processing_personal_or_domestic": false,
-  "all_relevant_data_publicly_available_under_section_3c": false
+  "all_relevant_data_publicly_available_under_section_3c": false,
+  "jurisdiction_packs": [
+    "india-dpdp"
+  ]
 }
