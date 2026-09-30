@@ -1,4 +1,4 @@
-# Canary roadmap
+# Beacon roadmap
 
 The roadmap prioritizes evidence quality and jurisdiction freshness over checklist size.
 
