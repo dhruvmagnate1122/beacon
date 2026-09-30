@@ -178,18 +178,18 @@ def dpdp(profile, evidence, base, today=None):
  return out
 
 def scan(root,profile=None,evidence=None,today=None):
- base=Path(__file__).parents[1]
+ repo_base=Path(__file__).parents[1]
  if evidence is not None:
-  pack=json.loads((base/'references/india-dpdp.json').read_text())
+  pack=json.loads((repo_base/'references/india-dpdp.json').read_text())
   allowed={x['id'] for x in pack.get('checks',[])}
   validate_evidence(evidence,allowed_rule_ids=allowed)
  root=Path(root).resolve()
  if not root.is_dir(): raise ValueError('Project root must be an existing directory.')
  findings=[]; omissions=[]; scanned=0
- for base,dirs,files in os.walk(root,followlinks=False):
-  dirs[:]=sorted(d for d in dirs if d not in SKIP and not (Path(base)/d).is_symlink())
+ for dirpath,dirs,files in os.walk(root,followlinks=False):
+  dirs[:]=sorted(d for d in dirs if d not in SKIP and not (Path(dirpath)/d).is_symlink())
   for name in sorted(files):
-   path=Path(base)/name; rel=path.relative_to(root).as_posix()
+   path=Path(dirpath)/name; rel=path.relative_to(root).as_posix()
    if path.is_symlink(): omissions.append({'path':rel,'reason':'symlink not read'}); continue
    if path.suffix not in EXTENSIONS and not name.startswith('.env'): continue
    if scanned>=MAX_FILES: omissions.append({'path':rel,'reason':'file limit'}); continue
@@ -206,7 +206,7 @@ def scan(root,profile=None,evidence=None,today=None):
  for rid,title,task in MANUAL:
   findings.append({'rule_id':rid,'status':'UNKNOWN','severity':'unassessed','title':title,'next_step':task})
  if profile is not None:
-  findings.extend(dpdp(profile,evidence or {},base,today=today))
+  findings.extend(dpdp(profile,evidence or {},repo_base,today=today))
  return {
   'version':VERSION,'generated_at':dt.datetime.now(dt.timezone.utc).isoformat(),
   'mode':'source-config-questionnaire-runtime-evidence',
