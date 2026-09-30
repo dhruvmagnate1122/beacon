@@ -31,3 +31,5 @@ jobs:
         run: python3 scripts/check.py examples/us-federal-readiness --profile examples/us-federal-readiness/profile.json --evidence examples/us-federal-readiness/evidence.json > /tmp/beacon-us-report.json
       - name: Exercise India CERT-In fixture
         run: python3 scripts/check.py examples/india-certin-readiness --profile examples/india-certin-readiness/profile.json --evidence examples/india-certin-readiness/evidence.json > /tmp/beacon-certin-report.json
+      - name: Exercise EU digital VAT fixture
+        run: python3 scripts/check.py examples/eu-digital-vat-readiness --profile examples/eu-digital-vat-readiness/profile.json --evidence examples/eu-digital-vat-readiness/evidence.json > /tmp/beacon-eu-vat-report.json
