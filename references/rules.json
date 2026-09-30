@@ -83,17 +83,17 @@
     },
     {
       "id": "UK-TRACKING",
-      "version": "0.1.0",
+      "version": "0.4.0",
       "jurisdiction": "UK",
       "trigger": "Storage/access technologies and personal data",
       "source_url": "https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/guidance-on-the-use-of-storage-and-access-technologies/",
       "source_section": "ICO guidance",
-      "last_research_date": "2026-09-30",
-      "review_status": "research-seed-needs-current-verification",
+      "last_research_date": "2026-10-01",
+      "review_status": "promoted-to-executable-pack",
       "effective_from": null,
       "effective_to": null,
-      "automation": "guided-review-only",
-      "limitations": "Check current PECR/DUAA exceptions and separate UK GDPR analysis.",
+      "automation": "uk-gdpr-pecr",
+      "limitations": "Use references/uk-gdpr-pecr.json for executable UK GDPR/PECR readiness. Re-check current DUAA-amended PECR and ICO guidance.",
       "evidence_required": [
         "project profile",
         "current primary source",
@@ -278,6 +278,26 @@
         "project profile",
         "current EU and Member State primary source",
         "relevant configuration or runtime test"
+      ],
+      "reviewer": null
+    },
+    {
+      "id": "UK-PRIVACY",
+      "version": "0.4.0",
+      "jurisdiction": "UK",
+      "trigger": "UK establishment, targeted offering/monitoring, or other UK GDPR territorial nexus",
+      "source_url": "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/personal-information-what-is-it/who-does-the-uk-gdpr-apply-to/",
+      "source_section": "UK GDPR territorial/material scope and DUAA-amended data protection regime",
+      "last_research_date": "2026-10-01",
+      "review_status": "promoted-to-executable-pack",
+      "effective_from": null,
+      "effective_to": null,
+      "automation": "uk-gdpr-pecr",
+      "limitations": "Use references/uk-gdpr-pecr.json; current UK legislation and ICO guidance control, including DUAA 2025 changes.",
+      "evidence_required": [
+        "project profile",
+        "current UK primary source/ICO guidance",
+        "relevant configuration or runtime evidence"
       ],
       "reviewer": null
     }

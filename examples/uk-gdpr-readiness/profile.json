@@ -1,0 +1,23 @@
+{
+  "schema_version": "0.4.0",
+  "jurisdiction_packs": [
+    "uk-gdpr-pecr"
+  ],
+  "project_name": "Synthetic UK fixture",
+  "processes_personal_data": true,
+  "processing_in_context_of_uk_establishment": false,
+  "offers_goods_or_services_to_people_in_uk": true,
+  "monitors_behavior_of_people_in_uk": false,
+  "uk_law_applies_by_public_international_law": false,
+  "all_relevant_processing_purely_personal_or_household": false,
+  "uses_storage_or_access_technologies_for_uk_users": true,
+  "sends_electronic_direct_marketing_to_uk_recipients": true,
+  "uk_children_likely_to_access_service": false,
+  "uk_automated_significant_decisions": false,
+  "marketing_channels": [
+    "email"
+  ],
+  "tracking_and_session_replay": [
+    "localStorage synthetic fixture"
+  ]
+}

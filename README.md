@@ -15,7 +15,8 @@ Beacon currently combines:
 - **runtime/config review** — tenant isolation, cost controls, tracking, unsubscribe/suppression, subscriptions, accessibility and deletion behavior;
 - **legal-source verification** — jurisdiction/effective-date review using primary sources;
 - **India DPDP pack** — 18 commencement-aware checks for the DPDP Act 2023 + Rules 2025;
-- **EU/EEA GDPR + ePrivacy pack** — executable checks covering GDPR scope, principles, lawful basis, transparency, consent, special-category data, children, rights, automated decisions, processors, records, privacy by design, security, breach response, DPIA, DPO/representative duties, transfers, tracking/storage access and electronic marketing.
+- **EU/EEA GDPR + ePrivacy pack** — executable checks covering GDPR scope, principles, lawful basis, transparency, consent, special-category data, children, rights, automated decisions, processors, records, privacy by design, security, breach response, DPIA, DPO/representative duties, transfers, tracking/storage access and electronic marketing;
+- **UK GDPR + PECR pack** — executable UK data-protection and privacy/electronic-communications checks updated for the Data (Use and Access) Act 2025, with separate applicability for UK GDPR, storage/access technologies and electronic marketing.
 
 ## Example result shape
 
@@ -53,7 +54,7 @@ python3 scripts/check.py /absolute/path/to/your-app --profile /path/to/project-p
 python3 scripts/test_check.py
 ```
 
-Copy `assets/project-profile.json` into a private project workspace and fill only facts you actually know. Leave unknowns as `null`. Select jurisdiction packs explicitly with `jurisdiction_packs` (for example `['india-dpdp']`, `['eu-gdpr-eprivacy']`, or both). Applicability remains `UNKNOWN` when the facts are incomplete.
+Copy `assets/project-profile.json` into a private project workspace and fill only facts you actually know. Leave unknowns as `null`. Select jurisdiction packs explicitly with `jurisdiction_packs` (for example `['india-dpdp']`, `['eu-gdpr-eprivacy']`, `['uk-gdpr-pecr']`, or any relevant combination). Applicability remains `UNKNOWN` when the facts are incomplete.
 
 ## Evidence trust model
 
@@ -95,6 +96,12 @@ The pack is researched as of **30 September 2026** against the DPDP Act 2023, fi
 `references/eu-gdpr-eprivacy.json` is Beacon's second executable pack. It models GDPR territorial/material scope and major launch-readiness obligations under the GDPR, plus ePrivacy terminal-equipment/tracking and electronic-marketing checks. ePrivacy is a Directive implemented through Member State law, so the pack explicitly requires market-specific legal review rather than pretending one national implementation is EU-wide.
 
 The EU pack is researched as of **1 October 2026** against EUR-Lex, EDPB guidance and European Commission transfer materials.
+
+### United Kingdom — UK GDPR + PECR
+
+`references/uk-gdpr-pecr.json` is Beacon's third executable jurisdiction pack. It models UK GDPR/DPA 2018 launch-readiness after the Data (Use and Access) Act 2025, plus PECR storage/access and electronic-marketing checks. PECR subchecks use their own applicability signals rather than assuming UK GDPR territorial scope automatically decides PECR applicability.
+
+The UK pack is researched as of **1 October 2026** against current UK legislation and ICO guidance. All DUAA data-protection provisions were in force by 19 June 2026; because ICO guidance is still being updated in some areas, current legislation and the newest ICO material should be checked on every release.
 
 **Always re-check current primary sources before making a legal conclusion.** Bundled legal records are research assets, not legal opinions.
 
@@ -139,6 +146,7 @@ Legal-rule changes must cite current primary sources, effective dates, applicabi
 - `assets/evidence-example.json` — evidence format
 - `references/india-dpdp.json` — India DPDP executable pack
 - `references/eu-gdpr-eprivacy.json` — EU/EEA GDPR + ePrivacy executable pack
+- `references/uk-gdpr-pecr.json` — UK GDPR + PECR executable pack
 - `references/rules.json` — broader guided-review research seeds
 - `references/review-guide.md` — verification recipes
 - `CONTRIBUTING.md` — contribution contract
@@ -147,6 +155,6 @@ Legal-rule changes must cite current primary sources, effective dates, applicabi
 
 ## Version
 
-**v0.3.1** — audit cleanup for consistent evidence normalization and a tighter India applicability questionnaire.
+**v0.4.0** — executable India, EU/EEA and UK jurisdiction packs with rule-level applicability for overlapping legal regimes.
 
 MIT. Third-party sources and linked documentation retain their own terms.

@@ -62,7 +62,7 @@ class Checks(unittest.TestCase):
   script=str(Path(__file__).with_name('check.py')); profile=self.put('profile.json','[]')
   p=subprocess.run([sys.executable,script,str(self.root),'--profile',str(profile)],capture_output=True,text=True); self.assertEqual(p.returncode,2)
  def test_profile_schema(self):
-  p=json.loads((Path(__file__).parents[1]/'assets/project-profile.json').read_text()); self.assertEqual(p['schema_version'],'0.3.1'); self.assertIn('consent_ui_default_state',p); self.assertIn('processing_digital_personal_data_within_india',p)
+  p=json.loads((Path(__file__).parents[1]/'assets/project-profile.json').read_text()); self.assertEqual(p['schema_version'],'0.4.0'); self.assertIn('consent_ui_default_state',p); self.assertIn('processing_digital_personal_data_within_india',p)
  def test_evidence_valid(self):
   self.assertEqual(validate_evidence({'IN-DPDP-CONSENT':[ev()]}),{'IN-DPDP-CONSENT':[ev()]})
  def test_evidence_accepts_reference_alias(self):
@@ -186,5 +186,59 @@ class Checks(unittest.TestCase):
   with self.assertRaises(ValueError): scan(self.root,{'jurisdiction_packs':['mars-law']})
  def test_evidence_without_active_pack_rejected(self):
   with self.assertRaises(ValueError): scan(self.root,None,{'EU-GDPR-CONSENT':[ev()]})
+
+ def test_uk_pack_schema(self):
+  p=json.loads((Path(__file__).parents[1]/'references/uk-gdpr-pecr.json').read_text()); ids=[x['id'] for x in p['checks']]
+  self.assertEqual(p['pack_id'],'uk-gdpr-pecr'); self.assertEqual(len(ids),len(set(ids)))
+  self.assertIn('UK-GDPR-SCOPE',ids); self.assertIn('UK-PECR-STORAGE',ids); self.assertIn('UK-PECR-MARKETING',ids)
+ def test_uk_gdpr_scope_applies_when_targeting(self):
+  profile={'jurisdiction_packs':['uk-gdpr-pecr'],'processes_personal_data':True,
+   'processing_in_context_of_uk_establishment':False,'offers_goods_or_services_to_people_in_uk':True,
+   'monitors_behavior_of_people_in_uk':False,'uk_law_applies_by_public_international_law':False,
+   'uses_storage_or_access_technologies_for_uk_users':False,'sends_electronic_direct_marketing_to_uk_recipients':False}
+  r=scan(self.root,profile)
+  d={f['rule_id']:f for f in r['findings'] if f.get('pack_id')=='uk-gdpr-pecr'}
+  self.assertEqual(d['UK-GDPR-SCOPE']['status'],'UNKNOWN')
+  self.assertEqual(d['UK-PECR-STORAGE']['status'],'NOT_APPLICABLE')
+  self.assertEqual(d['UK-PECR-MARKETING']['status'],'NOT_APPLICABLE')
+ def test_uk_pecr_storage_has_independent_applicability(self):
+  profile={'jurisdiction_packs':['uk-gdpr-pecr'],'processes_personal_data':False,
+   'processing_in_context_of_uk_establishment':False,'offers_goods_or_services_to_people_in_uk':False,
+   'monitors_behavior_of_people_in_uk':False,'uk_law_applies_by_public_international_law':False,
+   'uses_storage_or_access_technologies_for_uk_users':True,'sends_electronic_direct_marketing_to_uk_recipients':False}
+  r=scan(self.root,profile)
+  d={f['rule_id']:f for f in r['findings'] if f.get('pack_id')=='uk-gdpr-pecr'}
+  self.assertEqual(d['UK-GDPR-SCOPE']['status'],'NOT_APPLICABLE')
+  self.assertEqual(d['UK-PECR-STORAGE']['status'],'UNKNOWN')
+  self.assertEqual(d['UK-PECR-STORAGE']['applicability_model'],'uk-pecr-storage-v1')
+ def test_uk_pecr_marketing_has_independent_applicability(self):
+  profile={'jurisdiction_packs':['uk-gdpr-pecr'],'processes_personal_data':False,
+   'processing_in_context_of_uk_establishment':False,'offers_goods_or_services_to_people_in_uk':False,
+   'monitors_behavior_of_people_in_uk':False,'uk_law_applies_by_public_international_law':False,
+   'uses_storage_or_access_technologies_for_uk_users':False,'sends_electronic_direct_marketing_to_uk_recipients':True}
+  r=scan(self.root,profile)
+  d={f['rule_id']:f for f in r['findings'] if f.get('pack_id')=='uk-gdpr-pecr'}
+  self.assertEqual(d['UK-PECR-MARKETING']['status'],'UNKNOWN')
+  self.assertEqual(d['UK-PECR-MARKETING']['applicability_model'],'uk-pecr-marketing-v1')
+ def test_uk_pecr_fail_does_not_force_uk_gdpr(self):
+  profile={'jurisdiction_packs':['uk-gdpr-pecr'],'processes_personal_data':False,
+   'processing_in_context_of_uk_establishment':False,'offers_goods_or_services_to_people_in_uk':False,
+   'monitors_behavior_of_people_in_uk':False,'uk_law_applies_by_public_international_law':False,
+   'uses_storage_or_access_technologies_for_uk_users':True,'sends_electronic_direct_marketing_to_uk_recipients':False}
+  evidence={'UK-PECR-STORAGE':[ev('runtime','FAIL')]}
+  r=scan(self.root,profile,evidence)
+  d={f['rule_id']:f for f in r['findings'] if f.get('pack_id')=='uk-gdpr-pecr'}
+  self.assertEqual(d['UK-PECR-STORAGE']['status'],'FAIL')
+  self.assertEqual(d['UK-GDPR-SCOPE']['status'],'NOT_APPLICABLE')
+ def test_three_packs_together(self):
+  profile={'jurisdiction_packs':['india-dpdp','eu-gdpr-eprivacy','uk-gdpr-pecr'],
+   'processing_digital_personal_data_outside_india':True,'offers_goods_or_services_to_people_in_india':True,
+   'processes_personal_data':True,'offers_goods_or_services_to_people_in_eu_eea':True,
+   'processing_in_context_of_uk_establishment':False,'offers_goods_or_services_to_people_in_uk':True,
+   'monitors_behavior_of_people_in_uk':False,'uk_law_applies_by_public_international_law':False,
+   'uses_storage_or_access_technologies_for_uk_users':True,'sends_electronic_direct_marketing_to_uk_recipients':True}
+  r=scan(self.root,profile,today=dt.date(2028,1,1))
+  self.assertEqual(r['active_packs'],['india-dpdp','eu-gdpr-eprivacy','uk-gdpr-pecr'])
+  self.assertIn('uk-gdpr-pecr',r['readiness_summary']['packs'])
 
 if __name__=='__main__': unittest.main()

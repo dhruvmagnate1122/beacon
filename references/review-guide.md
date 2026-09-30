@@ -2,7 +2,7 @@
 
 ## Source and applicability
 
-Bundled legal records and executable packs are research assets, not legal opinions. India DPDP was reviewed 2026-09-30; the EU/EEA GDPR + ePrivacy pack was reviewed 2026-10-01. Open current primary sources; distinguish statutes, rules, notifications, regulator guidance, decisions, vendor contracts and engineering recommendations.
+Bundled legal records and executable packs are research assets, not legal opinions. India DPDP was reviewed 2026-09-30; the EU/EEA GDPR + ePrivacy and UK GDPR + PECR packs were reviewed 2026-10-01. Open current primary sources; distinguish statutes, rules, notifications, regulator guidance, decisions, vendor contracts and engineering recommendations.
 
 For India, use `india-dpdp.json`. The 13 November 2025 Act commencement notification phases substantive provisions; the final DPDP Rules likewise phase commencement, and MeitY lists a December 2025 corrigendum. Therefore a missing future-effective control is a readiness gap, not automatically a present statutory violation. Recheck notifications on every release.
 
@@ -33,6 +33,18 @@ For India, use `india-dpdp.json`. The 13 November 2025 Act commencement notifica
 - Transfers: inventory actual third-country access/processing and the relied-on Chapter V mechanism; re-check adequacy decisions, SCC use and other safeguards.
 - ePrivacy: inspect terminal-equipment storage/access and electronic marketing separately from the GDPR. Because Directive 2002/58/EC is implemented by Member State law, verify the national law/guidance for each relevant market or establishment before drawing conclusions.
 
+## UK GDPR + PECR verification
+
+- Scope: determine UK GDPR applicability from UK establishment, targeted offering/monitoring or public-international-law facts; do not treat technical accessibility alone as targeting.
+- DUAA: verify current law and ICO guidance after the Data (Use and Access) Act 2025. All data-protection provisions were in force by 19 June 2026, but some ICO guidance remains in active update cycles.
+- Lawful basis/transparency: map each material purpose to the current UK lawful-basis framework and confirm privacy information matches real processing.
+- Children/design: where online services are likely to be accessed by children, include the Children's Code and DUAA higher-protection matters in design/default review.
+- Automated decisions: apply current Articles 22A-22D rather than pre-DUAA Article 22 shorthand; distinguish special-category restrictions from safeguards applicable to significant solely automated decisions.
+- Rights/complaints: exercise rights requests and the organisation's complaint route; verify the current DUAA acknowledgement/response process.
+- Transfers: apply current UK restricted-transfer analysis, adequacy regulations and appropriate safeguards; do not copy the EU transfer analysis blindly.
+- PECR storage/access: treat regulation 6 technologies separately from UK GDPR scope; test cookies, pixels, local storage, fingerprinting/scripts and any relied-on DUAA exceptions.
+- PECR marketing: test consent/soft-opt-in, identity and suppression for the actual electronic-marketing channel; include the charitable soft opt-in only where its conditions are actually met.
+
 ## Other verification recipes
 
 - Database: seed two tenants; test anonymous, owner, cross-tenant and privileged access in isolation.
@@ -46,14 +58,14 @@ For India, use `india-dpdp.json`. The 13 November 2025 Act commencement notifica
 
 State project/version, environment, profile unknowns, evidence date, scan coverage and omissions. Separate source candidates, verified behavior, legal applicability and future-effective readiness. For each item record ID, source/date, applicability rationale, sanitized evidence, confidence, fix/next action, test result and owner. Never sum hypothetical penalties.
 
-## v0.3.1 boundaries
+## v0.4.0 boundaries
 
-Automated source triage remains six regex signals. Beacon has two executable legal packs: `india-dpdp` and `eu-gdpr-eprivacy`. Packs add profile-driven applicability, statuses and evidence prompts; the CLI does not parse privacy notices, make legal determinations or autonomously execute runtime tests. UK/US/CERT-In/tax entries in `rules.json` remain guided-review research seeds. No auto-fix engine, cloud adapter, scheduled monitoring, SARIF exporter or worldwide certification is included.
+Automated source triage remains six regex signals. Beacon has three executable legal packs: `india-dpdp`, `eu-gdpr-eprivacy`, and `uk-gdpr-pecr`. Packs add profile-driven applicability, statuses and evidence prompts; the CLI does not parse privacy notices, make legal determinations or autonomously execute runtime tests. US/CERT-In/tax entries in `rules.json` remain guided-review research seeds. No auto-fix engine, cloud adapter, scheduled monitoring, SARIF exporter or worldwide certification is included.
 
 
 ## Evidence and status engine
 
-Each executable-pack check declares required evidence types from: `source`, `config`, `questionnaire`, `runtime`, and `legal`. Evidence keys must match a known rule ID in the executable India pack; unknown IDs are rejected rather than silently ignored.
+Each executable-pack check declares required evidence types from: `source`, `config`, `questionnaire`, `runtime`, and `legal`. Evidence keys must match a known rule ID in an executable pack; unknown IDs are rejected rather than silently ignored.
 
 - `PASS`: all declared evidence types are present with passing evidence after the requirement is effective.
 - `FAIL`: a required technical or behavioral verification failed. Do not translate this automatically into a statutory violation.
@@ -81,3 +93,8 @@ For Act section 3, Beacon requires explicit facts for the applicable route inste
 Use `jurisdiction_packs` to select one or more executable packs. Findings retain `pack_id` and `jurisdiction`, and `readiness_summary.packs` rolls each pack up separately. Evidence for an unknown rule ID or a rule in an inactive pack is rejected so evidence cannot be silently attached to the wrong legal regime.
 
 A pack-level `PASS` is intentionally not produced. Individual rule `PASS` means only that the rule's declared evidence types contain passing assertions under the current applicability model. Cross-jurisdiction conflicts, national derogations and sector-specific overlays must remain explicit legal review rather than being collapsed into one global compliance score.
+
+
+## Rule-level applicability
+
+A jurisdiction pack may contain rules whose legal scope is not identical to the pack's default data-protection scope. A check can therefore declare its own `applicability_model`. The UK pack uses this for PECR storage/access and electronic-marketing rules so a UK GDPR `NOT_APPLICABLE` result does not automatically suppress a PECR check, and vice versa.

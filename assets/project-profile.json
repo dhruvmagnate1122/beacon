@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.3.1",
+  "schema_version": "0.4.0",
   "jurisdiction_packs": null,
   "project_name": null,
   "entity_establishments": null,
@@ -65,5 +65,17 @@
   "eu_eea_transfer_mechanisms": null,
   "eu_eea_tracking_storage_access_technologies": null,
   "eu_eea_electronic_marketing_channels": null,
-  "eu_eea_member_states_in_scope": null
+  "eu_eea_member_states_in_scope": null,
+  "processing_in_context_of_uk_establishment": null,
+  "offers_goods_or_services_to_people_in_uk": null,
+  "monitors_behavior_of_people_in_uk": null,
+  "uk_law_applies_by_public_international_law": null,
+  "uses_storage_or_access_technologies_for_uk_users": null,
+  "sends_electronic_direct_marketing_to_uk_recipients": null,
+  "uk_children_likely_to_access_service": null,
+  "uk_automated_significant_decisions": null,
+  "uk_representative_requirement_and_contact": null,
+  "uk_transfer_mechanisms": null,
+  "uk_pecr_storage_access_exceptions": null,
+  "uk_pecr_marketing_basis_and_suppression": null
 }
