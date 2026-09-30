@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.3.0",
+  "schema_version": "0.3.1",
   "jurisdiction_packs": null,
   "project_name": null,
   "entity_establishments": null,
@@ -10,7 +10,6 @@
   "all_relevant_processing_personal_or_domestic": null,
   "all_relevant_data_publicly_available_under_section_3c": null,
   "offers_goods_or_services_to_people_in_india": null,
-  "processing_connected_with_activity_outside_india": null,
   "business_model_b2b_b2c": null,
   "stack_and_hosting_plan": null,
   "customer_age_groups": null,
