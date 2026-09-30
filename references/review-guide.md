@@ -2,7 +2,7 @@
 
 ## Source and applicability
 
-Bundled legal records and executable packs are research assets, not legal opinions. India DPDP was reviewed 2026-09-30; the EU/EEA GDPR + ePrivacy, UK GDPR + PECR, and US federal digital-product packs were reviewed 2026-10-01. Open current primary sources; distinguish statutes, rules, notifications, regulator guidance, decisions, vendor contracts and engineering recommendations.
+Bundled legal records and executable packs are research assets, not legal opinions. India DPDP was reviewed 2026-09-30; the EU/EEA GDPR + ePrivacy, UK GDPR + PECR, US federal digital-product, and India CERT-In packs were reviewed 2026-10-01. Open current primary sources; distinguish statutes, rules, notifications, regulator guidance, decisions, vendor contracts and engineering recommendations.
 
 For India, use `india-dpdp.json`. The 13 November 2025 Act commencement notification phases substantive provisions; the final DPDP Rules likewise phase commencement, and MeitY lists a December 2025 corrigendum. Therefore a missing future-effective control is a readiness gap, not automatically a present statutory violation. Recheck notifications on every release.
 
@@ -53,6 +53,16 @@ For India, use `india-dpdp.json`. The 13 November 2025 Act commencement notifica
 - ADA Title III: determine whether the business is a covered public accommodation, then test accessibility with automated and manual techniques. WCAG is useful technical guidance; Beacon does not convert a WCAG failure directly into a Title III legal finding.
 - ADA Title II: use the DOJ web/mobile rule only for covered state/local public entities. Track the 26 April 2027 or 26 April 2028 compliance date based on entity size/type and test against WCAG 2.1 Level AA subject to the rule's scope and exceptions.
 
+## India CERT-In verification
+
+- Scope: determine whether the general directions apply to the entity, and separately whether incident-reporting, provider-record or virtual-asset-record provisions are relevant. Do not infer provider classification from product branding alone.
+- Time sync: inspect actual system time sources and drift; the Directions require NIC/NPL or traceable sources, with an alternative accurate standard source allowed for multi-geography infrastructure so long as it does not deviate from NIC/NPL.
+- Incident reporting: tabletop an Annexure-I incident and verify an initial CERT-In report can be made within six hours of notice using information then available; later details can be supplemented.
+- Point of contact/assistance: verify the nominated CERT-In contact is current and incident responders can handle a time-bound information or assistance direction.
+- Logs: verify representative ICT logs are enabled, securely retained for a rolling 180 days, stored within India, and retrievable for incident reporting or a CERT-In direction.
+- Provider records: apply only to listed data-centre/VPS/cloud/VPN categories; verify the required customer/subscriber fields and five-year post-cancellation retention workflow.
+- Virtual assets: apply only to covered virtual-asset providers/exchanges/custodian wallets; verify five-year KYC/transaction record retention and transaction reconstruction fields.
+
 ## Other verification recipes
 
 - Database: seed two tenants; test anonymous, owner, cross-tenant and privileged access in isolation.
@@ -66,9 +76,9 @@ For India, use `india-dpdp.json`. The 13 November 2025 Act commencement notifica
 
 State project/version, environment, profile unknowns, evidence date, scan coverage and omissions. Separate source candidates, verified behavior, legal applicability and future-effective readiness. For each item record ID, source/date, applicability rationale, sanitized evidence, confidence, fix/next action, test result and owner. Never sum hypothetical penalties.
 
-## v0.5.0 boundaries
+## v0.6.0 boundaries
 
-Automated source triage remains six regex signals. Beacon has four executable legal packs: `india-dpdp`, `eu-gdpr-eprivacy`, `uk-gdpr-pecr`, and `us-federal-digital`. Packs add profile-driven applicability, statuses and evidence prompts; the CLI does not parse privacy notices, make legal determinations or autonomously execute runtime tests. CERT-In/tax and non-promoted US state/sector entries remain guided-review research seeds. No auto-fix engine, cloud adapter, scheduled monitoring, SARIF exporter or worldwide certification is included.
+Automated source triage remains six regex signals. Beacon has five executable legal/regulatory packs: `india-dpdp`, `eu-gdpr-eprivacy`, `uk-gdpr-pecr`, `us-federal-digital`, and `india-certin`. Packs add profile-driven applicability, statuses and evidence prompts; the CLI does not parse privacy notices, make legal determinations or autonomously execute runtime tests. Tax and non-promoted US state/sector entries remain guided-review research seeds. No auto-fix engine, cloud adapter, scheduled monitoring, SARIF exporter or worldwide certification is included.
 
 
 ## Evidence and status engine
