@@ -46,16 +46,17 @@ class Checks(unittest.TestCase):
   r=scan(self.root,{'offers_goods_or_services_to_people_in_india':True},today=dt.date(2026,9,30)); d={f['rule_id']:f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')}
   self.assertEqual(d['IN-DPDP-NOTICE']['status'],'FUTURE_EFFECTIVE'); self.assertEqual(d['IN-DPDP-CONSENT-MANAGER']['status'],'FUTURE_EFFECTIVE')
  def test_fail_beats_future(self):
-  ev={'IN-DPDP-CONSENT-UX':[{'type':'runtime','result':'FAIL','details':'optional consent preselected'}]}
-  r=scan(self.root,{'offers_goods_or_services_to_people_in_india':True},ev,today=dt.date(2026,9,30)); d={f['rule_id']:f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')}
+  item=ev('runtime','FAIL'); item['details']='optional consent preselected'
+  evidence={'IN-DPDP-CONSENT-UX':[item]}
+  r=scan(self.root,{'offers_goods_or_services_to_people_in_india':True},evidence,today=dt.date(2026,9,30)); d={f['rule_id']:f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')}
   self.assertEqual(d['IN-DPDP-CONSENT-UX']['status'],'FAIL')
  def test_pass_requires_all_evidence_types(self):
-  ev={'IN-DPDP-CONSENT-UX':[{'type':x,'result':'PASS'} for x in ['source','config','runtime','legal']]}
-  r=scan(self.root,{'offers_goods_or_services_to_people_in_india':True},ev,today=dt.date(2028,1,1)); d={f['rule_id']:f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')}
+  evidence={'IN-DPDP-CONSENT-UX':[ev(x,'PASS') for x in ['source','config','runtime','legal']]}
+  r=scan(self.root,{'offers_goods_or_services_to_people_in_india':True},evidence,today=dt.date(2028,1,1)); d={f['rule_id']:f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')}
   self.assertEqual(d['IN-DPDP-CONSENT-UX']['status'],'PASS')
  def test_partial_evidence_review(self):
-  ev={'IN-DPDP-CONSENT':[{'type':'runtime','result':'REVIEW'}]}
-  r=scan(self.root,{'offers_goods_or_services_to_people_in_india':True},ev,today=dt.date(2028,1,1)); d={f['rule_id']:f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')}
+  evidence={'IN-DPDP-CONSENT':[ev('runtime','REVIEW')]}
+  r=scan(self.root,{'offers_goods_or_services_to_people_in_india':True},evidence,today=dt.date(2028,1,1)); d={f['rule_id']:f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')}
   self.assertEqual(d['IN-DPDP-CONSENT']['status'],'REVIEW')
  def test_cli_invalid_profile(self):
   script=str(Path(__file__).with_name('check.py')); profile=self.put('profile.json','[]')
@@ -75,8 +76,22 @@ class Checks(unittest.TestCase):
  def test_evidence_rejects_bad_result(self):
   with self.assertRaises(ValueError): validate_evidence({'X':[ev('runtime','BOGUS')]})
  def test_evidence_rejects_foreign_status_vocabulary(self):
-  for foreign in ('SUGGESTION','CLAIM_NEEDS_EVIDENCE'):
+  for foreign in ('UNKNOWN','NOT_APPLICABLE','FUTURE_EFFECTIVE','SUGGESTION','CLAIM_NEEDS_EVIDENCE'):
    with self.assertRaises(ValueError,msg=foreign): validate_evidence({'X':[ev('runtime',foreign)]})
+ def test_evidence_rejects_bad_type(self):
+  with self.assertRaises(ValueError): validate_evidence({'X':[ev('browser','PASS')]})
+ def test_evidence_rejects_blank_details(self):
+  bad=ev(); bad['details']=' '
+  with self.assertRaises(ValueError): validate_evidence({'X':[bad]})
+ def test_evidence_rejects_blank_environment(self):
+  bad=ev(); bad['environment']=''
+  with self.assertRaises(ValueError): validate_evidence({'X':[bad]})
+ def test_evidence_rejects_bad_timestamp(self):
+  bad=ev(); bad['observed_at']='not-a-time'
+  with self.assertRaises(ValueError): validate_evidence({'X':[bad]})
+ def test_scan_validates_evidence_programmatically(self):
+  bad=ev(); bad['artifact']=''
+  with self.assertRaises(ValueError): scan(self.root,{}, {'X':[bad]})
  def test_evidence_rejects_bad_producer(self):
   bad=ev(); bad['producer']={'kind':'ouija','name':'x'}
   with self.assertRaises(ValueError): validate_evidence({'X':[bad]})
