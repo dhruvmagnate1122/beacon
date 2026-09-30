@@ -49,6 +49,6 @@ Each India check declares required evidence types from: `source`, `config`, `que
 - `NOT_APPLICABLE`: factual applicability review supports non-applicability and the rationale is retained.
 - `FUTURE_EFFECTIVE`: the modeled obligation is not yet effective; readiness work can still be completed before commencement.
 
-Evidence should state the type, result, concise sanitized details, test date/environment where relevant, and the primary-source review date for legal evidence. Never put credentials, customer data or unnecessary personal data into evidence files.
+Every evidence record must include `type`, `result`, concise sanitized `details`, `observed_at`, `environment`, producer/reviewer provenance, and either an `artifact` or `reference` reproducible pointer. Accepted evidence results are `PASS`, `FAIL`, and `REVIEW`; `UNKNOWN`, `NOT_APPLICABLE`, and `FUTURE_EFFECTIVE` are derived readiness statuses rather than evidence assertions. Never put credentials, customer data or unnecessary personal data into evidence files.
 
 For consent UX, use a clean browser/test account and verify the default state, required-only/reject path, pre-consent network behavior, affirmative acceptance, and withdrawal. Treat UI prominence or dark-pattern concerns as review evidence unless a specific legal conclusion is supported by current primary authority.

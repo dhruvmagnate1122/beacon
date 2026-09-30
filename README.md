@@ -66,9 +66,9 @@ For material readiness decisions, evidence should record:
 - `observed_at` / review date;
 - `environment` where relevant;
 - producer/reviewer identity or tool;
-- an `artifact` or `reference` when a reproducible pointer exists.
+- either `artifact` or `reference` — a required reproducible pointer to the supporting material.
 
-The core does not cryptographically authenticate user-supplied evidence. Manual evidence should remain visibly manual. Conflicting or partial evidence should stay `REVIEW`; it should not be silently overwritten by a later assertion.
+The core validates this evidence structure but does not cryptographically authenticate user-supplied evidence. Manual evidence should remain visibly manual. Conflicting or partial evidence should stay `REVIEW`; it should not be silently overwritten by a later assertion.
 
 ## Status model
 

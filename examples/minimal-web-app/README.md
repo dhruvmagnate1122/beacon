@@ -1,6 +1,6 @@
 # Minimal web app example
 
-A tiny fixture that exercises both engines of Launch Readiness:
+A tiny synthetic fixture that exercises both sides of the readiness engine:
 
 - `index.html` loads a remote Google Font, which triggers a **PRIV-001** source candidate (transfer/privacy review).
 - `profile.json` declares an India nexus, which activates the India DPDP pack.
