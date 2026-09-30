@@ -1,0 +1,16 @@
+{
+  "EU-GDPR-CONSENT": [
+    {
+      "type": "runtime",
+      "result": "FAIL",
+      "details": "Synthetic fixture: optional analytics is preselected before an affirmative user choice.",
+      "observed_at": "2026-10-01T00:00:00Z",
+      "environment": "fixture",
+      "producer": {
+        "kind": "manual",
+        "name": "Beacon fixture"
+      },
+      "reference": "examples/eu-gdpr-readiness/index.html#analytics"
+    }
+  ]
+}
