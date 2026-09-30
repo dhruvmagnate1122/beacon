@@ -1,37 +1,39 @@
 # Beacon roadmap
 
-The roadmap prioritizes evidence quality and jurisdiction freshness over checklist size.
+Beacon prioritizes evidence quality, rule freshness and reproducible verification over checklist size.
 
 ## v0.7 — multi-jurisdiction baseline
 
-- evidence provenance/freshness validation;
+Implemented:
+
+- ✅ generic jurisdiction-pack loader and pack-level summaries;
+- ✅ rule-level applicability models;
+- ✅ India DPDP;
+- ✅ EU/EEA GDPR + ePrivacy;
+- ✅ UK GDPR + PECR with DUAA-aware modeling;
+- ✅ selected US federal digital-product pack: COPPA, CAN-SPAM, DMCA §512(c), ADA;
+- ✅ India CERT-In cyber-security directions;
+- ✅ focused EU digital-services VAT / OSS;
+- ✅ GitHub Actions regression CI across Python 3.9 and 3.12;
+- ✅ synthetic fixtures for every executable pack.
+
+Still strengthening:
+
+- evidence provenance and freshness validation;
 - accepted/deferred readiness records;
 - clearer release-decision summary;
-- synthetic fixture projects;
 - false-positive regression cases;
-- rule-pack version compatibility;
-- ✅ generic jurisdiction-pack loader and pack-level summaries;
-- ✅ EU/EEA GDPR + ePrivacy executable pack;
-- ✅ UK GDPR + PECR executable pack with DUAA-aware modeling;
-- ✅ selected US federal digital-product pack (COPPA, CAN-SPAM, DMCA §512(c), ADA);
-- ✅ India CERT-In cyber-security directions pack;
-- ✅ focused EU digital-services VAT/OSS pack;
-- national-law overlays for ePrivacy and GDPR derogations;
-- pack schema/version migration tests.
+- rule-pack schema/version migration tests;
+- national-law overlays for ePrivacy and GDPR derogations.
 
-## v0.4 — evidence adapters
+## Next — evidence adapters
 
 - browser/runtime consent checks;
 - provider cost/budget evidence adapters;
 - email suppression evidence;
 - subscription/cancellation evidence;
 - privacy-notice extraction assistance;
-- GitHub Actions integration.
-
-## Jurisdiction expansion
-
-India DPDP, EU/EEA GDPR + ePrivacy, UK GDPR + PECR, selected US federal digital-product regimes, India CERT-In, and EU digital VAT/OSS are executable packs. Jurisdiction #3 added rule-level applicability so overlapping regimes such as UK GDPR and PECR do not have to share one territorial-scope decision. Promote a research seed only when there is a maintained primary-source pack:
-
+- provider-specific runtime recipes.
 
 ## Later
 
@@ -39,6 +41,7 @@ India DPDP, EU/EEA GDPR + ePrivacy, UK GDPR + PECR, selected US federal digital-
 - rule-freshness monitoring;
 - release-to-release readiness diff;
 - provider connectors;
-- team review workflows.
+- team review workflows;
+- additional jurisdiction packs only when current primary-source maintenance is practical.
 
-No roadmap item is a promise or legal conclusion.
+No roadmap item is a promise, certification, or legal conclusion.
