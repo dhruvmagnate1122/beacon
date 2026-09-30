@@ -2,13 +2,13 @@
 
 A reusable coding-agent skill and dependency-free Python checker for reviewing app launch risks.
 
-**Version 0.2.0 — source triage plus India DPDP readiness validation.** This tool identifies candidate issues, missing evidence, applicability unknowns and future-effective obligations. It does not certify security or legal compliance.
+**Version 0.2.0 — evidence-driven launch readiness with an India DPDP validation pack.** The architecture combines source detection, configuration inspection, project facts, runtime evidence and current legal-source review. It does not certify security or legal compliance.
 
 ## What it does
 
 - Flags six source patterns: possible embedded credentials, disabled SQL row-level security, remote Google Fonts, replay integrations, unconditional SQL policies, and privileged credentials referenced through public-prefixed configuration.
 - Provides an expanded project questionnaire covering markets, users, personal data, consent, rights, vendors, security, breach response, retention, children, payments and deployment.
-- Adds a 16-check India DPDP validation pack with commencement-aware statuses and evidence requirements.
+- Adds an 18-check India DPDP validation pack with commencement-aware evidence requirements, including consent UX/default-choice integrity and consent evidence/history.
 - Supplies 13 broader source-backed research records for project-specific review.
 - Guides runtime checks for tenant isolation, cost controls, tracking, email suppression, subscriptions and accessibility.
 - Keeps unknowns and future-effective duties visible.
@@ -20,14 +20,15 @@ Requirements: Python 3.9 or later. No third-party Python packages required.
 ```sh
 python3 scripts/check.py /absolute/path/to/your-app
 python3 scripts/check.py /absolute/path/to/your-app --profile /path/to/project-profile.json
+python3 scripts/check.py /absolute/path/to/your-app --profile /path/to/project-profile.json --evidence /path/to/evidence.json
 python3 scripts/test_check.py
 ```
 
-Copy `assets/project-profile.json` into your project's private working area and fill known values. Leave unknown values as `null`. With a profile, the CLI emits guided India DPDP readiness items; these are evidence prompts/statuses, not legal determinations.
+Copy `assets/project-profile.json` into your project's private working area and fill known values. Leave unknown values as `null`. With a profile, the CLI emits India DPDP readiness items. Supply an evidence JSON file when source/config/runtime/legal checks have been performed. See `assets/evidence-example.json`. Evidence results are technical/readiness findings, not legal determinations.
 
 ## India DPDP pack
 
-`references/india-dpdp.json` covers scope, notice, consent, specified legitimate uses, Data Fiduciary duties, security safeguards, breach response, retention/erasure, business contact, children/guardian consent, Data Principal rights, grievance handling, Significant Data Fiduciary duties, cross-border transfers, Consent Managers and exemptions.
+`references/india-dpdp.json` covers scope, notice, consent, consent UX/default-choice integrity, consent evidence/history, specified legitimate uses, Data Fiduciary duties, security safeguards, breach response, retention/erasure, business contact, children/guardian consent, Data Principal rights, grievance handling, Significant Data Fiduciary duties, cross-border transfers, Consent Managers and exemptions.
 
 The pack is researched as of 30 September 2026 against the final DPDP Rules 2025, the Act commencement notification and MeitY's Rules collection/corrigendum. It models phased commencement so future-effective duties are not reported as present violations. Always re-check current primary sources before a legal conclusion.
 
@@ -39,7 +40,7 @@ The pack is researched as of 30 September 2026 against the final DPDP Rules 2025
 | 1 | With `--fail-on-review`, at least one source candidate was found |
 | 2 | Invalid root/profile; scan did not complete |
 
-Unknown, applicability-unknown and future-effective guided checks remain unresolved regardless of exit code.
+The normalized status model is `PASS`, `FAIL`, `REVIEW`, `UNKNOWN`, `NOT_APPLICABLE`, and `FUTURE_EFFECTIVE`. `FAIL` means a required technical/behavioral verification failed; it is not by itself a legal conclusion. `PASS` requires all evidence types declared by that rule.
 
 ## Using the skill
 
@@ -59,6 +60,7 @@ No match means no detected pattern in the scanned scope. It does not mean the pr
 - `scripts/check.py` — source checker + profile-driven DPDP readiness output
 - `scripts/test_check.py` — regression tests
 - `assets/project-profile.json` — expanded applicability/evidence questionnaire
+- `assets/evidence-example.json` — example evidence records consumed by the status engine
 - `references/india-dpdp.json` — India DPDP validation pack
 - `references/rules.json` — broader source-backed review seeds
 - `references/review-guide.md` — verification recipes and reporting
