@@ -1,6 +1,6 @@
-# Contributing to Canary
+# Contributing to Beacon
 
-Canary is an early-warning readiness framework, not a legal-compliance certifier.
+Beacon is an early-warning readiness framework, not a legal-compliance certifier.
 
 ## Good contributions
 
@@ -58,7 +58,7 @@ Do not include credentials, customer data, or unnecessary personal data.
 
 ## We will reject
 
-- claims that Canary certifies legal compliance;
+- claims that Beacon certifies legal compliance;
 - unsourced legal rules;
 - blanket assumptions that all startups are exempt or all cross-border transfers are banned;
 - automatic penalty/fine totals;
