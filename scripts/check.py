@@ -3,7 +3,7 @@
 import argparse, datetime as dt, json, os, re, sys
 from pathlib import Path
 
-VERSION='0.3.0'
+VERSION='0.3.1'
 STATUSES={'PASS','FAIL','REVIEW','UNKNOWN','NOT_APPLICABLE','FUTURE_EFFECTIVE'}
 SKIP={'.git','node_modules','.next','dist','build','.venv','venv','__pycache__','vendor','coverage'}
 EXTENSIONS={'.js','.jsx','.ts','.tsx','.mjs','.cjs','.html','.css','.sql','.json','.py','.yml','.yaml','.toml'}
@@ -47,8 +47,10 @@ def validate_evidence(evidence, allowed_rule_ids=None):
    for k in ('type','result','details','observed_at','environment','producer'):
     if k not in item:
      raise ValueError(prefix+'missing '+k)
-   if item['type'] not in EVIDENCE_TYPES:
+   etype=str(item['type']).lower()
+   if etype not in EVIDENCE_TYPES:
     raise ValueError(prefix+'has invalid type')
+   item['type']=etype
    if str(item['result']).upper() not in EVIDENCE_RESULTS:
     raise ValueError(prefix+'has invalid result')
    if not isinstance(item['details'],str) or not item['details'].strip():
@@ -160,7 +162,7 @@ def _derive(rule, applicability, evidence_items, today):
  elif any(x=='REVIEW' for x in results):
   readiness='REVIEW'
  else:
-  types={x.get('type') for x in evidence_items if isinstance(x,dict) and str(x.get('result','')).upper()=='PASS'}
+  types={str(x.get('type','')).lower() for x in evidence_items if isinstance(x,dict) and str(x.get('result','')).upper()=='PASS'}
   readiness='PASS' if required and required.issubset(types) else 'UNKNOWN'
  eff=_date(rule['effective'])
  if eff is not None and today<eff:
