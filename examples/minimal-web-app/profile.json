@@ -1,1 +1,24 @@
-{"consent_capture_method":"banner","entity_establishments":["India"],"launch_date":null,"offers_goods_or_services_to_people_in_india":true,"personal_data_categories":["name","email"],"processing_purposes_and_grounds":["account management (consent)"],"target_markets":["India"]}
+{
+  "consent_capture_method": "banner",
+  "entity_establishments": [
+    "India"
+  ],
+  "launch_date": null,
+  "offers_goods_or_services_to_people_in_india": true,
+  "personal_data_categories": [
+    "name",
+    "email"
+  ],
+  "processing_purposes_and_grounds": [
+    "account management (consent)"
+  ],
+  "target_markets": [
+    "India"
+  ],
+  "schema_version": "0.2.1",
+  "processing_digital_personal_data_outside_india": true,
+  "processing_digital_personal_data_within_india": false,
+  "personal_data_collected_digitally_or_digitised_in_india": false,
+  "all_relevant_processing_personal_or_domestic": false,
+  "all_relevant_data_publicly_available_under_section_3c": false
+}
