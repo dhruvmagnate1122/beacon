@@ -2,7 +2,30 @@
   "pack_version": "0.2.0",
   "jurisdiction": "India",
   "as_of": "2026-09-30",
-  "purpose": "Guided DPDP readiness validation; not legal certification.",
+  "purpose": "Evidence-driven DPDP readiness validation; not legal certification.",
+  "status_model": [
+    "PASS",
+    "FAIL",
+    "REVIEW",
+    "UNKNOWN",
+    "NOT_APPLICABLE",
+    "FUTURE_EFFECTIVE"
+  ],
+  "evidence_types": [
+    "source",
+    "config",
+    "questionnaire",
+    "runtime",
+    "legal"
+  ],
+  "status_policy": {
+    "PASS": "Required evidence was supplied and all required verification results passed.",
+    "FAIL": "A required technical or behavioral verification failed. This is not a legal finding by itself.",
+    "REVIEW": "A source/config candidate or conflicting/partial evidence needs contextual review.",
+    "UNKNOWN": "The check is applicable/current but required evidence is missing.",
+    "NOT_APPLICABLE": "Applicability facts support non-applicability and the rationale is recorded.",
+    "FUTURE_EFFECTIVE": "The modeled legal obligation is not yet effective; readiness evidence may still be collected."
+  },
   "commencement": {
     "gazette_date": "2025-11-13",
     "act_immediate": "Act s1(2), s2, ss18-26, ss35,38-43 and s44(1),(3)",
@@ -13,26 +36,257 @@
     "rules_eighteen_months": "Rules 3,5-16,22,23"
   },
   "checks": [
-    {"id":"IN-DPDP-SCOPE","title":"India nexus and material scope","status_default":"unknown","effective":"current","evidence":["entity establishments","target markets","India offering/activity nexus","data categories"],"verify":"Determine Act s3 nexus and exclusions; do not infer solely from user IP or founder location."},
-    {"id":"IN-DPDP-NOTICE","title":"Standalone itemised notice","status_default":"future-effective","effective":"2027-05-13","evidence":["notice text/version","itemised personal data","specified purposes","rights/withdrawal link"],"verify":"Review Act s5 and final Rule 3 against the actual collection flow."},
-    {"id":"IN-DPDP-CONSENT","title":"Consent capture and withdrawal","status_default":"future-effective","effective":"2027-05-13","evidence":["consent UI/log","purpose mapping","withdrawal flow"],"verify":"Check Act s6 requirements and that withdrawal is comparably easy; do not assume consent is the only permitted ground."},
-    {"id":"IN-DPDP-LEGITIMATE-USES","title":"Non-consent processing basis","status_default":"future-effective","effective":"2027-05-13","evidence":["purpose/legal-basis map"],"verify":"Where relying on Act s7 specified legitimate uses, document the exact category and facts."},
-    {"id":"IN-DPDP-DUTIES","title":"Data Fiduciary general obligations","status_default":"future-effective","effective":"2027-05-13","evidence":["accuracy controls where decisions/disclosure occur","processor controls","contact channel"],"verify":"Review Act s8 obligations in context."},
-    {"id":"IN-DPDP-SECURITY","title":"Reasonable security safeguards","status_default":"future-effective","effective":"2027-05-13","evidence":["access controls","encryption/obfuscation/tokenisation where appropriate","logging/monitoring","backups","processor safeguards"],"verify":"Review Act s8 and final Rule 6; validate controls technically rather than from policy text alone."},
-    {"id":"IN-DPDP-BREACH","title":"Personal data breach response","status_default":"future-effective","effective":"2027-05-13","evidence":["incident plan","affected-person communication workflow","Board notification workflow","logs"],"verify":"Review Act s8 and final Rule 7; test the response workflow without creating a real incident."},
-    {"id":"IN-DPDP-ERASURE","title":"Erasure and retention","status_default":"future-effective","effective":"2027-05-13","evidence":["retention schedule","erasure workflow","backup/vendor handling","legal retention exceptions"],"verify":"Review Act s8 and final Rule 8/Schedule where applicable; do not promise deletion that conflicts with required retention."},
-    {"id":"IN-DPDP-CONTACT","title":"Published business contact","status_default":"future-effective","effective":"2027-05-13","evidence":["website/app contact","notice"],"verify":"Check final Rule 9 and applicable Act duties."},
-    {"id":"IN-DPDP-CHILDREN","title":"Children and persons with lawful guardians","status_default":"future-effective","effective":"2027-05-13","evidence":["age/audience analysis","verifiable parental/guardian consent method","tracking/advertising behavior"],"verify":"Review Act s9 and final Rules 10-12 including applicable exemptions; an age checkbox alone is not validation."},
-    {"id":"IN-DPDP-RIGHTS","title":"Access, correction, erasure and nomination rights","status_default":"future-effective","effective":"2027-05-13","evidence":["request channels","identity/authentication process","response workflow","nomination mechanism"],"verify":"Review Act ss11-14 and final Rule 14 against actual account and support flows."},
-    {"id":"IN-DPDP-GRIEVANCE","title":"Grievance redressal","status_default":"future-effective","effective":"2027-05-13","evidence":["published channel","response process","escalation records"],"verify":"Review Act s13 and final Rule 14; record the actual mechanism and stated response period."},
-    {"id":"IN-DPDP-SDF","title":"Significant Data Fiduciary duties","status_default":"applicability-unknown","effective":"2027-05-13","evidence":["designation evidence","DPO","independent auditor","DPIA/audit controls"],"verify":"Apply only if Central Government has designated the fiduciary under Act s10; verify current designation evidence."},
-    {"id":"IN-DPDP-CROSSBORDER","title":"Cross-border transfer restrictions","status_default":"future-effective","effective":"2027-05-13","evidence":["processing regions","transfer destinations","vendor architecture"],"verify":"Check Act s16 and final Rule 15 plus any current Central Government restrictions; do not assume blanket localisation."},
-    {"id":"IN-DPDP-CONSENT-MANAGER","title":"Consent Manager usage/registration","status_default":"applicability-unknown","effective":"2026-11-13","evidence":["whether product acts as/uses a Consent Manager","registration evidence if applicable"],"verify":"Rule 4 starts one year after Gazette publication; ordinary apps are not automatically Consent Managers."},
-    {"id":"IN-DPDP-EXEMPTIONS","title":"Claimed exemption evidence","status_default":"applicability-unknown","effective":"current","evidence":["official notification","facts satisfying exemption"],"verify":"Never infer a startup or other exemption from size/name alone; retain official evidence and re-check scope."}
+    {
+      "id": "IN-DPDP-SCOPE",
+      "title": "India nexus and material scope",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "legal"
+      ],
+      "runtime_tests": [],
+      "verify": "Determine Act s3 nexus and exclusions; do not infer solely from user IP or founder location."
+    },
+    {
+      "id": "IN-DPDP-NOTICE",
+      "title": "Standalone itemised notice",
+      "effective": "2027-05-13",
+      "required_evidence_types": [
+        "source",
+        "questionnaire",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Open each personal-data collection flow and confirm the notice is independently understandable, itemises personal data and specified purposes, and exposes rights/withdrawal access."
+      ],
+      "verify": "Review Act s5 and final Rule 3 against the actual collection flow."
+    },
+    {
+      "id": "IN-DPDP-CONSENT",
+      "title": "Consent capture and withdrawal",
+      "effective": "2027-05-13",
+      "required_evidence_types": [
+        "source",
+        "questionnaire",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Use a synthetic account to give consent, then withdraw it through the ordinary product flow; confirm withdrawal is comparably easy and downstream consent-based processing stops prospectively."
+      ],
+      "verify": "Check Act s6 requirements; do not assume consent is the only permitted ground."
+    },
+    {
+      "id": "IN-DPDP-CONSENT-UX",
+      "title": "Consent UX and default-choice integrity",
+      "effective": "2027-05-13",
+      "required_evidence_types": [
+        "source",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Load the consent UI in a clean browser state; verify optional consent is not pre-selected, reject/required-only remains usable, and no consent-dependent processing fires before the affirmative choice."
+      ],
+      "verify": "Treat this as a technical/UX evidence check supporting valid affirmative consent; validate legal interpretation against current primary sources."
+    },
+    {
+      "id": "IN-DPDP-CONSENT-EVIDENCE",
+      "title": "Consent evidence and change history",
+      "effective": "2027-05-13",
+      "required_evidence_types": [
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Give and withdraw consent with a synthetic account; confirm the system can evidence the event, purpose/version and withdrawal without exposing unnecessary personal data."
+      ],
+      "verify": "Validate the evidence model needed to demonstrate consent/withdrawal behavior; do not prescribe excessive logging."
+    },
+    {
+      "id": "IN-DPDP-LEGITIMATE-USES",
+      "title": "Specified legitimate uses",
+      "effective": "2027-05-13",
+      "required_evidence_types": [
+        "questionnaire",
+        "legal"
+      ],
+      "runtime_tests": [],
+      "verify": "Where relying on Act s7, document the exact category and factual basis."
+    },
+    {
+      "id": "IN-DPDP-DUTIES",
+      "title": "Data Fiduciary general obligations",
+      "effective": "2027-05-13",
+      "required_evidence_types": [
+        "questionnaire",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Verify processor flows and accuracy/correction propagation where data is used for decisions or disclosures."
+      ],
+      "verify": "Review Act s8 obligations in context."
+    },
+    {
+      "id": "IN-DPDP-SECURITY",
+      "title": "Reasonable security safeguards",
+      "effective": "2027-05-13",
+      "required_evidence_types": [
+        "source",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "In an isolated environment, test access controls, least privilege, tenant isolation, recovery/logging and relevant processor safeguards."
+      ],
+      "verify": "Review Act s8 and final Rule 6; validate controls technically rather than from policy text alone."
+    },
+    {
+      "id": "IN-DPDP-BREACH",
+      "title": "Personal data breach response",
+      "effective": "2027-05-13",
+      "required_evidence_types": [
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Run a tabletop/synthetic incident and verify detection, evidence preservation, escalation, affected-person communication and Board-notification workflow without causing a real incident."
+      ],
+      "verify": "Review Act s8 and final Rule 7."
+    },
+    {
+      "id": "IN-DPDP-ERASURE",
+      "title": "Erasure and retention",
+      "effective": "2027-05-13",
+      "required_evidence_types": [
+        "questionnaire",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Delete a synthetic account/request and trace active stores, processors and backup handling; verify documented retention exceptions."
+      ],
+      "verify": "Review Act s8 and final Rule 8/Schedule where applicable."
+    },
+    {
+      "id": "IN-DPDP-CONTACT",
+      "title": "Published business contact",
+      "effective": "2027-05-13",
+      "required_evidence_types": [
+        "source",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Open the live/pre-release product and verify the required contact mechanism is reachable from the relevant notice/product surface."
+      ],
+      "verify": "Check final Rule 9 and applicable Act duties."
+    },
+    {
+      "id": "IN-DPDP-CHILDREN",
+      "title": "Children and persons with lawful guardians",
+      "effective": "2027-05-13",
+      "required_evidence_types": [
+        "questionnaire",
+        "source",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Where applicable, test parent/guardian verification with synthetic accounts and verify prohibited/limited tracking or targeted-ad behavior is not triggered."
+      ],
+      "verify": "Review Act s9 and final Rules 10-12 including exemptions; an age checkbox alone is not validation."
+    },
+    {
+      "id": "IN-DPDP-RIGHTS",
+      "title": "Access, correction, erasure and nomination rights",
+      "effective": "2027-05-13",
+      "required_evidence_types": [
+        "source",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Exercise synthetic access, correction, erasure and nomination requests and verify authentication, routing and resulting changes."
+      ],
+      "verify": "Review Act ss11-14 and final Rule 14."
+    },
+    {
+      "id": "IN-DPDP-GRIEVANCE",
+      "title": "Grievance redressal",
+      "effective": "2027-05-13",
+      "required_evidence_types": [
+        "source",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Submit a synthetic grievance and verify acknowledgement, routing, ownership and stated response workflow."
+      ],
+      "verify": "Review Act s13 and final Rule 14."
+    },
+    {
+      "id": "IN-DPDP-SDF",
+      "title": "Significant Data Fiduciary duties",
+      "effective": "2027-05-13",
+      "required_evidence_types": [
+        "questionnaire",
+        "legal",
+        "config"
+      ],
+      "runtime_tests": [],
+      "verify": "Apply only with current Central Government designation evidence; if designated, inspect DPO, independent auditor and required assessments."
+    },
+    {
+      "id": "IN-DPDP-CROSSBORDER",
+      "title": "Cross-border transfer restrictions",
+      "effective": "2027-05-13",
+      "required_evidence_types": [
+        "questionnaire",
+        "config",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Where tooling permits, verify actual storage/processing regions against declared vendor/subprocessor regions."
+      ],
+      "verify": "Check Act s16, final Rule 15 and any current Central Government restrictions; do not assume blanket localisation."
+    },
+    {
+      "id": "IN-DPDP-CONSENT-MANAGER",
+      "title": "Consent Manager usage/registration",
+      "effective": "2026-11-13",
+      "required_evidence_types": [
+        "questionnaire",
+        "legal",
+        "config"
+      ],
+      "runtime_tests": [],
+      "verify": "Ordinary apps are not automatically Consent Managers; apply registration obligations only if the product acts in that statutory role."
+    },
+    {
+      "id": "IN-DPDP-EXEMPTIONS",
+      "title": "Claimed exemption evidence",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "legal"
+      ],
+      "runtime_tests": [],
+      "verify": "Never infer a startup or other exemption from size/name alone; retain official evidence and re-check scope."
+    }
   ],
   "primary_sources": [
-    "https://www.meity.gov.in/static/uploads/2025/11/c56ceae6c383460ca69577428d36828b.pdf",
-    "https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf",
+    "https://www.meity.gov.in/static/uploads/2024/02/Digital-Personal-Data-Protection-Act-2023-1.pdf",
     "https://www.meity.gov.in/documents/act-and-policies/digital-personal-data-protection-rules-2025-gDOxUjMtQWa"
   ]
 }
