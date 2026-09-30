@@ -17,7 +17,8 @@ Beacon currently combines:
 - **India DPDP pack** — 18 commencement-aware checks for the DPDP Act 2023 + Rules 2025;
 - **EU/EEA GDPR + ePrivacy pack** — executable checks covering GDPR scope, principles, lawful basis, transparency, consent, special-category data, children, rights, automated decisions, processors, records, privacy by design, security, breach response, DPIA, DPO/representative duties, transfers, tracking/storage access and electronic marketing;
 - **UK GDPR + PECR pack** — executable UK data-protection and privacy/electronic-communications checks updated for the Data (Use and Access) Act 2025, with separate applicability for UK GDPR, storage/access technologies and electronic marketing;
-- **US federal digital-product pack** — selected federal checks for COPPA, CAN-SPAM, DMCA §512(c), and ADA web/mobile accessibility, with independent applicability for each regime.
+- **US federal digital-product pack** — selected federal checks for COPPA, CAN-SPAM, DMCA §512(c), and ADA web/mobile accessibility, with independent applicability for each regime;
+- **India CERT-In pack** — executable readiness checks for the 28 April 2022 CERT-In cyber-security directions: time sync, six-hour incident reporting, point of contact, response readiness, 180-day logs, provider records and virtual-asset records where applicable.
 
 ## Example result shape
 
@@ -55,7 +56,7 @@ python3 scripts/check.py /absolute/path/to/your-app --profile /path/to/project-p
 python3 scripts/test_check.py
 ```
 
-Copy `assets/project-profile.json` into a private project workspace and fill only facts you actually know. Leave unknowns as `null`. Select jurisdiction packs explicitly with `jurisdiction_packs` (for example `['india-dpdp']`, `['eu-gdpr-eprivacy']`, `['uk-gdpr-pecr']`, `['us-federal-digital']`, or any relevant combination). Applicability remains `UNKNOWN` when the facts are incomplete.
+Copy `assets/project-profile.json` into a private project workspace and fill only facts you actually know. Leave unknowns as `null`. Select jurisdiction packs explicitly with `jurisdiction_packs` (for example `['india-dpdp']`, `['eu-gdpr-eprivacy']`, `['uk-gdpr-pecr']`, `['us-federal-digital']`, `['india-certin']`, or any relevant combination). Applicability remains `UNKNOWN` when the facts are incomplete.
 
 ## Evidence trust model
 
@@ -110,6 +111,12 @@ The UK pack is researched as of **1 October 2026** against current UK legislatio
 
 The amended COPPA Rule became effective **23 June 2025**, with most regulated entities required to comply by **22 April 2026**. The DOJ's 2026 interim final rule extended the Title II web/mobile compliance dates to **26 April 2027** for public entities of 50,000+ population and **26 April 2028** for smaller public entities/special districts. Title III business accessibility is kept separate because DOJ has not imposed the same specific federal web technical standard on private public accommodations.
 
+### India — CERT-In cyber-security directions
+
+`references/india-certin.json` is Beacon's fifth executable regulatory pack. It models the 28 April 2022 CERT-In directions and associated FAQ material for covered entities, including NTP/time synchronisation, reportable incidents within six hours, CERT-In point-of-contact readiness, 180-day ICT log retention in India, and the additional recordkeeping duties for specified data-centre/VPS/cloud/VPN and virtual-asset provider categories.
+
+The six-hour reporting check follows the CERT-In FAQ approach: an initial report can contain information available at the time, with additional information supplied later within a reasonable time. Applicability and incident classification remain fact-specific; Beacon does not turn every security alert into a reportable incident.
+
 **Always re-check current primary sources before making a legal conclusion.** Bundled legal records are research assets, not legal opinions.
 
 ## What Beacon does not do
@@ -155,6 +162,7 @@ Legal-rule changes must cite current primary sources, effective dates, applicabi
 - `references/eu-gdpr-eprivacy.json` — EU/EEA GDPR + ePrivacy executable pack
 - `references/uk-gdpr-pecr.json` — UK GDPR + PECR executable pack
 - `references/us-federal-digital.json` — selected US federal digital-product executable pack
+- `references/india-certin.json` — India CERT-In cyber-security directions executable pack
 - `references/rules.json` — broader guided-review research seeds
 - `references/review-guide.md` — verification recipes
 - `CONTRIBUTING.md` — contribution contract
@@ -163,6 +171,6 @@ Legal-rule changes must cite current primary sources, effective dates, applicabi
 
 ## Version
 
-**v0.5.0** — executable India, EU/EEA, UK and selected US federal jurisdiction packs.
+**v0.6.0** — executable India DPDP, EU/EEA, UK, selected US federal, and India CERT-In packs.
 
 MIT. Third-party sources and linked documentation retain their own terms.

@@ -1,0 +1,150 @@
+{
+  "pack_id": "india-certin",
+  "pack_version": "0.6.0",
+  "jurisdiction": "India — CERT-In cyber-security directions",
+  "as_of": "2026-10-01",
+  "applicability_model": "india-certin-general-v1",
+  "timezone_offset_minutes": 330,
+  "status_model": [
+    "PASS",
+    "FAIL",
+    "REVIEW",
+    "UNKNOWN",
+    "NOT_APPLICABLE",
+    "FUTURE_EFFECTIVE"
+  ],
+  "applicability_profile_fields": [
+    "certin_general_directions_apply",
+    "certin_incident_reporting_applies",
+    "certin_provider_category",
+    "certin_virtual_asset_provider"
+  ],
+  "checks": [
+    {
+      "id": "IN-CERTIN-SCOPE",
+      "title": "CERT-In directions applicability and entity classification",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "legal"
+      ],
+      "runtime_tests": [],
+      "verify": "Determine whether the 28 April 2022 CERT-In Directions apply to the entity and which rule-specific categories are relevant. Do not infer a provider category from a product label alone."
+    },
+    {
+      "id": "IN-CERTIN-NTP",
+      "title": "ICT system clock synchronisation",
+      "effective": "current",
+      "required_evidence_types": [
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Inspect configured time sources across representative ICT systems and verify clocks are synchronised to NIC/NPL or traceable time sources, or another accurate standard source for multi-geography infrastructure that does not deviate from NIC/NPL."
+      ],
+      "verify": "Review Direction (i). Validate actual time-source configuration and drift rather than relying on architecture documentation only."
+    },
+    {
+      "id": "IN-CERTIN-INCIDENT-6H",
+      "title": "Reportable cyber-incident workflow within six hours",
+      "effective": "current",
+      "applicability_model": "india-certin-incident-v1",
+      "required_evidence_types": [
+        "questionnaire",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Run a tabletop with a synthetic Annexure-I incident; record the time the incident is noticed/brought to notice and verify escalation can produce an initial CERT-In report within six hours using information then available, with follow-up information added later."
+      ],
+      "verify": "Review Direction (ii), Annexure I and current CERT-In FAQ. Confirm the incident category and reporting trigger before concluding that the six-hour requirement applies."
+    },
+    {
+      "id": "IN-CERTIN-POC",
+      "title": "CERT-In point of contact and response channel",
+      "effective": "current",
+      "required_evidence_types": [
+        "questionnaire",
+        "config",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Verify the nominated CERT-In point of contact is current, reachable, known to incident responders and can receive/escalate CERT-In communications."
+      ],
+      "verify": "Review Direction (iii) and Annexure II. Keep the point-of-contact information updated with CERT-In."
+    },
+    {
+      "id": "IN-CERTIN-ASSISTANCE",
+      "title": "Ability to respond to CERT-In information and assistance directions",
+      "effective": "current",
+      "required_evidence_types": [
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Tabletop a CERT-In request for information or assistance with a specified timeframe; verify ownership, legal escalation, evidence preservation and a path to provide the requested information/action without exposing unrelated data."
+      ],
+      "verify": "Review Direction (iii). This is readiness for responding to a lawful CERT-In direction, not evidence that any particular request currently exists."
+    },
+    {
+      "id": "IN-CERTIN-LOGS-180D",
+      "title": "ICT logging, 180-day retention and India-location requirement",
+      "effective": "current",
+      "required_evidence_types": [
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Inspect representative ICT log sources, retention policies and storage regions; verify logs are enabled, securely retained for a rolling 180 days, maintained within Indian jurisdiction, and can be exported for an incident or CERT-In direction."
+      ],
+      "verify": "Review Direction (iv). Test actual retention and storage location rather than assuming the cloud provider's account region proves compliance."
+    },
+    {
+      "id": "IN-CERTIN-PROVIDER-RECORDS",
+      "title": "Data centre/VPS/cloud/VPN subscriber records",
+      "effective": "current",
+      "applicability_model": "india-certin-provider-records-v1",
+      "required_evidence_types": [
+        "questionnaire",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Using synthetic customer records, verify capture/validation of the required subscriber fields and five-year post-cancellation/withdrawal retention workflow, subject to current law and the applicable provider category."
+      ],
+      "verify": "Review Direction (v), the FAQ and the 27 June 2022 extension notice. Apply only to the specified provider categories and re-check any current validation/retention guidance."
+    },
+    {
+      "id": "IN-CERTIN-VIRTUAL-ASSET-RECORDS",
+      "title": "Virtual-asset provider KYC and transaction records",
+      "effective": "current",
+      "applicability_model": "india-certin-virtual-asset-v1",
+      "required_evidence_types": [
+        "questionnaire",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Using synthetic records, verify required KYC and transaction data can be retained for five years and a transaction can be reconstructed with the relevant identifiers, timestamps/time zones and transaction details."
+      ],
+      "verify": "Review Direction (vi) and current definitions/financial-sector KYC requirements. Apply only to covered virtual asset service providers, exchanges or custodian-wallet providers."
+    }
+  ],
+  "primary_sources": [
+    "https://cert-in.org.in/Directions70B.jsp",
+    "https://www.cert-in.org.in/PDF/CERT-In_Directions_70B_28.04.2022.pdf",
+    "https://www.cert-in.org.in/PDF/FAQs_on_CyberSecurityDirections_May2022.pdf"
+  ],
+  "limitations": [
+    "This pack models the CERT-In 28 April 2022 Directions and related FAQ/extension materials; it is not a complete Indian cyber-security law pack.",
+    "Incident-reporting applicability and incident classification are fact-specific. A security alert is not automatically a reportable incident.",
+    "Provider-specific subscriber-record duties apply only to the listed provider categories; Beacon does not infer those categories from marketing language.",
+    "A PASS reflects supplied evidence for a readiness check, not a legal determination or regulator approval."
+  ]
+}

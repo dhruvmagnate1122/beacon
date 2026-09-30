@@ -62,7 +62,7 @@ class Checks(unittest.TestCase):
   script=str(Path(__file__).with_name('check.py')); profile=self.put('profile.json','[]')
   p=subprocess.run([sys.executable,script,str(self.root),'--profile',str(profile)],capture_output=True,text=True); self.assertEqual(p.returncode,2)
  def test_profile_schema(self):
-  p=json.loads((Path(__file__).parents[1]/'assets/project-profile.json').read_text()); self.assertEqual(p['schema_version'],'0.5.0'); self.assertIn('consent_ui_default_state',p); self.assertIn('processing_digital_personal_data_within_india',p)
+  p=json.loads((Path(__file__).parents[1]/'assets/project-profile.json').read_text()); self.assertEqual(p['schema_version'],'0.6.0'); self.assertIn('consent_ui_default_state',p); self.assertIn('processing_digital_personal_data_within_india',p)
  def test_evidence_valid(self):
   self.assertEqual(validate_evidence({'IN-DPDP-CONSENT':[ev()]}),{'IN-DPDP-CONSENT':[ev()]})
  def test_evidence_accepts_reference_alias(self):
@@ -285,5 +285,34 @@ class Checks(unittest.TestCase):
  def test_us_evidence_isolated_from_other_packs(self):
   profile={'jurisdiction_packs':['india-dpdp'],'processing_digital_personal_data_outside_india':True,'offers_goods_or_services_to_people_in_india':True}
   with self.assertRaises(ValueError): scan(self.root,profile,{'US-CANSPAM':[ev('runtime','FAIL')]})
+
+ def test_certin_pack_schema(self):
+  p=json.loads((Path(__file__).parents[1]/'references/india-certin.json').read_text()); ids=[x['id'] for x in p['checks']]
+  self.assertEqual(p['pack_id'],'india-certin'); self.assertEqual(len(ids),len(set(ids)))
+  self.assertIn('IN-CERTIN-INCIDENT-6H',ids); self.assertIn('IN-CERTIN-LOGS-180D',ids)
+ def test_certin_general_and_incident_applicability(self):
+  profile={'jurisdiction_packs':['india-certin'],'certin_general_directions_apply':True,
+   'certin_incident_reporting_applies':True,'certin_provider_category':'not_applicable','certin_virtual_asset_provider':False}
+  r=scan(self.root,profile)
+  d={f['rule_id']:f for f in r['findings'] if f.get('pack_id')=='india-certin'}
+  self.assertEqual(d['IN-CERTIN-NTP']['status'],'UNKNOWN')
+  self.assertEqual(d['IN-CERTIN-INCIDENT-6H']['status'],'UNKNOWN')
+  self.assertEqual(d['IN-CERTIN-PROVIDER-RECORDS']['status'],'NOT_APPLICABLE')
+ def test_certin_provider_records_independent_applicability(self):
+  profile={'jurisdiction_packs':['india-certin'],'certin_general_directions_apply':False,
+   'certin_incident_reporting_applies':False,'certin_provider_category':'cloud_service','certin_virtual_asset_provider':False}
+  r=scan(self.root,profile)
+  d={f['rule_id']:f for f in r['findings'] if f.get('pack_id')=='india-certin'}
+  self.assertEqual(d['IN-CERTIN-SCOPE']['status'],'NOT_APPLICABLE')
+  self.assertEqual(d['IN-CERTIN-PROVIDER-RECORDS']['status'],'UNKNOWN')
+ def test_certin_virtual_asset_independent_applicability(self):
+  profile={'jurisdiction_packs':['india-certin'],'certin_general_directions_apply':False,
+   'certin_incident_reporting_applies':False,'certin_provider_category':'not_applicable','certin_virtual_asset_provider':True}
+  r=scan(self.root,profile)
+  d={f['rule_id']:f for f in r['findings'] if f.get('pack_id')=='india-certin'}
+  self.assertEqual(d['IN-CERTIN-VIRTUAL-ASSET-RECORDS']['status'],'UNKNOWN')
+ def test_certin_evidence_isolated(self):
+  profile={'jurisdiction_packs':['india-dpdp'],'processing_digital_personal_data_outside_india':True,'offers_goods_or_services_to_people_in_india':True}
+  with self.assertRaises(ValueError): scan(self.root,profile,{'IN-CERTIN-LOGS-180D':[ev('runtime','FAIL')]})
 
 if __name__=='__main__': unittest.main()
