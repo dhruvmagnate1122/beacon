@@ -57,7 +57,7 @@ Copy `assets/project-profile.json` into a private project workspace and fill onl
 
 ## Evidence trust model
 
-`evidence.json` is an input contract, not proof of truth. Evidence may come from source inspection, configuration, questionnaires, runtime tests, or legal-source review.
+`evidence.json` is an input contract, not proof of truth. Evidence may come from source inspection, configuration, questionnaires, runtime tests, or legal-source review. Evidence `type` and `result` vocabulary is accepted case-insensitively and normalized for evaluation.
 
 For material readiness decisions, evidence should record:
 
@@ -147,6 +147,6 @@ Legal-rule changes must cite current primary sources, effective dates, applicabi
 
 ## Version
 
-**v0.3.0** — generic jurisdiction-pack engine with executable India DPDP and EU/EEA GDPR + ePrivacy packs.
+**v0.3.1** — audit cleanup for consistent evidence normalization and a tighter India applicability questionnaire.
 
 MIT. Third-party sources and linked documentation retain their own terms.

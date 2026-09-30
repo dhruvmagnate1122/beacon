@@ -46,7 +46,7 @@ For India, use `india-dpdp.json`. The 13 November 2025 Act commencement notifica
 
 State project/version, environment, profile unknowns, evidence date, scan coverage and omissions. Separate source candidates, verified behavior, legal applicability and future-effective readiness. For each item record ID, source/date, applicability rationale, sanitized evidence, confidence, fix/next action, test result and owner. Never sum hypothetical penalties.
 
-## v0.3.0 boundaries
+## v0.3.1 boundaries
 
 Automated source triage remains six regex signals. Beacon has two executable legal packs: `india-dpdp` and `eu-gdpr-eprivacy`. Packs add profile-driven applicability, statuses and evidence prompts; the CLI does not parse privacy notices, make legal determinations or autonomously execute runtime tests. UK/US/CERT-In/tax entries in `rules.json` remain guided-review research seeds. No auto-fix engine, cloud adapter, scheduled monitoring, SARIF exporter or worldwide certification is included.
 
@@ -62,14 +62,14 @@ Each executable-pack check declares required evidence types from: `source`, `con
 - `NOT_APPLICABLE`: factual applicability review supports non-applicability and the rationale is retained.
 - `FUTURE_EFFECTIVE`: the modeled obligation is not yet effective. When evidence exists, `readiness_status` separately records `PASS`, `FAIL`, `REVIEW`, or `UNKNOWN` without converting a future duty into a present legal failure.
 
-Every evidence record must include `type`, `result`, concise sanitized `details`, `observed_at`, `environment`, producer/reviewer provenance, and either an `artifact` or `reference` reproducible pointer. Accepted evidence results are `PASS`, `FAIL`, and `REVIEW`; `UNKNOWN`, `NOT_APPLICABLE`, and `FUTURE_EFFECTIVE` are derived readiness statuses rather than evidence assertions. Never put credentials, customer data or unnecessary personal data into evidence files.
+Every evidence record must include `type`, `result`, concise sanitized `details`, `observed_at`, `environment`, producer/reviewer provenance, and either an `artifact` or `reference` reproducible pointer. `type` and `result` vocabulary is accepted case-insensitively and normalized before derivation. Accepted evidence results are `PASS`, `FAIL`, and `REVIEW`; `UNKNOWN`, `NOT_APPLICABLE`, and `FUTURE_EFFECTIVE` are derived readiness statuses rather than evidence assertions. Never put credentials, customer data or unnecessary personal data into evidence files.
 
 For consent UX, use a clean browser/test account and verify the default state, required-only/reject path, pre-consent network behavior, affirmative acceptance, and withdrawal. Treat UI prominence or dark-pattern concerns as review evidence unless a specific legal conclusion is supported by current primary authority.
 
 
 ## India scope modeling
 
-For Act section 3, Beacon requires explicit facts for the applicable route instead of inferring scope from founder location or visitor IP. It distinguishes: processing in India of personal data collected digitally or later digitised; qualifying processing outside India connected to offering goods or services to Data Principals in India; and section 3(c) exclusions declared to cover all relevant processing. Partial facts remain `UNKNOWN`. `NOT_APPLICABLE` requires both routes to be affirmatively ruled out or an all-relevant-processing exclusion to be established and should still be supported by legal review before relying on it operationally.
+For Act section 3, Beacon requires explicit facts for the applicable route instead of inferring scope from founder location or visitor IP. It distinguishes: processing in India of personal data collected digitally or later digitised; qualifying processing outside India connected to offering goods or services to Data Principals in India; and section 3(c) exclusions declared to cover all relevant processing. The profile uses those explicit route facts only; the older unused `processing_connected_with_activity_outside_india` field has been removed. Partial facts remain `UNKNOWN`. `NOT_APPLICABLE` requires both routes to be affirmatively ruled out or an all-relevant-processing exclusion to be established and should still be supported by legal review before relying on it operationally.
 
 ## SDF modeling
 
