@@ -1,0 +1,1 @@
+{"IN-DPDP-CONSENT-UX":[{"details":"Synthetic test: optional consent was preselected on first load.","environment":"staging","observed_at":"2026-09-30T12:00:00Z","producer":{"kind":"manual","name":"reviewer"},"reference":"ux-run-3","result":"FAIL","type":"runtime"}]}
