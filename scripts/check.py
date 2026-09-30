@@ -3,12 +3,12 @@
 import argparse, datetime as dt, json, os, re, sys
 from pathlib import Path
 
-VERSION='0.3.1'
+VERSION='0.4.0'
 STATUSES={'PASS','FAIL','REVIEW','UNKNOWN','NOT_APPLICABLE','FUTURE_EFFECTIVE'}
 SKIP={'.git','node_modules','.next','dist','build','.venv','venv','__pycache__','vendor','coverage'}
 EXTENSIONS={'.js','.jsx','.ts','.tsx','.mjs','.cjs','.html','.css','.sql','.json','.py','.yml','.yaml','.toml'}
 LIMIT=1024*1024; MAX_FILES=10000
-PACK_FILES=('india-dpdp.json','eu-gdpr-eprivacy.json')
+PACK_FILES=('india-dpdp.json','eu-gdpr-eprivacy.json','uk-gdpr-pecr.json')
 PATTERNS=[
  ('SEC-001','high','Possible embedded private key or live credential',r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|\bsk_live_[A-Za-z0-9]{16,}|\bAKIA[A-Z0-9]{16}\b'),
  ('DB-001','high','SQL explicitly disables row-level security',r'\bDISABLE\s+ROW\s+LEVEL\s+SECURITY\b'),
@@ -141,9 +141,42 @@ def _eu_applicability(profile):
   return False
  return None
 
+def _uk_gdpr_applicability(profile):
+ if not profile: return None
+ if profile.get('all_relevant_processing_purely_personal_or_household') is True:
+  return False
+ processes=profile.get('processes_personal_data')
+ if processes is False: return False
+ establishment=profile.get('processing_in_context_of_uk_establishment')
+ offering=profile.get('offers_goods_or_services_to_people_in_uk')
+ monitoring=profile.get('monitors_behavior_of_people_in_uk')
+ public_intl=profile.get('uk_law_applies_by_public_international_law')
+ if processes is True and (establishment is True or offering is True or monitoring is True or public_intl is True):
+  return True
+ if processes is True and establishment is False and offering is False and monitoring is False and public_intl is False:
+  return False
+ return None
+
+def _uk_pecr_storage_applicability(profile):
+ if not profile: return None
+ uses=profile.get('uses_storage_or_access_technologies_for_uk_users')
+ if uses is True: return True
+ if uses is False: return False
+ return None
+
+def _uk_pecr_marketing_applicability(profile):
+ if not profile: return None
+ sends=profile.get('sends_electronic_direct_marketing_to_uk_recipients')
+ if sends is True: return True
+ if sends is False: return False
+ return None
+
 APPLICABILITY_MODELS={
  'india-dpdp-v1':_india_applicability,
  'eu-gdpr-v1':_eu_applicability,
+ 'uk-gdpr-v1':_uk_gdpr_applicability,
+ 'uk-pecr-storage-v1':_uk_pecr_storage_applicability,
+ 'uk-pecr-marketing-v1':_uk_pecr_marketing_applicability,
 }
 
 def _evidence_for(rule_id,evidence):
@@ -175,17 +208,21 @@ def _pack_today(pack,today):
  return dt.datetime.now(dt.timezone(dt.timedelta(minutes=offset))).date()
 
 def evaluate_pack(pack,profile,evidence,today=None):
- model=pack.get('applicability_model')
- if model not in APPLICABILITY_MODELS:
-  raise ValueError('Unsupported applicability model: '+str(model))
- applicability=APPLICABILITY_MODELS[model](profile)
+ default_model=pack.get('applicability_model')
+ if default_model not in APPLICABILITY_MODELS:
+  raise ValueError('Unsupported applicability model: '+str(default_model))
  effective_today=_pack_today(pack,today)
  out=[]
  for rule in pack['checks']:
+  model=rule.get('applicability_model',default_model)
+  if model not in APPLICABILITY_MODELS:
+   raise ValueError('Unsupported applicability model for '+rule['id']+': '+str(model))
+  applicability=APPLICABILITY_MODELS[model](profile)
   items=_evidence_for(rule['id'],evidence)
   status,readiness=_derive(rule,applicability,items,effective_today)
   out.append({
    'rule_id':rule['id'],'pack_id':pack['pack_id'],'jurisdiction':pack.get('jurisdiction'),
+   'applicability_model':model,
    'status':status,'readiness_status':readiness,'severity':'unassessed','title':rule['title'],
    'effective':rule['effective'],'required_evidence_types':rule.get('required_evidence_types',[]),
    'runtime_tests':rule.get('runtime_tests',[]),'evidence_count':len(items),
