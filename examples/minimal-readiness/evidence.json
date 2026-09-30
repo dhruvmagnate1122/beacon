@@ -1,0 +1,9 @@
+{
+  "IN-DPDP-CONSENT-UX": [
+    {
+      "type": "runtime",
+      "result": "REVIEW",
+      "details": "Synthetic fixture: consent UX needs a real browser/runtime verification before launch."
+    }
+  ]
+}
