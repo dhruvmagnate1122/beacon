@@ -1,7 +1,11 @@
 import datetime as dt, json
 from pathlib import Path
 import subprocess, sys, tempfile, unittest
-from check import scan, LIMIT
+from check import scan, LIMIT, validate_evidence, readiness_summary
+
+def ev(t='runtime',r='PASS'):
+ return {'type':t,'result':r,'details':'synthetic check','observed_at':'2026-09-30T12:00:00Z',
+  'environment':'staging','producer':{'kind':'manual','name':'reviewer'},'artifact':'run-7'}
 
 class Checks(unittest.TestCase):
  def setUp(self): self.tmp=tempfile.TemporaryDirectory(); self.root=Path(self.tmp.name)
@@ -58,5 +62,34 @@ class Checks(unittest.TestCase):
   p=subprocess.run([sys.executable,script,str(self.root),'--profile',str(profile)],capture_output=True,text=True); self.assertEqual(p.returncode,2)
  def test_profile_schema(self):
   p=json.loads((Path(__file__).parents[1]/'assets/project-profile.json').read_text()); self.assertEqual(p['schema_version'],'0.2.0'); self.assertIn('consent_ui_default_state',p)
+ def test_evidence_valid(self):
+  self.assertEqual(validate_evidence({'IN-DPDP-CONSENT':[ev()]}),{'IN-DPDP-CONSENT':[ev()]})
+ def test_evidence_accepts_reference_alias(self):
+  item=ev(); item['reference']=item.pop('artifact'); validate_evidence({'IN-DPDP-CONSENT':[item]})
+ def test_evidence_rejects_missing_key(self):
+  bad=ev(); del bad['details']
+  with self.assertRaises(ValueError): validate_evidence({'IN-DPDP-CONSENT':[bad]})
+ def test_evidence_rejects_blank_locator(self):
+  bad=ev(); bad['artifact']='  '
+  with self.assertRaises(ValueError): validate_evidence({'IN-DPDP-CONSENT':[bad]})
+ def test_evidence_rejects_bad_result(self):
+  with self.assertRaises(ValueError): validate_evidence({'X':[ev('runtime','BOGUS')]})
+ def test_evidence_rejects_bad_producer(self):
+  bad=ev(); bad['producer']={'kind':'ouija','name':'x'}
+  with self.assertRaises(ValueError): validate_evidence({'X':[bad]})
+ def test_evidence_must_be_object(self):
+  with self.assertRaises(ValueError): validate_evidence([ev()])
+ def test_cli_invalid_evidence(self):
+  script=str(Path(__file__).with_name('check.py')); bad=self.put('evidence.json','{"X":"not-a-list"}')
+  p=subprocess.run([sys.executable,script,str(self.root),'--evidence',str(bad)],capture_output=True,text=True); self.assertEqual(p.returncode,2)
+ def test_readiness_summary(self):
+  full=dict(ev('runtime','FAIL')); full['reference']=full.pop('artifact')
+  e={'IN-DPDP-CONSENT-UX':[full]}
+  r=scan(self.root,{'offers_goods_or_services_to_people_in_india':True},e,today=dt.date(2026,9,30))
+  s=r['readiness_summary']
+  self.assertIn('IN-DPDP-CONSENT-UX',s['dpdp_fail'])
+  self.assertIn('IN-DPDP-NOTICE',s['dpdp_future_effective'])
+  self.assertEqual(sum(s['counts_by_status'].values()),len(r['findings']))
+  self.assertIn('not a compliance determination',s['note'])
 
 if __name__=='__main__': unittest.main()
