@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-"""Read-only launch triage plus evidence-driven India DPDP readiness. Never a compliance certification."""
+"""Read-only launch triage plus evidence-driven jurisdiction readiness. Never a compliance certification."""
 import argparse, datetime as dt, json, os, re, sys
 from pathlib import Path
 
-VERSION='0.2.1'
+VERSION='0.3.0'
 STATUSES={'PASS','FAIL','REVIEW','UNKNOWN','NOT_APPLICABLE','FUTURE_EFFECTIVE'}
 SKIP={'.git','node_modules','.next','dist','build','.venv','venv','__pycache__','vendor','coverage'}
 EXTENSIONS={'.js','.jsx','.ts','.tsx','.mjs','.cjs','.html','.css','.sql','.json','.py','.yml','.yaml','.toml'}
 LIMIT=1024*1024; MAX_FILES=10000
+PACK_FILES=('india-dpdp.json','eu-gdpr-eprivacy.json')
 PATTERNS=[
  ('SEC-001','high','Possible embedded private key or live credential',r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|\bsk_live_[A-Za-z0-9]{16,}|\bAKIA[A-Z0-9]{16}\b'),
  ('DB-001','high','SQL explicitly disables row-level security',r'\bDISABLE\s+ROW\s+LEVEL\s+SECURITY\b'),
@@ -24,8 +25,6 @@ MANUAL=[
  ('LEGAL-001','Jurisdiction and effective-date applicability','Apply current primary sources using the project profile; do not treat bundled research as legal advice.'),
  ('PRIV-003','Consent, deletion and retention behavior','Check collection, withdrawal propagation, processor deletion and retention exceptions.')]
 
-# Evidence assertions are limited to PASS/FAIL/REVIEW. UNKNOWN,
-# NOT_APPLICABLE and FUTURE_EFFECTIVE are derived readiness statuses.
 EVIDENCE_RESULTS={'PASS','FAIL','REVIEW'}
 EVIDENCE_TYPES={'source','config','questionnaire','runtime','legal'}
 PRODUCER_KINDS={'tool','external','manual'}
@@ -73,67 +72,77 @@ def validate_evidence(evidence, allowed_rule_ids=None):
     raise ValueError(prefix+'requires artifact or reference')
  return evidence
 
-def readiness_summary(findings,today=None):
- """Mechanical rollup of findings: counts by status plus the DPDP rule IDs
- that failed, need review, are future-effective, or are still unknown.
- Pure arithmetic over existing statuses; not a legal determination."""
- today=today or dt.datetime.now(dt.timezone.utc).date()
- counts={}; dpdp_fail=[]; dpdp_review=[]; dpdp_future=[]; dpdp_unknown=0
- future_fail=[]; future_review=[]
- for f in findings:
-  st=f.get('status'); counts[st]=counts.get(st,0)+1
-  rid=f.get('rule_id','')
-  if not rid.startswith('IN-DPDP'): continue
-  if st=='FAIL': dpdp_fail.append(rid)
-  elif st=='REVIEW': dpdp_review.append(rid)
-  elif st=='FUTURE_EFFECTIVE':
-   dpdp_future.append(rid)
-   if f.get('readiness_status')=='FAIL': future_fail.append(rid)
-   elif f.get('readiness_status')=='REVIEW': future_review.append(rid)
-  elif st=='UNKNOWN': dpdp_unknown+=1
- return {
-  'counts_by_status':counts,
-  'dpdp_fail':dpdp_fail,
-  'dpdp_review':dpdp_review,
-  'dpdp_future_effective':dpdp_future,
-  'dpdp_future_readiness_fail':future_fail,
-  'dpdp_future_readiness_review':future_review,
-  'dpdp_unknown_count':dpdp_unknown,
-  'note':'Mechanical rollup only; not a compliance determination. Recheck current primary sources before legal conclusions.'}
-
 def _date(v):
  if v=='current': return None
  return dt.date.fromisoformat(v)
 
-def _tri(value_true, value_false):
- if value_true: return True
- if value_false: return False
- return None
+def _load_packs(base):
+ packs={}
+ for filename in PACK_FILES:
+  p=json.loads((base/'references'/filename).read_text())
+  pid=p.get('pack_id')
+  if not isinstance(pid,str) or not pid:
+   raise ValueError('Jurisdiction pack missing pack_id: '+filename)
+  if pid in packs:
+   raise ValueError('Duplicate jurisdiction pack ID: '+pid)
+  if p.get('status_model')!=['PASS','FAIL','REVIEW','UNKNOWN','NOT_APPLICABLE','FUTURE_EFFECTIVE']:
+   raise ValueError('Invalid status model in pack: '+pid)
+  ids=[x.get('id') for x in p.get('checks',[])]
+  if not ids or any(not isinstance(x,str) or not x for x in ids) or len(ids)!=len(set(ids)):
+   raise ValueError('Invalid or duplicate rule IDs in pack: '+pid)
+  packs[pid]=p
+ return packs
+
+def _selected_pack_ids(profile,packs):
+ if not profile: return []
+ explicit=profile.get('jurisdiction_packs')
+ if explicit is not None:
+  if not isinstance(explicit,list) or any(not isinstance(x,str) for x in explicit):
+   raise ValueError('jurisdiction_packs must be an array of pack IDs.')
+  unknown=[x for x in explicit if x not in packs]
+  if unknown: raise ValueError('Unknown jurisdiction pack: '+','.join(unknown))
+  return list(dict.fromkeys(explicit))
+ selected=[]
+ for pid,p in packs.items():
+  if any(profile.get(k) is not None for k in p.get('applicability_profile_fields',[])):
+   selected.append(pid)
+ return selected
 
 def _india_applicability(profile):
- """Return True/False/None for Act s3 material scope using explicit facts.
-
- False is returned only when both statutory routes are affirmatively ruled out
- or an exclusion is declared to cover all relevant processing. Missing facts
- stay unknown.
- """
  if not profile: return None
  if profile.get('all_relevant_processing_personal_or_domestic') is True:
   return False
  if profile.get('all_relevant_data_publicly_available_under_section_3c') is True:
   return False
-
  within=profile.get('processing_digital_personal_data_within_india')
  collected=profile.get('personal_data_collected_digitally_or_digitised_in_india')
  outside=profile.get('processing_digital_personal_data_outside_india')
  offered=profile.get('offers_goods_or_services_to_people_in_india')
-
  route_a=True if within is True and collected is True else (False if within is False or collected is False else None)
  route_b=True if outside is True and offered is True else (False if outside is False or offered is False else None)
-
  if route_a is True or route_b is True: return True
  if route_a is False and route_b is False: return False
  return None
+
+def _eu_applicability(profile):
+ if not profile: return None
+ if profile.get('all_relevant_processing_purely_personal_or_household') is True:
+  return False
+ processes=profile.get('processes_personal_data')
+ if processes is False: return False
+ establishment=profile.get('processing_in_context_of_eu_eea_establishment')
+ offering=profile.get('offers_goods_or_services_to_people_in_eu_eea')
+ monitoring=profile.get('monitors_behavior_of_people_in_eu_eea')
+ if processes is True and (establishment is True or offering is True or monitoring is True):
+  return True
+ if processes is True and establishment is False and offering is False and monitoring is False:
+  return False
+ return None
+
+APPLICABILITY_MODELS={
+ 'india-dpdp-v1':_india_applicability,
+ 'eu-gdpr-v1':_eu_applicability,
+}
 
 def _evidence_for(rule_id,evidence):
  items=evidence.get(rule_id,[]) if isinstance(evidence,dict) else []
@@ -145,7 +154,6 @@ def _derive(rule, applicability, evidence_items, today):
   return 'NOT_APPLICABLE',None
  if applicability is None:
   return 'UNKNOWN',None
-
  results=[str(x.get('result','')).upper() for x in evidence_items if isinstance(x,dict)]
  if any(x=='FAIL' for x in results):
   readiness='FAIL'
@@ -154,35 +162,85 @@ def _derive(rule, applicability, evidence_items, today):
  else:
   types={x.get('type') for x in evidence_items if isinstance(x,dict) and str(x.get('result','')).upper()=='PASS'}
   readiness='PASS' if required and required.issubset(types) else 'UNKNOWN'
-
  eff=_date(rule['effective'])
  if eff is not None and today<eff:
   return 'FUTURE_EFFECTIVE',readiness
  return readiness,readiness
 
-def dpdp(profile, evidence, base, today=None):
- pack=json.loads((base/'references/india-dpdp.json').read_text())
- india_tz=dt.timezone(dt.timedelta(minutes=330))
- today=today or dt.datetime.now(india_tz).date()
- applicability=_india_applicability(profile)
+def _pack_today(pack,today):
+ if today is not None: return today
+ offset=int(pack.get('timezone_offset_minutes',0))
+ return dt.datetime.now(dt.timezone(dt.timedelta(minutes=offset))).date()
+
+def evaluate_pack(pack,profile,evidence,today=None):
+ model=pack.get('applicability_model')
+ if model not in APPLICABILITY_MODELS:
+  raise ValueError('Unsupported applicability model: '+str(model))
+ applicability=APPLICABILITY_MODELS[model](profile)
+ effective_today=_pack_today(pack,today)
  out=[]
- for c in pack['checks']:
-  items=_evidence_for(c['id'],evidence)
-  status,readiness=_derive(c,applicability,items,today)
+ for rule in pack['checks']:
+  items=_evidence_for(rule['id'],evidence)
+  status,readiness=_derive(rule,applicability,items,effective_today)
   out.append({
-   'rule_id':c['id'],'status':status,'readiness_status':readiness,
-   'severity':'unassessed','title':c['title'],
-   'effective':c['effective'],'required_evidence_types':c.get('required_evidence_types',[]),
-   'runtime_tests':c.get('runtime_tests',[]),'evidence_count':len(items),
-   'next_step':c['verify']})
+   'rule_id':rule['id'],'pack_id':pack['pack_id'],'jurisdiction':pack.get('jurisdiction'),
+   'status':status,'readiness_status':readiness,'severity':'unassessed','title':rule['title'],
+   'effective':rule['effective'],'required_evidence_types':rule.get('required_evidence_types',[]),
+   'runtime_tests':rule.get('runtime_tests',[]),'evidence_count':len(items),
+   'next_step':rule['verify']})
  return out
+
+def readiness_summary(findings):
+ counts={}; pack_summaries={}
+ for f in findings:
+  st=f.get('status'); counts[st]=counts.get(st,0)+1
+  pid=f.get('pack_id')
+  if not pid: continue
+  s=pack_summaries.setdefault(pid,{
+   'jurisdiction':f.get('jurisdiction'),'counts_by_status':{},
+   'fail':[],'review':[],'future_effective':[],
+   'future_readiness_fail':[],'future_readiness_review':[],'unknown_count':0})
+  s['counts_by_status'][st]=s['counts_by_status'].get(st,0)+1
+  rid=f.get('rule_id')
+  if st=='FAIL': s['fail'].append(rid)
+  elif st=='REVIEW': s['review'].append(rid)
+  elif st=='FUTURE_EFFECTIVE':
+   s['future_effective'].append(rid)
+   if f.get('readiness_status')=='FAIL': s['future_readiness_fail'].append(rid)
+   elif f.get('readiness_status')=='REVIEW': s['future_readiness_review'].append(rid)
+  elif st=='UNKNOWN': s['unknown_count']+=1
+ result={
+  'counts_by_status':counts,
+  'packs':pack_summaries,
+  'note':'Mechanical rollup only; not a compliance determination. Recheck current primary sources before legal conclusions.'}
+ india=pack_summaries.get('india-dpdp')
+ if india:
+  result.update({
+   'dpdp_fail':india['fail'],'dpdp_review':india['review'],
+   'dpdp_future_effective':india['future_effective'],
+   'dpdp_future_readiness_fail':india['future_readiness_fail'],
+   'dpdp_future_readiness_review':india['future_readiness_review'],
+   'dpdp_unknown_count':india['unknown_count']})
+ return result
 
 def scan(root,profile=None,evidence=None,today=None):
  repo_base=Path(__file__).parents[1]
+ packs=_load_packs(repo_base)
+ selected=_selected_pack_ids(profile,packs)
+ rule_to_pack={}
+ for pid,p in packs.items():
+  for rule in p['checks']:
+   if rule['id'] in rule_to_pack:
+    raise ValueError('Rule ID appears in multiple packs: '+rule['id'])
+   rule_to_pack[rule['id']]=pid
  if evidence is not None:
-  pack=json.loads((repo_base/'references/india-dpdp.json').read_text())
-  allowed={x['id'] for x in pack.get('checks',[])}
-  validate_evidence(evidence,allowed_rule_ids=allowed)
+  validate_evidence(evidence,allowed_rule_ids=set(rule_to_pack))
+  if evidence and not selected:
+   raise ValueError('Evidence requires an active jurisdiction pack in the project profile.')
+  inactive=sorted({rule_to_pack[rid] for rid in evidence if rule_to_pack[rid] not in selected})
+  if inactive:
+   raise ValueError('Evidence supplied for inactive jurisdiction pack(s): '+','.join(inactive))
+
  root=Path(root).resolve()
  if not root.is_dir(): raise ValueError('Project root must be an existing directory.')
  findings=[]; omissions=[]; scanned=0
@@ -197,25 +255,28 @@ def scan(root,profile=None,evidence=None,today=None):
     if path.stat().st_size>LIMIT: omissions.append({'path':rel,'reason':'over 1 MiB limit'}); continue
     raw=path.read_bytes()
     if b'\0' in raw: raise ValueError('binary')
-    content=raw.decode('utf-8')
+    file_content=raw.decode('utf-8')
    except (OSError,UnicodeError,ValueError): omissions.append({'path':rel,'reason':'unreadable or non-UTF-8 text'}); continue
    scanned+=1
    for rid,sev,title,pat in PATTERNS:
-    ms=list(re.finditer(pat,content,re.I))
-    if ms: findings.append({'rule_id':rid,'status':'REVIEW','severity':sev,'title':title,'path':rel,'lines':sorted({content.count('\n',0,m.start())+1 for m in ms})[:20],'confidence':'source-pattern-only','meaning':'Candidate signal; verify context before changing behavior.'})
+    ms=list(re.finditer(pat,file_content,re.I))
+    if ms: findings.append({'rule_id':rid,'status':'REVIEW','severity':sev,'title':title,'path':rel,'lines':sorted({file_content.count('\n',0,m.start())+1 for m in ms})[:20],'confidence':'source-pattern-only','meaning':'Candidate signal; verify context before changing behavior.'})
  for rid,title,task in MANUAL:
   findings.append({'rule_id':rid,'status':'UNKNOWN','severity':'unassessed','title':title,'next_step':task})
  if profile is not None:
-  findings.extend(dpdp(profile,evidence or {},repo_base,today=today))
+  for pid in selected:
+   findings.extend(evaluate_pack(packs[pid],profile,evidence or {},today=today))
  return {
   'version':VERSION,'generated_at':dt.datetime.now(dt.timezone.utc).isoformat(),
   'mode':'source-config-questionnaire-runtime-evidence',
   'status_model':sorted(STATUSES),
   'overall':'INCOMPLETE_REVIEW_REQUIRED',
+  'available_packs':sorted(packs),
+  'active_packs':selected,
   'scope':{'files_scanned':scanned,'excluded_directories':sorted(SKIP),'extensions':sorted(EXTENSIONS),'max_file_bytes':LIMIT,'max_files':MAX_FILES,'omissions':omissions},
   'profile_provided':profile is not None,'evidence_provided':bool(evidence),
-  'readiness_summary':readiness_summary(findings,today=today),
-  'limitations':['No legal certification is performed.','Future-effective duties keep legal effective state separate from readiness evidence.','Runtime PASS/FAIL requires user-supplied or tool-produced evidence; the CLI does not autonomously browse or operate third-party services.','FUTURE_EFFECTIVE is based on bundled dates and must be rechecked against current primary sources.','Source regex candidates can be false positives and are REVIEW, not violations.'],
+  'readiness_summary':readiness_summary(findings),
+  'limitations':['No legal certification is performed.','Future-effective duties keep legal effective state separate from readiness evidence.','Runtime PASS/FAIL requires user-supplied or tool-produced evidence; the CLI does not autonomously browse or operate third-party services.','Jurisdiction packs require current primary-source review, including national implementation where relevant.','Source regex candidates can be false positives and are REVIEW, not violations.'],
   'findings':findings}
 
 def _load_object(path,label):
@@ -235,7 +296,7 @@ def main():
   evidence=_load_object(args.evidence,'Evidence') if args.evidence else None
   result=scan(args.root,profile,evidence)
  except (OSError,ValueError,json.JSONDecodeError):
-  print(json.dumps({'error':'InvalidInput','message':'Invalid root, profile or evidence; no scan completed.'}),file=sys.stderr); return 2
+  print(json.dumps({'error':'InvalidInput','message':'Invalid root, profile, pack selection or evidence; no scan completed.'}),file=sys.stderr); return 2
  print(json.dumps(result,indent=2))
  return 1 if args.fail_on_review and any(f['status'] in {'REVIEW','FAIL'} for f in result['findings']) else 0
 if __name__=='__main__': sys.exit(main())
