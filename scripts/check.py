@@ -24,8 +24,8 @@ MANUAL=[
  ('LEGAL-001','Jurisdiction and effective-date applicability','Apply current primary sources using the project profile; do not treat bundled research as legal advice.'),
  ('PRIV-003','Consent, deletion and retention behavior','Check collection, withdrawal propagation, processor deletion and retention exceptions.')]
 
-# Evidence results use the project's own status vocabulary — PASS, FAIL,
-# REVIEW, UNKNOWN, NOT_APPLICABLE, FUTURE_EFFECTIVE. No Litmus-only statuses.
+# Evidence assertions are limited to PASS/FAIL/REVIEW. UNKNOWN,
+# NOT_APPLICABLE and FUTURE_EFFECTIVE are derived readiness statuses.
 EVIDENCE_RESULTS={'PASS','FAIL','REVIEW'}
 EVIDENCE_TYPES={'source','config','questionnaire','runtime','legal'}
 PRODUCER_KINDS={'tool','external','manual'}
