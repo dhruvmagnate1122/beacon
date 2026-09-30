@@ -1,0 +1,247 @@
+{
+  "pack_id": "us-federal-digital",
+  "pack_version": "0.5.0",
+  "jurisdiction": "United States — federal",
+  "as_of": "2026-10-01",
+  "applicability_model": "us-coppa-v1",
+  "timezone_offset_minutes": -240,
+  "status_model": [
+    "PASS",
+    "FAIL",
+    "REVIEW",
+    "UNKNOWN",
+    "NOT_APPLICABLE",
+    "FUTURE_EFFECTIVE"
+  ],
+  "applicability_profile_fields": [
+    "coppa_collects_personal_information",
+    "coppa_child_directed_service",
+    "coppa_mixed_audience_service",
+    "coppa_actual_knowledge_under13_collection",
+    "sends_us_commercial_email",
+    "hosts_content_at_user_direction",
+    "seeks_dmca_512c_safe_harbor",
+    "us_ada_title_iii_public_accommodation",
+    "us_ada_title_ii_entity_size"
+  ],
+  "checks": [
+    {
+      "id": "US-COPPA-SCOPE",
+      "title": "COPPA scope and audience classification",
+      "effective": "2026-04-22",
+      "applicability_model": "us-coppa-v1",
+      "required_evidence_types": [
+        "questionnaire",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Where mixed-audience treatment is relied on, exercise the age-screen path with synthetic users and verify personal information is not collected before age information or another permitted age-determination method except as allowed by the Rule."
+      ],
+      "verify": "Review the amended COPPA Rule, including child-directed, mixed-audience and actual-knowledge triggers. Do not infer COPPA merely from the presence or absence of an age field."
+    },
+    {
+      "id": "US-COPPA-NOTICE-CONSENT",
+      "title": "COPPA parental notice and verifiable parental consent",
+      "effective": "2026-04-22",
+      "applicability_model": "us-coppa-v1",
+      "required_evidence_types": [
+        "source",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Using synthetic child/parent accounts, verify direct notice, online notice, verifiable parental consent before covered collection/use/disclosure, and any relied-on consent exception."
+      ],
+      "verify": "Review 16 CFR Part 312 as amended in 2025, including notice and verifiable-parental-consent requirements and exceptions."
+    },
+    {
+      "id": "US-COPPA-THIRD-PARTY",
+      "title": "COPPA third-party disclosure and targeted-advertising consent",
+      "effective": "2026-04-22",
+      "applicability_model": "us-coppa-v1",
+      "required_evidence_types": [
+        "questionnaire",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Trace child-data disclosures and advertising/monetisation flows with synthetic data; where separate parental opt-in is required for third-party disclosure/targeted advertising, verify that flow independently from collection consent."
+      ],
+      "verify": "Review the amended COPPA Rule's third-party disclosure and advertising-consent provisions. Do not assume one parental consent covers every disclosure purpose."
+    },
+    {
+      "id": "US-COPPA-PARENT-RIGHTS",
+      "title": "COPPA parental review, deletion and further-use controls",
+      "effective": "2026-04-22",
+      "applicability_model": "us-coppa-v1",
+      "required_evidence_types": [
+        "source",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Exercise synthetic parent access/review, deletion and stop-further-use/collection flows; verify authentication and downstream propagation."
+      ],
+      "verify": "Review amended COPPA parental rights and operator obligations for review, deletion and preventing further use or collection."
+    },
+    {
+      "id": "US-COPPA-SECURITY-RETENTION",
+      "title": "COPPA security, retention and deletion program",
+      "effective": "2026-04-22",
+      "applicability_model": "us-coppa-v1",
+      "required_evidence_types": [
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Inspect child-data access controls and retention schedules; verify deletion when information is no longer reasonably necessary and test representative processor/downstream deletion behavior where feasible."
+      ],
+      "verify": "Review amended COPPA security, retention and deletion requirements, including the requirement for a written data-retention policy/program where applicable."
+    },
+    {
+      "id": "US-CANSPAM",
+      "title": "CAN-SPAM commercial email",
+      "effective": "current",
+      "applicability_model": "us-can-spam-v1",
+      "required_evidence_types": [
+        "questionnaire",
+        "source",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Send test commercial email and verify non-deceptive header/subject information, sender identification, postal address, clear opt-out, functioning opt-out processing and persistent suppression."
+      ],
+      "verify": "Classify the message's primary purpose under CAN-SPAM/16 CFR Part 316. B2B commercial email is not categorically exempt; transactional/relationship messages have different treatment."
+    },
+    {
+      "id": "US-DMCA512C-ELIGIBILITY",
+      "title": "DMCA §512(c) safe-harbor role and baseline conditions",
+      "effective": "current",
+      "applicability_model": "us-dmca512c-v1",
+      "required_evidence_types": [
+        "questionnaire",
+        "legal"
+      ],
+      "runtime_tests": [],
+      "verify": "Determine whether the service stores material at the direction of users and seeks §512(c) safe-harbor protection. Registration alone does not establish safe-harbor eligibility."
+    },
+    {
+      "id": "US-DMCA512C-AGENT",
+      "title": "DMCA designated agent registration and publication",
+      "effective": "current",
+      "applicability_model": "us-dmca512c-v1",
+      "required_evidence_types": [
+        "source",
+        "config",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Verify the publicly accessible designated-agent contact matches the current Copyright Office electronic directory record."
+      ],
+      "verify": "Review 17 U.S.C. §512(c)(2) and 37 CFR §201.38. Keep the website and Copyright Office agent information current and accurate."
+    },
+    {
+      "id": "US-DMCA512C-NOTICE",
+      "title": "DMCA notice, takedown and counter-notice workflow",
+      "effective": "current",
+      "applicability_model": "us-dmca512c-v1",
+      "required_evidence_types": [
+        "source",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Run a synthetic notice/counter-notice tabletop; verify intake, required-field review, expeditious removal/disablement decision path, user notification, counter-notice handling and restoration timing where applicable."
+      ],
+      "verify": "Review §512(c), (g) and current Copyright Office materials. Beacon does not determine whether a work is infringing."
+    },
+    {
+      "id": "US-DMCA512C-REPEAT",
+      "title": "DMCA repeat-infringer policy and standard technical measures",
+      "effective": "current",
+      "applicability_model": "us-dmca512c-v1",
+      "required_evidence_types": [
+        "source",
+        "config",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Using synthetic account history, verify the repeat-infringer policy can be applied in appropriate circumstances and that account/action records are retained consistently."
+      ],
+      "verify": "Review §512(i) and current case-law-sensitive guidance. Do not equate one complaint with a legal finding of infringement."
+    },
+    {
+      "id": "US-ADA-T3-WEB",
+      "title": "ADA Title III web accessibility for public accommodations",
+      "effective": "current",
+      "applicability_model": "us-ada-titleiii-v1",
+      "required_evidence_types": [
+        "questionnaire",
+        "source",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Run automated accessibility checks plus keyboard, focus, zoom, screen-reader and error-message tests on representative public-facing flows. Treat WCAG as useful technical guidance rather than an automatic Title III legal verdict."
+      ],
+      "verify": "Review DOJ ADA web-accessibility guidance and current binding law for the business/jurisdiction. DOJ guidance states that businesses open to the public must provide accessible online goods/services, while Title III lacks the same specific federal web technical rule that applies to Title II."
+    },
+    {
+      "id": "US-ADA-T2-LARGE-WEB",
+      "title": "ADA Title II web/mobile accessibility — public entities 50,000+",
+      "effective": "2027-04-26",
+      "applicability_model": "us-ada-titleii-large-v1",
+      "required_evidence_types": [
+        "questionnaire",
+        "source",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Test representative web/mobile content against WCAG 2.1 Level AA and the Title II rule's scope/exceptions; include manual keyboard and screen-reader review."
+      ],
+      "verify": "Review DOJ Title II web/mobile rule and the 2026 interim final rule extending the compliance date for public entities with population 50,000 or more to 26 April 2027."
+    },
+    {
+      "id": "US-ADA-T2-SMALL-WEB",
+      "title": "ADA Title II web/mobile accessibility — smaller public entities and special districts",
+      "effective": "2028-04-26",
+      "applicability_model": "us-ada-titleii-small-v1",
+      "required_evidence_types": [
+        "questionnaire",
+        "source",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Test representative web/mobile content against WCAG 2.1 Level AA and the Title II rule's scope/exceptions; include manual keyboard and screen-reader review."
+      ],
+      "verify": "Review DOJ Title II web/mobile rule and the 2026 interim final rule extending the compliance date for public entities under 50,000 population or special district governments to 26 April 2028."
+    }
+  ],
+  "primary_sources": [
+    "https://www.federalregister.gov/documents/2025/04/22/2025-05904/childrens-online-privacy-protection-rule",
+    "https://www.ftc.gov/legal-library/browse/rules/childrens-online-privacy-protection-rule-coppa",
+    "https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business",
+    "https://www.ftc.gov/legal-library/browse/rules/can-spam-rule",
+    "https://www.copyright.gov/title17/92chap5.html#512",
+    "https://www.copyright.gov/dmca-directory/",
+    "https://www.copyright.gov/title37/201/37cfr201-38.html",
+    "https://www.ada.gov/resources/web-guidance/",
+    "https://www.ada.gov/resources/small-entity-compliance-guide/"
+  ],
+  "limitations": [
+    "This pack covers selected federal digital-product regimes only; it does not cover state privacy, consumer-protection, biometric, health, employment, accessibility or marketing laws.",
+    "COPPA applicability depends on audience, actual knowledge and collection of personal information; age-screen design is fact-specific.",
+    "DMCA §512 is a conditional limitation on liability, not a certification that user content is lawful.",
+    "ADA Title III web-accessibility obligations and remedies can depend on binding law in the relevant jurisdiction; Beacon does not convert WCAG test results directly into legal violations.",
+    "A PASS reflects the supplied evidence contract for the modeled check, not a legal conclusion."
+  ]
+}
