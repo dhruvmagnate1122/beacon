@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.4.0",
+  "schema_version": "0.5.0",
   "jurisdiction_packs": null,
   "project_name": null,
   "entity_establishments": null,
@@ -77,5 +77,14 @@
   "uk_representative_requirement_and_contact": null,
   "uk_transfer_mechanisms": null,
   "uk_pecr_storage_access_exceptions": null,
-  "uk_pecr_marketing_basis_and_suppression": null
+  "uk_pecr_marketing_basis_and_suppression": null,
+  "coppa_collects_personal_information": null,
+  "coppa_child_directed_service": null,
+  "coppa_mixed_audience_service": null,
+  "coppa_actual_knowledge_under13_collection": null,
+  "sends_us_commercial_email": null,
+  "hosts_content_at_user_direction": null,
+  "seeks_dmca_512c_safe_harbor": null,
+  "us_ada_title_iii_public_accommodation": null,
+  "us_ada_title_ii_entity_size": null
 }
