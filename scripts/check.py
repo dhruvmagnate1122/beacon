@@ -26,7 +26,7 @@ def dpdp(profile, base):
  out=[]
  for c in pack['checks']:
   status=c['status_default']
-  if not india and c['id']!='IN-DPDP-SCOPE': status='applicability-unknown'
+  if not india: status='applicability-unknown'
   out.append({'rule_id':c['id'],'status':status,'severity':'unassessed','title':c['title'],'effective':c['effective'],'evidence_needed':c['evidence'],'next_step':c['verify']})
  return out
 
