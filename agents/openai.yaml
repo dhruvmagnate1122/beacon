@@ -1,0 +1,14 @@
+interface:
+  display_name: Launch Readiness
+  short_description: Check app launch risks with evidence and clear limits
+  default_prompt: Use $launch-readiness to assess this app before launch and verify
+    supported fixes.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true
