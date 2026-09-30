@@ -1,0 +1,16 @@
+{
+  "US-COPPA-NOTICE-CONSENT": [
+    {
+      "type": "runtime",
+      "result": "FAIL",
+      "details": "Synthetic fixture permits profile submission before a modeled verifiable parental consent step.",
+      "observed_at": "2026-10-01T00:00:00Z",
+      "environment": "fixture",
+      "producer": {
+        "kind": "manual",
+        "name": "Beacon fixture"
+      },
+      "reference": "examples/us-federal-readiness/index.html#signup"
+    }
+  ]
+}
