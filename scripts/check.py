@@ -209,14 +209,71 @@ def _us_ada_titleii_large_applicability(profile):
  if not profile: return None
  size=profile.get('us_ada_title_ii_entity_size')
  if size in ('50000_or_more','50000+'): return True
- if size in ('under_50000','special_district','not_title_ii'): return False
+ if size in ('under_50000','special_district','not_title_ii','not_public_entity'): return False
  return None
 
 def _us_ada_titleii_small_applicability(profile):
  if not profile: return None
  size=profile.get('us_ada_title_ii_entity_size')
  if size in ('under_50000','special_district'): return True
- if size in ('50000_or_more','50000+','not_title_ii'): return False
+ if size in ('50000_or_more','50000+','not_title_ii','not_public_entity'): return False
+ return None
+
+def _certin_general_applicability(profile):
+ if not profile: return None
+ v=profile.get('certin_general_directions_apply')
+ if v is True: return True
+ if v is False: return False
+ return None
+
+def _certin_incident_applicability(profile):
+ if not profile: return None
+ v=profile.get('certin_incident_reporting_applies')
+ if v is True: return True
+ if v is False: return False
+ return None
+
+def _certin_provider_records_applicability(profile):
+ if not profile: return None
+ v=profile.get('certin_provider_category')
+ if v in ('data_centre','vps','cloud_service','vpn_service'): return True
+ if v=='not_applicable': return False
+ return None
+
+def _certin_virtual_asset_applicability(profile):
+ if not profile: return None
+ v=profile.get('certin_virtual_asset_provider')
+ if v is True: return True
+ if v is False: return False
+ return None
+
+def _eu_vat_tbe_b2c_applicability(profile):
+ if not profile: return None
+ v=profile.get('eu_vat_supplies_tbe_to_eu_consumers')
+ if v is True: return True
+ if v is False: return False
+ return None
+
+def _eu_vat_b2b_services_applicability(profile):
+ if not profile: return None
+ v=profile.get('eu_vat_supplies_services_to_eu_businesses')
+ if v is True: return True
+ if v is False: return False
+ return None
+
+def _eu_vat_threshold_applicability(profile):
+ if not profile: return None
+ tbe=profile.get('eu_vat_supplies_tbe_to_eu_consumers')
+ single=profile.get('eu_vat_supplier_established_in_single_member_state')
+ if tbe is True and single is True: return True
+ if tbe is False or single is False: return False
+ return None
+
+def _eu_vat_oss_applicability(profile):
+ if not profile: return None
+ v=profile.get('eu_vat_uses_or_plans_oss_for_crossborder_b2c')
+ if v is True: return True
+ if v is False: return False
  return None
 
 APPLICABILITY_MODELS={
@@ -226,7 +283,7 @@ APPLICABILITY_MODELS={
  'uk-pecr-storage-v1':_uk_pecr_storage_applicability,
  'uk-pecr-marketing-v1':_uk_pecr_marketing_applicability,
  'us-coppa-v1':_us_coppa_applicability,
- 'us-can-spam-v1':_us_can_spam_applicability,
+ 'us-can-spam-v1':_us_canspam_applicability,
  'us-dmca512c-v1':_us_dmca512c_applicability,
  'us-ada-titleiii-v1':_us_ada_titleiii_applicability,
  'us-ada-titleii-large-v1':_us_ada_titleii_large_applicability,
