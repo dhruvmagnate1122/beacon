@@ -19,7 +19,7 @@ Beacon currently combines:
 ## Example result shape
 
 ```text
-CANARY READINESS: REVIEW_REQUIRED
+BEACON READINESS: REVIEW_REQUIRED
 
 SOURCE CANDIDATES
   [HIGH] SEC-001
@@ -39,7 +39,7 @@ UNKNOWNS
     Next: inspect plan caps, recharge, quotas and expensive endpoints
 ```
 
-Beacon keeps **candidate signals, legal applicability, future-effective duties, runtime evidence and unknowns separate**. It does not turn missing evidence directly into a legal violation.
+Beacon keeps **candidate signals, legal applicability, future-effective duties, runtime evidence and unknowns separate**. For a future-effective duty, `status` remains `FUTURE_EFFECTIVE` while `readiness_status` records whether supplied evidence currently passes, fails, needs review, or remains unknown. Missing evidence is not converted into a legal violation.
 
 ## Quick start
 
@@ -52,7 +52,7 @@ python3 scripts/check.py /absolute/path/to/your-app --profile /path/to/project-p
 python3 scripts/test_check.py
 ```
 
-Copy `assets/project-profile.json` into a private project workspace and fill only facts you actually know. Leave unknowns as `null`.
+Copy `assets/project-profile.json` into a private project workspace and fill only facts you actually know. Leave unknowns as `null`. India applicability is derived from explicit section 3 route/exclusion facts; incomplete facts remain `UNKNOWN` rather than being treated as non-applicable.
 
 ## Evidence trust model
 
@@ -68,7 +68,7 @@ For material readiness decisions, evidence should record:
 - producer/reviewer identity or tool;
 - either `artifact` or `reference` — a required reproducible pointer to the supporting material.
 
-The core validates this evidence structure but does not cryptographically authenticate user-supplied evidence. Manual evidence should remain visibly manual. Conflicting or partial evidence should stay `REVIEW`; it should not be silently overwritten by a later assertion.
+The core validates this evidence structure, rejects evidence for unknown India-pack rule IDs, but does not cryptographically authenticate user-supplied evidence. Manual evidence should remain visibly manual. Conflicting or partial evidence should stay `REVIEW`; it should not be silently overwritten by a later assertion.
 
 ## Status model
 
@@ -79,11 +79,11 @@ The core validates this evidence structure but does not cryptographically authen
 - **REVIEW** — candidate, conflict, or partial evidence needs contextual review.
 - **UNKNOWN** — applicability/current requirement exists but evidence is incomplete.
 - **NOT_APPLICABLE** — facts support non-applicability and the rationale is retained.
-- **FUTURE_EFFECTIVE** — the modeled obligation is not yet effective.
+- **FUTURE_EFFECTIVE** — the modeled obligation is not yet effective; any current implementation result is carried separately in `readiness_status`.
 
 ## India DPDP pack
 
-`references/india-dpdp.json` contains 18 evidence-driven checks for India.
+`references/india-dpdp.json` contains 18 evidence-driven checks for India. It is currently Beacon's only full executable jurisdiction pack; the EU/UK/US/CERT-In entries in `references/rules.json` are research seeds for guided review, not equivalent executable packs.
 
 The pack is researched as of **30 September 2026** against the DPDP Act 2023, final DPDP Rules 2025, the commencement notification, and MeitY's Rules collection/corrigendum. It models phased commencement so future-effective duties are not reported as present violations.
 
@@ -137,6 +137,6 @@ Legal-rule changes must cite current primary sources, effective dates, applicabi
 
 ## Version
 
-**v0.2.0** — evidence-driven launch readiness with India DPDP support.
+**v0.2.1** — hardened evidence, applicability, and future-readiness semantics for the India DPDP pack.
 
 MIT. Third-party sources and linked documentation retain their own terms.

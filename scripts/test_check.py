@@ -40,29 +40,29 @@ class Checks(unittest.TestCase):
   r=scan(self.root,{'offers_goods_or_services_to_people_in_india':None},today=dt.date(2028,1,1)); d=[f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')]
   self.assertTrue(d); self.assertTrue(all(f['status']=='UNKNOWN' for f in d))
  def test_not_applicable(self):
-  r=scan(self.root,{'entity_establishments':['US'],'offers_goods_or_services_to_people_in_india':False},today=dt.date(2028,1,1)); d=[f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')]
+  r=scan(self.root,{'processing_digital_personal_data_within_india':False,'processing_digital_personal_data_outside_india':False,'offers_goods_or_services_to_people_in_india':False},today=dt.date(2028,1,1)); d=[f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')]
   self.assertTrue(all(f['status']=='NOT_APPLICABLE' for f in d))
  def test_future_effective(self):
-  r=scan(self.root,{'offers_goods_or_services_to_people_in_india':True},today=dt.date(2026,9,30)); d={f['rule_id']:f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')}
+  r=scan(self.root,{'processing_digital_personal_data_outside_india':True,'offers_goods_or_services_to_people_in_india':True},today=dt.date(2026,9,30)); d={f['rule_id']:f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')}
   self.assertEqual(d['IN-DPDP-NOTICE']['status'],'FUTURE_EFFECTIVE'); self.assertEqual(d['IN-DPDP-CONSENT-MANAGER']['status'],'FUTURE_EFFECTIVE')
  def test_fail_beats_future(self):
   item=ev('runtime','FAIL'); item['details']='optional consent preselected'
   evidence={'IN-DPDP-CONSENT-UX':[item]}
-  r=scan(self.root,{'offers_goods_or_services_to_people_in_india':True},evidence,today=dt.date(2026,9,30)); d={f['rule_id']:f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')}
-  self.assertEqual(d['IN-DPDP-CONSENT-UX']['status'],'FAIL')
+  r=scan(self.root,{'processing_digital_personal_data_outside_india':True,'offers_goods_or_services_to_people_in_india':True},evidence,today=dt.date(2026,9,30)); d={f['rule_id']:f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')}
+  self.assertEqual(d['IN-DPDP-CONSENT-UX']['status'],'FUTURE_EFFECTIVE'); self.assertEqual(d['IN-DPDP-CONSENT-UX']['readiness_status'],'FAIL')
  def test_pass_requires_all_evidence_types(self):
   evidence={'IN-DPDP-CONSENT-UX':[ev(x,'PASS') for x in ['source','config','runtime','legal']]}
-  r=scan(self.root,{'offers_goods_or_services_to_people_in_india':True},evidence,today=dt.date(2028,1,1)); d={f['rule_id']:f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')}
+  r=scan(self.root,{'processing_digital_personal_data_outside_india':True,'offers_goods_or_services_to_people_in_india':True},evidence,today=dt.date(2028,1,1)); d={f['rule_id']:f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')}
   self.assertEqual(d['IN-DPDP-CONSENT-UX']['status'],'PASS')
  def test_partial_evidence_review(self):
   evidence={'IN-DPDP-CONSENT':[ev('runtime','REVIEW')]}
-  r=scan(self.root,{'offers_goods_or_services_to_people_in_india':True},evidence,today=dt.date(2028,1,1)); d={f['rule_id']:f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')}
+  r=scan(self.root,{'processing_digital_personal_data_outside_india':True,'offers_goods_or_services_to_people_in_india':True},evidence,today=dt.date(2028,1,1)); d={f['rule_id']:f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')}
   self.assertEqual(d['IN-DPDP-CONSENT']['status'],'REVIEW')
  def test_cli_invalid_profile(self):
   script=str(Path(__file__).with_name('check.py')); profile=self.put('profile.json','[]')
   p=subprocess.run([sys.executable,script,str(self.root),'--profile',str(profile)],capture_output=True,text=True); self.assertEqual(p.returncode,2)
  def test_profile_schema(self):
-  p=json.loads((Path(__file__).parents[1]/'assets/project-profile.json').read_text()); self.assertEqual(p['schema_version'],'0.2.0'); self.assertIn('consent_ui_default_state',p)
+  p=json.loads((Path(__file__).parents[1]/'assets/project-profile.json').read_text()); self.assertEqual(p['schema_version'],'0.2.1'); self.assertIn('consent_ui_default_state',p); self.assertIn('processing_digital_personal_data_within_india',p)
  def test_evidence_valid(self):
   self.assertEqual(validate_evidence({'IN-DPDP-CONSENT':[ev()]}),{'IN-DPDP-CONSENT':[ev()]})
  def test_evidence_accepts_reference_alias(self):
@@ -103,11 +103,41 @@ class Checks(unittest.TestCase):
  def test_readiness_summary(self):
   full=dict(ev('runtime','FAIL')); full['reference']=full.pop('artifact')
   e={'IN-DPDP-CONSENT-UX':[full]}
-  r=scan(self.root,{'offers_goods_or_services_to_people_in_india':True},e,today=dt.date(2026,9,30))
+  r=scan(self.root,{'processing_digital_personal_data_outside_india':True,'offers_goods_or_services_to_people_in_india':True},e,today=dt.date(2026,9,30))
   s=r['readiness_summary']
-  self.assertIn('IN-DPDP-CONSENT-UX',s['dpdp_fail'])
+  self.assertIn('IN-DPDP-CONSENT-UX',s['dpdp_future_effective'])
+  self.assertIn('IN-DPDP-CONSENT-UX',s['dpdp_future_readiness_fail'])
   self.assertIn('IN-DPDP-NOTICE',s['dpdp_future_effective'])
   self.assertEqual(sum(s['counts_by_status'].values()),len(r['findings']))
   self.assertIn('not a compliance determination',s['note'])
+
+ def test_evidence_rejects_unknown_rule_id(self):
+  with self.assertRaises(ValueError): scan(self.root,{}, {'IN-DPDP-CONSET':[ev()]})
+ def test_india_scope_unknown_when_facts_partial(self):
+  r=scan(self.root,{'offers_goods_or_services_to_people_in_india':False},today=dt.date(2028,1,1))
+  d={f['rule_id']:f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')}
+  self.assertTrue(all(x['status']=='UNKNOWN' for x in d.values()))
+ def test_india_scope_within_india_route(self):
+  profile={'processing_digital_personal_data_within_india':True,'personal_data_collected_digitally_or_digitised_in_india':True}
+  r=scan(self.root,profile,today=dt.date(2028,1,1))
+  d={f['rule_id']:f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')}
+  self.assertEqual(d['IN-DPDP-NOTICE']['status'],'UNKNOWN')
+ def test_india_scope_exclusion(self):
+  profile={'all_relevant_processing_personal_or_domestic':True}
+  r=scan(self.root,profile,today=dt.date(2028,1,1))
+  d=[f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')]
+  self.assertTrue(all(x['status']=='NOT_APPLICABLE' for x in d))
+ def test_effective_date_boundary(self):
+  profile={'processing_digital_personal_data_outside_india':True,'offers_goods_or_services_to_people_in_india':True}
+  r=scan(self.root,profile,today=dt.date(2027,5,13))
+  d={f['rule_id']:f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')}
+  self.assertNotEqual(d['IN-DPDP-NOTICE']['status'],'FUTURE_EFFECTIVE')
+ def test_future_pass_preserves_effective_state(self):
+  evidence={'IN-DPDP-CONSENT-UX':[ev(x,'PASS') for x in ['source','config','runtime','legal']]}
+  profile={'processing_digital_personal_data_outside_india':True,'offers_goods_or_services_to_people_in_india':True}
+  r=scan(self.root,profile,evidence,today=dt.date(2026,9,30))
+  d={f['rule_id']:f for f in r['findings'] if f['rule_id'].startswith('IN-DPDP')}
+  self.assertEqual(d['IN-DPDP-CONSENT-UX']['status'],'FUTURE_EFFECTIVE')
+  self.assertEqual(d['IN-DPDP-CONSENT-UX']['readiness_status'],'PASS')
 
 if __name__=='__main__': unittest.main()
