@@ -1,14 +1,14 @@
-# Canary — Launch Readiness
+# Beacon — Launch Readiness
 
 **Catch launch risks before your users, regulators, vendors, or cloud bill do.**
 
-Canary is an open-source coding-agent skill plus lightweight Python readiness engine for web products. It combines conservative source signals, project facts, configuration review, runtime evidence, and current legal-source verification to surface what still needs attention before launch.
+Beacon is an open-source coding-agent skill plus lightweight Python readiness engine for web products. It combines conservative source signals, project facts, configuration review, runtime evidence, and current legal-source verification to surface what still needs attention before launch.
 
-> **Canary is an early-warning system, not a compliance certificate.** A clean scan does not mean an app is secure, legally compliant, tax-correct, accessible, or operationally safe.
+> **Beacon is an early-warning system, not a compliance certificate.** A clean scan does not mean an app is secure, legally compliant, tax-correct, accessible, or operationally safe.
 
-## What Canary looks for
+## What Beacon looks for
 
-Canary currently combines:
+Beacon currently combines:
 
 - **source candidates** — embedded credentials, disabled RLS, session replay, public-prefixed privileged secrets, remote Google Fonts and unconditional SQL policies;
 - **project facts** — markets, users, personal data, consent, vendors, children, payments, subscriptions, AI features, retention and hosting;
@@ -39,7 +39,7 @@ UNKNOWNS
     Next: inspect plan caps, recharge, quotas and expensive endpoints
 ```
 
-Canary keeps **candidate signals, legal applicability, future-effective duties, runtime evidence and unknowns separate**. It does not turn missing evidence directly into a legal violation.
+Beacon keeps **candidate signals, legal applicability, future-effective duties, runtime evidence and unknowns separate**. It does not turn missing evidence directly into a legal violation.
 
 ## Quick start
 
@@ -89,7 +89,7 @@ The pack is researched as of **30 September 2026** against the DPDP Act 2023, fi
 
 **Always re-check current primary sources before making a legal conclusion.** Bundled legal records are research assets, not legal opinions.
 
-## What Canary does not do
+## What Beacon does not do
 
 - no legal certification or compliance badge;
 - no automatic fine calculation;
@@ -104,7 +104,7 @@ The pack is researched as of **30 September 2026** against the DPDP Act 2023, fi
 
 AI-assisted development makes it easy to get from idea to deployment faster than teams can perform the last-mile checks around privacy, consent, subscriptions, cost exposure, data isolation and jurisdiction-specific obligations.
 
-Canary tries to make that last mile explicit and evidence-backed instead of relying on a generic “launch checklist.”
+Beacon tries to make that last mile explicit and evidence-backed instead of relying on a generic “launch checklist.”
 
 ## Contributing
 
@@ -123,7 +123,7 @@ Legal-rule changes must cite current primary sources, effective dates, applicabi
 
 ## Project layout
 
-- `SKILL.md` — Canary coding-agent workflow
+- `SKILL.md` — Beacon coding-agent workflow
 - `scripts/check.py` — source triage + profile/evidence-driven readiness engine
 - `scripts/test_check.py` — regression tests
 - `assets/project-profile.json` — project/applicability questionnaire
