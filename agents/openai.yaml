@@ -1,7 +1,7 @@
 interface:
-  display_name: Canary
+  display_name: Beacon
   short_description: Catch launch risks with evidence and clear limits
-  default_prompt: Use $canary to assess this app before launch and verify supported fixes.
+  default_prompt: Use $beacon to assess this app before launch and verify supported fixes.
   icon_small: assets/icon.svg
   icon_large: assets/icon.svg
 policy:
