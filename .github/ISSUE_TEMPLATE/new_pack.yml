@@ -1,0 +1,30 @@
+name: Propose a jurisdiction or readiness pack
+description: Propose a new source-backed pack
+title: "[pack] "
+labels: ["enhancement"]
+body:
+  - type: input
+    id: jurisdiction
+    attributes:
+      label: Jurisdiction / domain
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope and triggers
+    validations:
+      required: true
+  - type: textarea
+    id: primary
+    attributes:
+      label: Primary sources
+      description: Statutes, rules, notifications, regulator guidance, official vendor docs, etc.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence model and runtime/config checks
+    validations:
+      required: true
