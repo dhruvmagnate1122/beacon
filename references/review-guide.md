@@ -36,3 +36,19 @@ State project/version, environment, profile unknowns, evidence date, scan covera
 ## v0.2 boundaries
 
 Automated source triage remains six regex signals. The India pack adds profile-driven statuses/evidence prompts; it does not parse privacy notices, make legal determinations or execute runtime tests. No auto-fix engine, cloud adapter, scheduled monitoring, SARIF exporter or worldwide certification is included.
+
+
+## Evidence and status engine
+
+Each India check declares required evidence types from: `source`, `config`, `questionnaire`, `runtime`, and `legal`.
+
+- `PASS`: all declared evidence types are present with passing evidence after the requirement is effective.
+- `FAIL`: a required technical or behavioral verification failed. Do not translate this automatically into a statutory violation.
+- `REVIEW`: a candidate, conflict, or partial result needs contextual review.
+- `UNKNOWN`: the requirement is current/applicable but evidence is incomplete, or India nexus cannot yet be established.
+- `NOT_APPLICABLE`: factual applicability review supports non-applicability and the rationale is retained.
+- `FUTURE_EFFECTIVE`: the modeled obligation is not yet effective; readiness work can still be completed before commencement.
+
+Evidence should state the type, result, concise sanitized details, test date/environment where relevant, and the primary-source review date for legal evidence. Never put credentials, customer data or unnecessary personal data into evidence files.
+
+For consent UX, use a clean browser/test account and verify the default state, required-only/reject path, pre-consent network behavior, affirmative acceptance, and withdrawal. Treat UI prominence or dark-pattern concerns as review evidence unless a specific legal conclusion is supported by current primary authority.
