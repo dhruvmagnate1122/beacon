@@ -16,7 +16,8 @@ Beacon currently combines:
 - **legal-source verification** — jurisdiction/effective-date review using primary sources;
 - **India DPDP pack** — 18 commencement-aware checks for the DPDP Act 2023 + Rules 2025;
 - **EU/EEA GDPR + ePrivacy pack** — executable checks covering GDPR scope, principles, lawful basis, transparency, consent, special-category data, children, rights, automated decisions, processors, records, privacy by design, security, breach response, DPIA, DPO/representative duties, transfers, tracking/storage access and electronic marketing;
-- **UK GDPR + PECR pack** — executable UK data-protection and privacy/electronic-communications checks updated for the Data (Use and Access) Act 2025, with separate applicability for UK GDPR, storage/access technologies and electronic marketing.
+- **UK GDPR + PECR pack** — executable UK data-protection and privacy/electronic-communications checks updated for the Data (Use and Access) Act 2025, with separate applicability for UK GDPR, storage/access technologies and electronic marketing;
+- **US federal digital-product pack** — selected federal checks for COPPA, CAN-SPAM, DMCA §512(c), and ADA web/mobile accessibility, with independent applicability for each regime.
 
 ## Example result shape
 
@@ -54,7 +55,7 @@ python3 scripts/check.py /absolute/path/to/your-app --profile /path/to/project-p
 python3 scripts/test_check.py
 ```
 
-Copy `assets/project-profile.json` into a private project workspace and fill only facts you actually know. Leave unknowns as `null`. Select jurisdiction packs explicitly with `jurisdiction_packs` (for example `['india-dpdp']`, `['eu-gdpr-eprivacy']`, `['uk-gdpr-pecr']`, or any relevant combination). Applicability remains `UNKNOWN` when the facts are incomplete.
+Copy `assets/project-profile.json` into a private project workspace and fill only facts you actually know. Leave unknowns as `null`. Select jurisdiction packs explicitly with `jurisdiction_packs` (for example `['india-dpdp']`, `['eu-gdpr-eprivacy']`, `['uk-gdpr-pecr']`, `['us-federal-digital']`, or any relevant combination). Applicability remains `UNKNOWN` when the facts are incomplete.
 
 ## Evidence trust model
 
@@ -103,6 +104,12 @@ The EU pack is researched as of **1 October 2026** against EUR-Lex, EDPB guidanc
 
 The UK pack is researched as of **1 October 2026** against current UK legislation and ICO guidance. All DUAA data-protection provisions were in force by 19 June 2026; because ICO guidance is still being updated in some areas, current legislation and the newest ICO material should be checked on every release.
 
+### United States — selected federal digital-product regimes
+
+`references/us-federal-digital.json` is Beacon's fourth executable jurisdiction pack. It intentionally does **not** pretend the United States has one federal omnibus privacy law. Instead it models independent federal regimes that commonly affect digital products: COPPA for covered child-data processing, CAN-SPAM for commercial email, DMCA §512(c) safe-harbor operations for user-hosted content, and ADA web/mobile accessibility.
+
+The amended COPPA Rule became effective **23 June 2025**, with most regulated entities required to comply by **22 April 2026**. The DOJ's 2026 interim final rule extended the Title II web/mobile compliance dates to **26 April 2027** for public entities of 50,000+ population and **26 April 2028** for smaller public entities/special districts. Title III business accessibility is kept separate because DOJ has not imposed the same specific federal web technical standard on private public accommodations.
+
 **Always re-check current primary sources before making a legal conclusion.** Bundled legal records are research assets, not legal opinions.
 
 ## What Beacon does not do
@@ -147,6 +154,7 @@ Legal-rule changes must cite current primary sources, effective dates, applicabi
 - `references/india-dpdp.json` — India DPDP executable pack
 - `references/eu-gdpr-eprivacy.json` — EU/EEA GDPR + ePrivacy executable pack
 - `references/uk-gdpr-pecr.json` — UK GDPR + PECR executable pack
+- `references/us-federal-digital.json` — selected US federal digital-product executable pack
 - `references/rules.json` — broader guided-review research seeds
 - `references/review-guide.md` — verification recipes
 - `CONTRIBUTING.md` — contribution contract
@@ -155,6 +163,6 @@ Legal-rule changes must cite current primary sources, effective dates, applicabi
 
 ## Version
 
-**v0.4.0** — executable India, EU/EEA and UK jurisdiction packs with rule-level applicability for overlapping legal regimes.
+**v0.5.0** — executable India, EU/EEA, UK and selected US federal jurisdiction packs.
 
 MIT. Third-party sources and linked documentation retain their own terms.
