@@ -26,32 +26,49 @@ MANUAL=[
 
 # Evidence results use the project's own status vocabulary — PASS, FAIL,
 # REVIEW, UNKNOWN, NOT_APPLICABLE, FUTURE_EFFECTIVE. No Litmus-only statuses.
-EVIDENCE_RESULTS={'PASS','FAIL','REVIEW','UNKNOWN','NOT_APPLICABLE','FUTURE_EFFECTIVE'}
+EVIDENCE_RESULTS={'PASS','FAIL','REVIEW'}
+EVIDENCE_TYPES={'source','config','questionnaire','runtime','legal'}
 PRODUCER_KINDS={'tool','external','manual'}
 
 def validate_evidence(evidence):
- """Fail loudly on malformed evidence so a typo'd file can never silently
- become UNKNOWN. Accepts 'artifact' or 'reference' as the reproducible
- locator, matching the documented evidence contract."""
+ """Validate the reusable evidence contract before any readiness derivation."""
  if not isinstance(evidence,dict):
   raise ValueError('Evidence must be an object mapping rule IDs to record arrays.')
  for rid,items in evidence.items():
+  if not isinstance(rid,str) or not rid.strip():
+   raise ValueError('Evidence rule ID must be a non-empty string.')
   if not isinstance(items,list):
-   raise ValueError('Evidence records for '+str(rid)+' must be an array.')
-  for item in items:
+   raise ValueError('Evidence records for '+rid+' must be an array.')
+  for idx,item in enumerate(items):
+   prefix='Evidence record '+rid+'['+str(idx)+'] '
    if not isinstance(item,dict):
-    raise ValueError('Evidence record must be an object.')
+    raise ValueError(prefix+'must be an object.')
    for k in ('type','result','details','observed_at','environment','producer'):
     if k not in item:
-     raise ValueError('Evidence record missing '+k)
-   artifact=item.get('artifact'); reference=item.get('reference')
-   if not ((isinstance(artifact,str) and artifact.strip()) or (isinstance(reference,str) and reference.strip())):
-    raise ValueError('Evidence record requires artifact or reference')
+     raise ValueError(prefix+'missing '+k)
+   if item['type'] not in EVIDENCE_TYPES:
+    raise ValueError(prefix+'has invalid type')
    if str(item['result']).upper() not in EVIDENCE_RESULTS:
-    raise ValueError('Invalid evidence result')
+    raise ValueError(prefix+'has invalid result')
+   if not isinstance(item['details'],str) or not item['details'].strip():
+    raise ValueError(prefix+'requires non-empty details')
+   if not isinstance(item['environment'],str) or not item['environment'].strip():
+    raise ValueError(prefix+'requires non-empty environment')
+   stamp=item['observed_at']
+   if not isinstance(stamp,str) or not stamp.strip():
+    raise ValueError(prefix+'requires observed_at')
+   try:
+    dt.datetime.fromisoformat(stamp.strip().replace('Z','+00:00'))
+   except ValueError:
+    raise ValueError(prefix+'has invalid observed_at')
    prod=item['producer']
-   if not isinstance(prod,dict) or prod.get('kind') not in PRODUCER_KINDS or not prod.get('name'):
-    raise ValueError('Invalid producer')
+   if (not isinstance(prod,dict) or prod.get('kind') not in PRODUCER_KINDS or
+       not isinstance(prod.get('name'),str) or not prod.get('name').strip()):
+    raise ValueError(prefix+'has invalid producer')
+   artifact=item.get('artifact'); reference=item.get('reference')
+   if not ((isinstance(artifact,str) and artifact.strip()) or
+           (isinstance(reference,str) and reference.strip())):
+    raise ValueError(prefix+'requires artifact or reference')
  return evidence
 
 def readiness_summary(findings,today=None):
@@ -129,6 +146,8 @@ def dpdp(profile, evidence, base, today=None):
  return out
 
 def scan(root,profile=None,evidence=None,today=None):
+ if evidence is not None:
+  validate_evidence(evidence)
  root=Path(root).resolve()
  if not root.is_dir(): raise ValueError('Project root must be an existing directory.')
  findings=[]; omissions=[]; scanned=0
@@ -179,8 +198,6 @@ def main():
  try:
   profile=_load_object(args.profile,'Profile') if args.profile else None
   evidence=_load_object(args.evidence,'Evidence') if args.evidence else None
-  if evidence is not None:
-   validate_evidence(evidence)
   result=scan(args.root,profile,evidence)
  except (OSError,ValueError,json.JSONDecodeError):
   print(json.dumps({'error':'InvalidInput','message':'Invalid root, profile or evidence; no scan completed.'}),file=sys.stderr); return 2
