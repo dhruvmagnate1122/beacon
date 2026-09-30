@@ -14,7 +14,8 @@ Beacon currently combines:
 - **project facts** — markets, users, personal data, consent, vendors, children, payments, subscriptions, AI features, retention and hosting;
 - **runtime/config review** — tenant isolation, cost controls, tracking, unsubscribe/suppression, subscriptions, accessibility and deletion behavior;
 - **legal-source verification** — jurisdiction/effective-date review using primary sources;
-- **India DPDP pack** — 18 commencement-aware readiness checks covering scope, notice, consent, consent UX, consent evidence, security, breach response, rights, children, cross-border processing, SDF duties and exemptions.
+- **India DPDP pack** — 18 commencement-aware checks for the DPDP Act 2023 + Rules 2025;
+- **EU/EEA GDPR + ePrivacy pack** — executable checks covering GDPR scope, principles, lawful basis, transparency, consent, special-category data, children, rights, automated decisions, processors, records, privacy by design, security, breach response, DPIA, DPO/representative duties, transfers, tracking/storage access and electronic marketing.
 
 ## Example result shape
 
@@ -52,7 +53,7 @@ python3 scripts/check.py /absolute/path/to/your-app --profile /path/to/project-p
 python3 scripts/test_check.py
 ```
 
-Copy `assets/project-profile.json` into a private project workspace and fill only facts you actually know. Leave unknowns as `null`. India applicability is derived from explicit section 3 route/exclusion facts; incomplete facts remain `UNKNOWN` rather than being treated as non-applicable.
+Copy `assets/project-profile.json` into a private project workspace and fill only facts you actually know. Leave unknowns as `null`. Select jurisdiction packs explicitly with `jurisdiction_packs` (for example `['india-dpdp']`, `['eu-gdpr-eprivacy']`, or both). Applicability remains `UNKNOWN` when the facts are incomplete.
 
 ## Evidence trust model
 
@@ -68,7 +69,7 @@ For material readiness decisions, evidence should record:
 - producer/reviewer identity or tool;
 - either `artifact` or `reference` — a required reproducible pointer to the supporting material.
 
-The core validates this evidence structure, rejects evidence for unknown India-pack rule IDs, but does not cryptographically authenticate user-supplied evidence. Manual evidence should remain visibly manual. Conflicting or partial evidence should stay `REVIEW`; it should not be silently overwritten by a later assertion.
+The core validates this evidence structure, rejects evidence for unknown rule IDs or inactive jurisdiction packs, but does not cryptographically authenticate user-supplied evidence. Manual evidence should remain visibly manual. Conflicting or partial evidence should stay `REVIEW`; it should not be silently overwritten by a later assertion.
 
 ## Status model
 
@@ -81,11 +82,19 @@ The core validates this evidence structure, rejects evidence for unknown India-p
 - **NOT_APPLICABLE** — facts support non-applicability and the rationale is retained.
 - **FUTURE_EFFECTIVE** — the modeled obligation is not yet effective; any current implementation result is carried separately in `readiness_status`.
 
-## India DPDP pack
+## Executable jurisdiction packs
 
-`references/india-dpdp.json` contains 18 evidence-driven checks for India. It is currently Beacon's only full executable jurisdiction pack; the EU/UK/US/CERT-In entries in `references/rules.json` are research seeds for guided review, not equivalent executable packs.
+### India DPDP
+
+`references/india-dpdp.json` contains 18 evidence-driven checks for India.
 
 The pack is researched as of **30 September 2026** against the DPDP Act 2023, final DPDP Rules 2025, the commencement notification, and MeitY's Rules collection/corrigendum. It models phased commencement so future-effective duties are not reported as present violations.
+
+### EU/EEA GDPR + ePrivacy
+
+`references/eu-gdpr-eprivacy.json` is Beacon's second executable pack. It models GDPR territorial/material scope and major launch-readiness obligations under the GDPR, plus ePrivacy terminal-equipment/tracking and electronic-marketing checks. ePrivacy is a Directive implemented through Member State law, so the pack explicitly requires market-specific legal review rather than pretending one national implementation is EU-wide.
+
+The EU pack is researched as of **1 October 2026** against EUR-Lex, EDPB guidance and European Commission transfer materials.
 
 **Always re-check current primary sources before making a legal conclusion.** Bundled legal records are research assets, not legal opinions.
 
@@ -96,7 +105,7 @@ The pack is researched as of **30 September 2026** against the DPDP Act 2023, fi
 - no production changes;
 - no live cloud/provider access;
 - no autonomous browser/runtime testing;
-- no worldwide legal coverage;
+- no worldwide legal coverage; only selected executable jurisdiction packs plus research seeds;
 - no guarantee that a source regex match is a real defect;
 - no guarantee that a clean scan means a safe launch.
 
@@ -128,8 +137,9 @@ Legal-rule changes must cite current primary sources, effective dates, applicabi
 - `scripts/test_check.py` — regression tests
 - `assets/project-profile.json` — project/applicability questionnaire
 - `assets/evidence-example.json` — evidence format
-- `references/india-dpdp.json` — India DPDP validation pack
-- `references/rules.json` — broader research seeds
+- `references/india-dpdp.json` — India DPDP executable pack
+- `references/eu-gdpr-eprivacy.json` — EU/EEA GDPR + ePrivacy executable pack
+- `references/rules.json` — broader guided-review research seeds
 - `references/review-guide.md` — verification recipes
 - `CONTRIBUTING.md` — contribution contract
 - `ROADMAP.md` — project direction
@@ -137,6 +147,6 @@ Legal-rule changes must cite current primary sources, effective dates, applicabi
 
 ## Version
 
-**v0.2.1** — hardened evidence, applicability, and future-readiness semantics for the India DPDP pack.
+**v0.3.0** — generic jurisdiction-pack engine with executable India DPDP and EU/EEA GDPR + ePrivacy packs.
 
 MIT. Third-party sources and linked documentation retain their own terms.
