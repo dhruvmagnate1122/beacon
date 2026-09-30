@@ -10,7 +10,7 @@ The roadmap prioritizes evidence quality and jurisdiction freshness over checkli
 - synthetic fixture projects;
 - false-positive regression cases;
 - rule-pack version compatibility;
-- CI workflow for tests.
+- generic jurisdiction-pack loader and pack-level summaries.
 
 ## v0.3 — evidence adapters
 
@@ -23,7 +23,7 @@ The roadmap prioritizes evidence quality and jurisdiction freshness over checkli
 
 ## Jurisdiction expansion
 
-Only when there is a maintained primary-source pack:
+India DPDP is the first executable pack. The next jurisdiction should be used to remove remaining India-specific engine paths and prove the pack interface. Promote a research seed only when there is a maintained primary-source pack:
 
 - EU/EEA privacy/ePrivacy;
 - UK privacy/PECR;
