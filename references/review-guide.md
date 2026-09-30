@@ -2,24 +2,37 @@
 
 ## Source and applicability
 
-All bundled legal records are initial research seeds reviewed 2026-09-30, not a current legal opinion. Open their primary sources when needed; distinguish statutes, regulator guidance, court decisions, vendor contracts and engineering recommendations. Check current amendments and operative dates. Never infer all-country coverage from a list of source links. Do not derive rules or fines from social-media graphics.
+Bundled legal records are research seeds reviewed 2026-09-30, not legal opinions. Open current primary sources; distinguish statutes, rules, notifications, regulator guidance, decisions, vendor contracts and engineering recommendations.
 
-Start with India/EU/UK/US if the project targets them, then add only relevant regions. India DPDP is phased; verify the separate Act commencement notification and rule corrigenda. Startup exemptions require applicable evidence. A cookie banner alone is insufficient. Consent is not the only possible lawful ground. Children, tax, health and AI rules need separate classification. Using AI to write code does not alone make the product an AI system.
+For India, use `india-dpdp.json`. The 13 November 2025 Act commencement notification phases substantive provisions; the final DPDP Rules likewise phase commencement, and MeitY lists a December 2025 corrigendum. Therefore a missing future-effective control is a readiness gap, not automatically a present statutory violation. Recheck notifications on every release.
 
-## Verification recipes
+## India DPDP verification
 
-- Database: seed two tenants; test anonymous, each owner and cross-tenant select/insert/update/delete in an isolated database. Check grants, views, storage and server authorization. Confirm intentional public records still work. Never use actual customer data.
-- Cost: inspect actual plan and recharge settings; distinguish alert and cap; verify service coverage, reporting lag and availability impact. Test bounded retries, rate/concurrency limits and expensive endpoints locally.
-- Tracking: capture network requests before any choice, after acceptance, rejection and withdrawal. Confirm masking and processor behavior. Scope each assertion to the actual flow/version.
-- Email: use a test inbox/provider sandbox. Verify unsubscribe works, suppression survives re-import, sender details are correct and channel/jurisdiction rules were reviewed.
-- Subscriptions: use test mode. Verify price/period, consent record, cancellation and webhook idempotency. Tax obligations and legal refund conclusions need separate evidence.
-- Accessibility: use an established engine plus manual keyboard/focus/screen-reader testing; document tested pages and remaining gaps. Scanner success is not legal certification.
-- Privacy lifecycle: trace collection to vendors, retention, account deletion and backups; preserve legal holds and keep consent evidence minimal. Do not assume deletion from one table deletes every copy.
+- Scope: document establishment, target market, offering/activity nexus, digital-personal-data categories and exclusions.
+- Notice: inspect the actual standalone notice and collection screens; map itemised data to specified purposes and rights/withdrawal access.
+- Consent/basis: trace each processing purpose to consent or the exact relied-on specified legitimate use; test withdrawal where consent applies.
+- Security: inspect access controls, credential handling, encryption/obfuscation/tokenisation where appropriate, logs/monitoring, backups and processor safeguards; validate behavior technically.
+- Breach: tabletop a synthetic incident; verify detection, evidence preservation, affected-person communication and Board-notification workflow without causing a real incident.
+- Retention/erasure: trace active stores, processors and backups; document legal/business retention needs and verify the deletion workflow.
+- Children: establish audience/age facts and test the verifiable parent/guardian mechanism where applicable; check tracking/advertising restrictions and exemptions.
+- Rights/grievance: exercise test access, correction, erasure, nomination and grievance paths with safe synthetic accounts; record authentication and escalation.
+- SDF: require current designation evidence before applying SDF-specific duties; if designated, inspect DPO, independent audit and required assessments.
+- Cross-border: inventory destinations/vendors and check current Central Government restrictions; do not assume blanket localisation.
+- Consent Manager: distinguish a registered Consent Manager under the Act/Rules from ordinary consent-management UI.
+
+## Other verification recipes
+
+- Database: seed two tenants; test anonymous, owner, cross-tenant and privileged access in isolation.
+- Cost: inspect actual plan/recharge/caps/quotas/retries and expensive endpoints.
+- Tracking: capture network requests before choice and after acceptance, rejection and withdrawal.
+- Email: use test inbox/provider sandbox; verify unsubscribe and persistent suppression.
+- Subscriptions: use test mode; verify price/period, consent record, cancellation and webhook idempotency.
+- Accessibility: established automated engine plus manual keyboard/focus/screen-reader checks.
 
 ## Output
 
-State project/version, environment, profile unknowns, date, scan coverage and omitted files. Separate source candidates from verified issues. For each finding record ID, source/date, applicability rationale, sanitized evidence, confidence, fix, test/result and owner. End with release blockers, accepted risks and unknowns. Never sum hypothetical penalties.
+State project/version, environment, profile unknowns, evidence date, scan coverage and omissions. Separate source candidates, verified behavior, legal applicability and future-effective readiness. For each item record ID, source/date, applicability rationale, sanitized evidence, confidence, fix/next action, test result and owner. Never sum hypothetical penalties.
 
-## v0.1 boundaries
+## v0.2 boundaries
 
-Automated: six source-pattern signals in check.py. Guided only: live database authorization, provider caps, consent, email, payments, accessibility, legal applicability. No auto-fix engine, cloud adapter, scheduled monitoring, SARIF exporter or worldwide legal certification is included. Rule records do not execute or calculate applicability. The profile is context for the assistant and is not evaluated by the CLI.
+Automated source triage remains six regex signals. The India pack adds profile-driven statuses/evidence prompts; it does not parse privacy notices, make legal determinations or execute runtime tests. No auto-fix engine, cloud adapter, scheduled monitoring, SARIF exporter or worldwide certification is included.
