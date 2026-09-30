@@ -1,5 +1,5 @@
 {
-  "pack_version": "0.2.0",
+  "pack_version": "0.2.1",
   "jurisdiction": "India",
   "as_of": "2026-09-30",
   "purpose": "Evidence-driven DPDP readiness validation; not legal certification.",
@@ -45,7 +45,7 @@
         "legal"
       ],
       "runtime_tests": [],
-      "verify": "Determine Act s3 nexus and exclusions; do not infer solely from user IP or founder location."
+      "verify": "Determine Act s3 route (processing in India of data collected digitally or later digitised, or qualifying outside-India processing connected to offering goods/services to Data Principals in India) and s3(c) exclusions from explicit project facts and legal evidence."
     },
     {
       "id": "IN-DPDP-NOTICE",
@@ -237,15 +237,19 @@
     },
     {
       "id": "IN-DPDP-SDF",
-      "title": "Significant Data Fiduciary duties",
+      "title": "Significant Data Fiduciary governance, assessment and technical duties",
       "effective": "2027-05-13",
       "required_evidence_types": [
         "questionnaire",
-        "legal",
-        "config"
+        "source",
+        "config",
+        "legal"
       ],
-      "runtime_tests": [],
-      "verify": "Apply only with current Central Government designation evidence; if designated, inspect DPO, independent auditor and required assessments."
+      "runtime_tests": [
+        "If currently designated as an SDF, verify the annual DPIA/audit calendar, evidence that significant observations can be furnished to the Board, and the operating process for reviewing technical measures including algorithmic software for risks to Data Principal rights.",
+        "If the Central Government has specified personal data under Rule 13(4), verify the relevant data and traffic-data transfer restriction against actual processing/storage flows."
+      ],
+      "verify": "Apply only with current Central Government designation evidence. Review Act s10 and final Rule 13, including annual DPIA/audit, reporting significant observations to the Board, algorithmic/technical-measure due diligence, DPO/auditor duties, and any conditional Rule 13(4) transfer restriction."
     },
     {
       "id": "IN-DPDP-CROSSBORDER",
@@ -263,7 +267,7 @@
     },
     {
       "id": "IN-DPDP-CONSENT-MANAGER",
-      "title": "Consent Manager usage/registration",
+      "title": "Consent Manager registration",
       "effective": "2026-11-13",
       "required_evidence_types": [
         "questionnaire",
@@ -271,7 +275,7 @@
         "config"
       ],
       "runtime_tests": [],
-      "verify": "Ordinary apps are not automatically Consent Managers; apply registration obligations only if the product acts in that statutory role."
+      "verify": "Apply the 2026-11-13 date to Act s6(9)/Rule 4 registration only. Ordinary apps are not automatically Consent Managers. If the product uses a registered Consent Manager, separately review the later-effective Act s6(7)-(8) use/accountability duties when they commence."
     },
     {
       "id": "IN-DPDP-EXEMPTIONS",
@@ -288,5 +292,13 @@
   "primary_sources": [
     "https://www.meity.gov.in/static/uploads/2024/02/Digital-Personal-Data-Protection-Act-2023-1.pdf",
     "https://www.meity.gov.in/documents/act-and-policies/digital-personal-data-protection-rules-2025-gDOxUjMtQWa"
+  ],
+  "applicability_profile_fields": [
+    "processing_digital_personal_data_within_india",
+    "personal_data_collected_digitally_or_digitised_in_india",
+    "processing_digital_personal_data_outside_india",
+    "offers_goods_or_services_to_people_in_india",
+    "all_relevant_processing_personal_or_domestic",
+    "all_relevant_data_publicly_available_under_section_3c"
   ]
 }
