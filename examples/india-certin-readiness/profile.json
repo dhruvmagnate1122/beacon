@@ -1,0 +1,11 @@
+{
+  "schema_version": "0.6.0",
+  "jurisdiction_packs": [
+    "india-certin"
+  ],
+  "project_name": "Synthetic CERT-In fixture",
+  "certin_general_directions_apply": true,
+  "certin_incident_reporting_applies": true,
+  "certin_provider_category": "cloud_service",
+  "certin_virtual_asset_provider": false
+}
