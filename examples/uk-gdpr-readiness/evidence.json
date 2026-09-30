@@ -1,0 +1,16 @@
+{
+  "UK-PECR-STORAGE": [
+    {
+      "type": "runtime",
+      "result": "FAIL",
+      "details": "Synthetic fixture writes optional analytics state before a documented consent or exception decision.",
+      "observed_at": "2026-10-01T00:00:00Z",
+      "environment": "fixture",
+      "producer": {
+        "kind": "manual",
+        "name": "Beacon fixture"
+      },
+      "reference": "examples/uk-gdpr-readiness/index.html"
+    }
+  ]
+}
