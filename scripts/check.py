@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Read-only launch triage plus profile-driven India DPDP readiness. Never a compliance certification."""
+"""Read-only launch triage plus evidence-driven India DPDP readiness. Never a compliance certification."""
 import argparse, datetime as dt, json, os, re, sys
 from pathlib import Path
 
 VERSION='0.2.0'
+STATUSES={'PASS','FAIL','REVIEW','UNKNOWN','NOT_APPLICABLE','FUTURE_EFFECTIVE'}
 SKIP={'.git','node_modules','.next','dist','build','.venv','venv','__pycache__','vendor','coverage'}
 EXTENSIONS={'.js','.jsx','.ts','.tsx','.mjs','.cjs','.html','.css','.sql','.json','.py','.yml','.yaml','.toml'}
 LIMIT=1024*1024; MAX_FILES=10000
@@ -14,23 +15,68 @@ PATTERNS=[
  ('PRIV-002','medium','Session-replay dependency or configuration needs runtime review',r'@sentry/replay|rrweb|sessionReplay|session_replay|replaysSessionSampleRate|hotjar|fullstory'),
  ('DB-002','medium','Unconditional SQL policy needs intended-public-access review',r'\b(?:USING|WITH\s+CHECK)\s*\(\s*true\s*\)'),
  ('SEC-002','high','Public-prefixed configuration references privileged credentials',r'\b(?:NEXT_PUBLIC_|VITE_|PUBLIC_)[A-Z0-9_]*(?:SERVICE_ROLE|SECRET_KEY|PRIVATE_KEY)[A-Z0-9_]*')]
-MANUAL=[('DB-003','Tenant isolation and live database grants','Test anonymous, owner, other tenant and privileged-server access in an isolated environment.'),('COST-001','Provider spending and abuse limits','Inspect actual plan, recharge, supported caps, quotas, retries and expensive endpoints.'),('MAIL-001','Marketing opt-out and suppression','Use a test inbox; verify unsubscribe and persistent suppression after re-import.'),('SUB-001','Subscription consent and cancellation','Verify price, renewal, consent records, refund handling and cancellation with test payments.'),('A11Y-001','Accessibility','Run a suitable accessibility engine and keyboard/screen-reader checks.'),('LEGAL-001','Jurisdiction and effective-date applicability','Apply current primary sources using the project profile; do not treat bundled research as legal advice.'),('PRIV-003','Consent, deletion and retention behavior','Check collection, withdrawal propagation, processor deletion and retention exceptions.')]
+MANUAL=[
+ ('DB-003','Tenant isolation and live database grants','Test anonymous, owner, other tenant and privileged-server access in an isolated environment.'),
+ ('COST-001','Provider spending and abuse limits','Inspect actual plan, recharge, supported caps, quotas, retries and expensive endpoints.'),
+ ('MAIL-001','Marketing opt-out and suppression','Use a test inbox; verify unsubscribe and persistent suppression after re-import.'),
+ ('SUB-001','Subscription consent and cancellation','Verify price, renewal, consent records, refund handling and cancellation with test payments.'),
+ ('A11Y-001','Accessibility','Run a suitable accessibility engine and keyboard/screen-reader checks.'),
+ ('LEGAL-001','Jurisdiction and effective-date applicability','Apply current primary sources using the project profile; do not treat bundled research as legal advice.'),
+ ('PRIV-003','Consent, deletion and retention behavior','Check collection, withdrawal propagation, processor deletion and retention exceptions.')]
 
-def dpdp(profile, base):
- pack=json.loads((base/'references/india-dpdp.json').read_text())
- if not profile: return []
+def _date(v):
+ if v=='current': return None
+ return dt.date.fromisoformat(v)
+
+def _india_nexus(profile):
+ if not profile: return None
  nexus=profile.get('offers_goods_or_services_to_people_in_india')
  est=profile.get('entity_establishments')
- india= nexus is True or (isinstance(est,list) and any(str(x).lower()=='india' for x in est)) or (isinstance(est,str) and 'india' in est.lower())
- if nexus is False and not india: return [{'rule_id':'IN-DPDP-SCOPE','status':'applicability-unknown','severity':'unassessed','title':'India DPDP scope requires factual review','next_step':'Confirm India establishment/offering/activity nexus and Act section 3 exclusions.'}]
+ if nexus is True: return True
+ if isinstance(est,list) and any(str(x).strip().lower()=='india' for x in est): return True
+ if isinstance(est,str) and 'india' in est.lower(): return True
+ if nexus is False and est is not None: return False
+ return None
+
+def _evidence_for(rule_id,evidence):
+ items=evidence.get(rule_id,[]) if isinstance(evidence,dict) else []
+ return items if isinstance(items,list) else []
+
+def _derive(rule, nexus, evidence_items, today):
+ required=set(rule.get('required_evidence_types',[]))
+ if rule['id']=='IN-DPDP-SCOPE':
+  if nexus is None: return 'UNKNOWN'
+  if nexus is False: return 'NOT_APPLICABLE'
+ elif nexus is False:
+  return 'NOT_APPLICABLE'
+ elif nexus is None:
+  return 'UNKNOWN'
+ results=[str(x.get('result','')).upper() for x in evidence_items if isinstance(x,dict)]
+ if any(x=='FAIL' for x in results): return 'FAIL'
+ if any(x=='REVIEW' for x in results): return 'REVIEW'
+ eff=_date(rule['effective'])
+ future=eff is not None and today<eff
+ if future: return 'FUTURE_EFFECTIVE'
+ types={x.get('type') for x in evidence_items if isinstance(x,dict) and str(x.get('result','')).upper()=='PASS'}
+ if required and required.issubset(types): return 'PASS'
+ return 'UNKNOWN'
+
+def dpdp(profile, evidence, base, today=None):
+ pack=json.loads((base/'references/india-dpdp.json').read_text())
+ today=today or dt.datetime.now(dt.timezone.utc).date()
+ nexus=_india_nexus(profile)
  out=[]
  for c in pack['checks']:
-  status=c['status_default']
-  if not india: status='applicability-unknown'
-  out.append({'rule_id':c['id'],'status':status,'severity':'unassessed','title':c['title'],'effective':c['effective'],'evidence_needed':c['evidence'],'next_step':c['verify']})
+  items=_evidence_for(c['id'],evidence)
+  status=_derive(c,nexus,items,today)
+  out.append({
+   'rule_id':c['id'],'status':status,'severity':'unassessed','title':c['title'],
+   'effective':c['effective'],'required_evidence_types':c.get('required_evidence_types',[]),
+   'runtime_tests':c.get('runtime_tests',[]),'evidence_count':len(items),
+   'next_step':c['verify']})
  return out
 
-def scan(root,profile=None):
+def scan(root,profile=None,evidence=None,today=None):
  root=Path(root).resolve()
  if not root.is_dir(): raise ValueError('Project root must be an existing directory.')
  findings=[]; omissions=[]; scanned=0
@@ -50,21 +96,39 @@ def scan(root,profile=None):
    scanned+=1
    for rid,sev,title,pat in PATTERNS:
     ms=list(re.finditer(pat,content,re.I))
-    if ms: findings.append({'rule_id':rid,'status':'review','severity':sev,'title':title,'path':rel,'lines':sorted({content.count('\n',0,m.start())+1 for m in ms})[:20],'confidence':'source-pattern-only','meaning':'Candidate signal; verify context before changing behavior.'})
- for rid,title,task in MANUAL: findings.append({'rule_id':rid,'status':'unknown','severity':'unassessed','title':title,'next_step':task})
- findings.extend(dpdp(profile,Path(__file__).parents[1]))
- return {'version':VERSION,'generated_at':dt.datetime.now(dt.timezone.utc).isoformat(),'mode':'read-only-source-triage-plus-guided-dpdp','overall':'incomplete-review-required','scope':{'files_scanned':scanned,'excluded_directories':sorted(SKIP),'extensions':sorted(EXTENSIONS),'max_file_bytes':LIMIT,'max_files':MAX_FILES,'omissions':omissions},'profile_provided':profile is not None,'limitations':['No live service, legal or runtime verification performed.','DPDP profile results are evidence prompts/statuses, not legal determinations.','Future-effective reflects the bundled commencement model and must be rechecked against current primary sources.','No detected source pattern means only no match within scanned files; it is not a pass.','No project code was executed and no source content or matched secret values are reported.'],'findings':findings}
+    if ms: findings.append({'rule_id':rid,'status':'REVIEW','severity':sev,'title':title,'path':rel,'lines':sorted({content.count('\n',0,m.start())+1 for m in ms})[:20],'confidence':'source-pattern-only','meaning':'Candidate signal; verify context before changing behavior.'})
+ for rid,title,task in MANUAL:
+  findings.append({'rule_id':rid,'status':'UNKNOWN','severity':'unassessed','title':title,'next_step':task})
+ if profile is not None:
+  findings.extend(dpdp(profile,evidence or {},Path(__file__).parents[1],today=today))
+ return {
+  'version':VERSION,'generated_at':dt.datetime.now(dt.timezone.utc).isoformat(),
+  'mode':'source-config-questionnaire-runtime-evidence',
+  'status_model':sorted(STATUSES),
+  'overall':'INCOMPLETE_REVIEW_REQUIRED',
+  'scope':{'files_scanned':scanned,'excluded_directories':sorted(SKIP),'extensions':sorted(EXTENSIONS),'max_file_bytes':LIMIT,'max_files':MAX_FILES,'omissions':omissions},
+  'profile_provided':profile is not None,'evidence_provided':bool(evidence),
+  'limitations':['No legal certification is performed.','Runtime PASS/FAIL requires user-supplied or tool-produced evidence; the CLI does not autonomously browse or operate third-party services.','FUTURE_EFFECTIVE is based on bundled dates and must be rechecked against current primary sources.','Source regex candidates can be false positives and are REVIEW, not violations.'],
+  'findings':findings}
+
+def _load_object(path,label):
+ obj=json.loads(Path(path).read_text())
+ if not isinstance(obj,dict): raise ValueError(label+' must be a JSON object.')
+ return obj
 
 def main():
- ap=argparse.ArgumentParser(description=__doc__); ap.add_argument('root'); ap.add_argument('--profile'); ap.add_argument('--fail-on-review',action='store_true'); args=ap.parse_args()
+ ap=argparse.ArgumentParser(description=__doc__)
+ ap.add_argument('root')
+ ap.add_argument('--profile',help='Project profile JSON')
+ ap.add_argument('--evidence',help='Evidence JSON mapping rule IDs to evidence records')
+ ap.add_argument('--fail-on-review',action='store_true')
+ args=ap.parse_args()
  try:
-  profile=None
-  if args.profile:
-   profile=json.loads(Path(args.profile).read_text())
-   if not isinstance(profile,dict): raise ValueError('Profile must be a JSON object.')
-  result=scan(args.root,profile)
+  profile=_load_object(args.profile,'Profile') if args.profile else None
+  evidence=_load_object(args.evidence,'Evidence') if args.evidence else None
+  result=scan(args.root,profile,evidence)
  except (OSError,ValueError,json.JSONDecodeError):
-  print(json.dumps({'error':'InvalidInput','message':'Invalid root or profile; no scan completed.'}),file=sys.stderr); return 2
+  print(json.dumps({'error':'InvalidInput','message':'Invalid root, profile or evidence; no scan completed.'}),file=sys.stderr); return 2
  print(json.dumps(result,indent=2))
- return 1 if args.fail_on_review and any(f['status']=='review' for f in result['findings']) else 0
+ return 1 if args.fail_on_review and any(f['status'] in {'REVIEW','FAIL'} for f in result['findings']) else 0
 if __name__=='__main__': sys.exit(main())
