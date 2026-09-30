@@ -32,7 +32,7 @@ Do not infer law from reels, blog posts, vendor marketing, or summaries when a p
 
 Static source patterns are candidates, not legal findings.
 
-Evidence should record type, result, sanitized details, date/environment where relevant, reviewer/tool provenance, and an `artifact` or `reference` when reproducible.
+Evidence must record type, result, sanitized details, observed date/time, environment, reviewer/tool provenance, and either an `artifact` or `reference` reproducible pointer.
 
 Do not include credentials, customer data, or unnecessary personal data.
 

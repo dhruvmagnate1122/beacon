@@ -1,7 +1,7 @@
 interface:
   display_name: Beacon
-  short_description: Catch launch risks with evidence and clear limits
-  default_prompt: Use $beacon to assess this app before launch and verify supported fixes.
+  short_description: Evidence-driven launch readiness for web apps
+  default_prompt: Use $beacon to assess this app's pre-launch privacy, regulatory, security, and operational readiness, then verify supported fixes with evidence.
   icon_small: assets/icon.svg
   icon_large: assets/icon.svg
 policy:
