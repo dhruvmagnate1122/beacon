@@ -5,7 +5,7 @@ description: Assess app launch readiness with source checks, executable India DP
 
 # Beacon — Launch Readiness
 
-Treat Beacon v0.3.0 as an evidence pipeline: source → config → questionnaire → runtime → legal-source verification → status. Never equate a clean scan with a secure or compliant app.
+Treat Beacon v0.3.1 as an evidence pipeline: source → config → questionnaire → runtime → legal-source verification → status. Never equate a clean scan with a secure or compliant app.
 
 ## Workflow
 
@@ -16,7 +16,7 @@ Treat Beacon v0.3.0 as an evidence pipeline: source → config → questionnaire
 5. Re-check the pack's current primary sources before legal conclusions. For ePrivacy, also check the relevant Member State implementation and regulator guidance. Read `references/rules.json` only as guided-review research seeds for regimes that are not yet executable packs.
 6. Verify actual behavior in local/isolated environments: authorization boundaries, consent/withdrawal, rights requests, retention/erasure, breach-response readiness, suppression, cancellation and accessibility. If runtime/provider evidence is unavailable, leave unknown.
 7. Prepare reversible fixes and targeted tests only within authorized scope. Do not manufacture legal policies, exemption/designation evidence, Consent Manager registration, or production results.
-8. Report checked scope, source candidates, observed controls/issues, applicability rationale, future-effective duties and unknowns. Use the normalized statuses `PASS`, `FAIL`, `REVIEW`, `UNKNOWN`, `NOT_APPLICABLE`, and `FUTURE_EFFECTIVE`. For future-effective duties, keep legal effective state separate from implementation readiness via `readiness_status`. `PASS` requires the rule's declared evidence types; `FAIL` means a technical/behavioral check failed and is not automatically a legal violation. Never issue a blanket compliance badge or automatic fine total. Reference version 0.3.0, active pack IDs and evidence dates.
+8. Report checked scope, source candidates, observed controls/issues, applicability rationale, future-effective duties and unknowns. Use the normalized statuses `PASS`, `FAIL`, `REVIEW`, `UNKNOWN`, `NOT_APPLICABLE`, and `FUTURE_EFFECTIVE`. For future-effective duties, keep legal effective state separate from implementation readiness via `readiness_status`. `PASS` requires the rule's declared evidence types; `FAIL` means a technical/behavioral check failed and is not automatically a legal violation. Never issue a blanket compliance badge or automatic fine total. Reference version 0.3.1, active pack IDs and evidence dates.
 
 ## India DPDP
 
