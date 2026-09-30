@@ -173,13 +173,13 @@ def _uk_pecr_marketing_applicability(profile):
 
 def _us_coppa_applicability(profile):
  if not profile: return None
- operates=profile.get('operates_website_or_online_service')
- child_directed=profile.get('us_service_directed_to_children_under_13')
- actual=profile.get('us_actual_knowledge_collects_from_child_under_13')
- third_party=profile.get('us_third_party_service_collects_on_child_directed_service')
- if operates is False and third_party is not True: return False
- if child_directed is True or actual is True or third_party is True: return True
- if operates is True and child_directed is False and actual is False and third_party is False: return False
+ collects=profile.get('coppa_collects_personal_information')
+ child_directed=profile.get('coppa_child_directed_service')
+ mixed=profile.get('coppa_mixed_audience_service')
+ actual=profile.get('coppa_actual_knowledge_under13_collection')
+ if collects is False: return False
+ if collects is True and (child_directed is True or mixed is True or actual is True): return True
+ if collects is True and child_directed is False and mixed is False and actual is False: return False
  return None
 
 def _us_canspam_applicability(profile):
@@ -189,126 +189,34 @@ def _us_canspam_applicability(profile):
  if sends is False: return False
  return None
 
-def _us_dmca_applicability(profile):
- if not profile: return None
- relies=profile.get('relies_on_dmca_512_safe_harbor')
- if relies is True: return True
- if relies is False: return False
- return None
-
-def _us_ada_web_applicability(profile):
- if not profile: return None
- public=profile.get('us_title_iii_public_accommodation')
- online=profile.get('website_or_app_offers_public_accommodation_goods_services')
- if public is True and online is True: return True
- if public is False or online is False: return False
- return None
-
-
-def _us_coppa_applicability(profile):
- if not profile: return None
- collects=profile.get('coppa_collects_personal_information')
- child_directed=profile.get('coppa_child_directed_service')
- mixed=profile.get('coppa_mixed_audience_service')
- knowledge=profile.get('coppa_actual_knowledge_under13_collection')
- if collects is False: return False
- if collects is True and (child_directed is True or mixed is True or knowledge is True): return True
- if collects is True and child_directed is False and mixed is False and knowledge is False: return False
- return None
-
-def _us_can_spam_applicability(profile):
- if not profile: return None
- sends=profile.get('sends_us_commercial_email')
- if sends is True: return True
- if sends is False: return False
- return None
-
 def _us_dmca512c_applicability(profile):
  if not profile: return None
- hosted=profile.get('hosts_content_at_user_direction')
+ hosts=profile.get('hosts_content_at_user_direction')
  seeks=profile.get('seeks_dmca_512c_safe_harbor')
- if hosted is True and seeks is True: return True
- if hosted is False or seeks is False: return False
+ if seeks is False: return False
+ if hosts is True and seeks is True: return True
+ if hosts is False: return False
  return None
 
 def _us_ada_titleiii_applicability(profile):
  if not profile: return None
- covered=profile.get('us_ada_title_iii_public_accommodation')
- if covered is True: return True
- if covered is False: return False
+ public=profile.get('us_ada_title_iii_public_accommodation')
+ if public is True: return True
+ if public is False: return False
  return None
 
 def _us_ada_titleii_large_applicability(profile):
  if not profile: return None
- kind=profile.get('us_ada_title_ii_entity_size')
- if kind=='50000_or_more': return True
- if kind in {'under_50000_or_special_district','not_public_entity'}: return False
+ size=profile.get('us_ada_title_ii_entity_size')
+ if size in ('50000_or_more','50000+'): return True
+ if size in ('under_50000','special_district','not_title_ii'): return False
  return None
 
 def _us_ada_titleii_small_applicability(profile):
  if not profile: return None
- kind=profile.get('us_ada_title_ii_entity_size')
- if kind=='under_50000_or_special_district': return True
- if kind in {'50000_or_more','not_public_entity'}: return False
- return None
-
-
-def _certin_general_applicability(profile):
- if not profile: return None
- covered=profile.get('certin_general_directions_apply')
- if covered is True: return True
- if covered is False: return False
- return None
-
-def _certin_incident_applicability(profile):
- if not profile: return None
- covered=profile.get('certin_incident_reporting_applies')
- if covered is True: return True
- if covered is False: return False
- return None
-
-def _certin_provider_records_applicability(profile):
- if not profile: return None
- kind=profile.get('certin_provider_category')
- if kind in {'data_centre','vps','cloud_service','vpn_service'}: return True
- if kind=='not_applicable': return False
- return None
-
-def _certin_virtual_asset_applicability(profile):
- if not profile: return None
- covered=profile.get('certin_virtual_asset_provider')
- if covered is True: return True
- if covered is False: return False
- return None
-
-
-def _eu_vat_tbe_b2c_applicability(profile):
- if not profile: return None
- applies=profile.get('eu_vat_supplies_tbe_to_eu_consumers')
- if applies is True: return True
- if applies is False: return False
- return None
-
-def _eu_vat_b2b_services_applicability(profile):
- if not profile: return None
- applies=profile.get('eu_vat_supplies_services_to_eu_businesses')
- if applies is True: return True
- if applies is False: return False
- return None
-
-def _eu_vat_threshold_applicability(profile):
- if not profile: return None
- tbe=profile.get('eu_vat_supplies_tbe_to_eu_consumers')
- single=profile.get('eu_vat_supplier_established_in_single_member_state')
- if tbe is True and single is True: return True
- if tbe is False or single is False: return False
- return None
-
-def _eu_vat_oss_applicability(profile):
- if not profile: return None
- uses=profile.get('eu_vat_uses_or_plans_oss_for_crossborder_b2c')
- if uses is True: return True
- if uses is False: return False
+ size=profile.get('us_ada_title_ii_entity_size')
+ if size in ('under_50000','special_district'): return True
+ if size in ('50000_or_more','50000+','not_title_ii'): return False
  return None
 
 APPLICABILITY_MODELS={
