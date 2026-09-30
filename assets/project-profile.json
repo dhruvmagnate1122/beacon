@@ -1,5 +1,6 @@
 {
-  "schema_version": "0.2.1",
+  "schema_version": "0.3.0",
+  "jurisdiction_packs": null,
   "project_name": null,
   "entity_establishments": null,
   "target_markets": null,
@@ -48,5 +49,22 @@
   "dpo_and_independent_auditor_if_sdf": null,
   "consent_manager_used": null,
   "existing_exemptions_with_official_evidence": null,
-  "launch_date": null
+  "launch_date": null,
+  "processes_personal_data": null,
+  "processing_in_context_of_eu_eea_establishment": null,
+  "offers_goods_or_services_to_people_in_eu_eea": null,
+  "monitors_behavior_of_people_in_eu_eea": null,
+  "all_relevant_processing_purely_personal_or_household": null,
+  "controller_processor_roles_by_processing": null,
+  "special_category_or_criminal_offence_data": null,
+  "eu_child_consent_member_state_and_age": null,
+  "automated_decision_or_profiling_effects": null,
+  "records_of_processing_status": null,
+  "dpia_trigger_and_status": null,
+  "dpo_requirement_and_contact": null,
+  "eu_representative_requirement_and_contact": null,
+  "eu_eea_transfer_mechanisms": null,
+  "eu_eea_tracking_storage_access_technologies": null,
+  "eu_eea_electronic_marketing_channels": null,
+  "eu_eea_member_states_in_scope": null
 }

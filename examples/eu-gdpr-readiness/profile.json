@@ -1,0 +1,33 @@
+{
+  "schema_version": "0.3.0",
+  "jurisdiction_packs": [
+    "eu-gdpr-eprivacy"
+  ],
+  "project_name": "Synthetic EU fixture",
+  "processes_personal_data": true,
+  "processing_in_context_of_eu_eea_establishment": false,
+  "offers_goods_or_services_to_people_in_eu_eea": true,
+  "monitors_behavior_of_people_in_eu_eea": false,
+  "all_relevant_processing_purely_personal_or_household": false,
+  "eu_eea_member_states_in_scope": [
+    "Germany",
+    "France"
+  ],
+  "personal_data_categories": [
+    "name",
+    "email",
+    "usage analytics"
+  ],
+  "processing_purposes_and_grounds": [
+    "account management (contract)",
+    "optional analytics (consent)"
+  ],
+  "consent_capture_method": "banner",
+  "consent_ui_default_state": "optional analytics preselected in synthetic failing fixture",
+  "vendors_and_processing_regions": [
+    "synthetic analytics vendor / EU and US"
+  ],
+  "cross_border_transfer_destinations": [
+    "United States"
+  ]
+}
