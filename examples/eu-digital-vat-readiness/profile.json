@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.7.0",
+  "jurisdiction_packs": [
+    "eu-digital-vat"
+  ],
+  "project_name": "Synthetic EU digital VAT fixture",
+  "eu_vat_supplies_tbe_to_eu_consumers": true,
+  "eu_vat_supplies_services_to_eu_businesses": true,
+  "eu_vat_supplier_established_in_single_member_state": true,
+  "eu_vat_crossborder_tbe_and_distance_sales_current_year_eur": 18000,
+  "eu_vat_crossborder_tbe_and_distance_sales_prior_year_eur": 8000,
+  "eu_vat_uses_or_plans_oss_for_crossborder_b2c": true,
+  "eu_vat_supplier_established_outside_eu": false,
+  "eu_vat_customer_location_evidence": [
+    "billing country"
+  ],
+  "eu_vat_customer_vat_id_validation": "synthetic VIES check"
+}

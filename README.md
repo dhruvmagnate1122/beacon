@@ -18,7 +18,8 @@ Beacon currently combines:
 - **EU/EEA GDPR + ePrivacy pack** — executable checks covering GDPR scope, principles, lawful basis, transparency, consent, special-category data, children, rights, automated decisions, processors, records, privacy by design, security, breach response, DPIA, DPO/representative duties, transfers, tracking/storage access and electronic marketing;
 - **UK GDPR + PECR pack** — executable UK data-protection and privacy/electronic-communications checks updated for the Data (Use and Access) Act 2025, with separate applicability for UK GDPR, storage/access technologies and electronic marketing;
 - **US federal digital-product pack** — selected federal checks for COPPA, CAN-SPAM, DMCA §512(c), and ADA web/mobile accessibility, with independent applicability for each regime;
-- **India CERT-In pack** — executable readiness checks for the 28 April 2022 CERT-In cyber-security directions: time sync, six-hour incident reporting, point of contact, response readiness, 180-day logs, provider records and virtual-asset records where applicable.
+- **India CERT-In pack** — executable readiness checks for the 28 April 2022 CERT-In cyber-security directions: time sync, six-hour incident reporting, point of contact, response readiness, 180-day logs, provider records and virtual-asset records where applicable;
+- **EU digital VAT pack** — focused VAT/OSS readiness for cross-border digital services, including B2C TBE place of supply, the conditional EUR 10,000 threshold, customer-location evidence, B2B service treatment, OSS workflow and VAT-rate records.
 
 ## Example result shape
 
@@ -56,7 +57,7 @@ python3 scripts/check.py /absolute/path/to/your-app --profile /path/to/project-p
 python3 scripts/test_check.py
 ```
 
-Copy `assets/project-profile.json` into a private project workspace and fill only facts you actually know. Leave unknowns as `null`. Select jurisdiction packs explicitly with `jurisdiction_packs` (for example `['india-dpdp']`, `['eu-gdpr-eprivacy']`, `['uk-gdpr-pecr']`, `['us-federal-digital']`, `['india-certin']`, or any relevant combination). Applicability remains `UNKNOWN` when the facts are incomplete.
+Copy `assets/project-profile.json` into a private project workspace and fill only facts you actually know. Leave unknowns as `null`. Select jurisdiction packs explicitly with `jurisdiction_packs` (for example `['india-dpdp']`, `['eu-gdpr-eprivacy']`, `['uk-gdpr-pecr']`, `['us-federal-digital']`, `['india-certin']`, `['eu-digital-vat']`, or any relevant combination). Applicability remains `UNKNOWN` when the facts are incomplete.
 
 ## Evidence trust model
 
@@ -117,6 +118,14 @@ The amended COPPA Rule became effective **23 June 2025**, with most regulated en
 
 The six-hour reporting check follows the CERT-In FAQ approach: an initial report can contain information available at the time, with additional information supplied later within a reasonable time. Applicability and incident classification remain fact-specific; Beacon does not turn every security alert into a reportable incident.
 
+### European Union — digital services VAT / OSS
+
+`references/eu-digital-vat.json` promotes Beacon's existing EU-tax research seed into a focused executable pack. It does not attempt to be a complete VAT engine. The pack separates B2C telecommunications/broadcasting/electronic services, B2B cross-border services, the conditional EUR 10,000 threshold, customer-location evidence and OSS reporting.
+
+The EUR 10,000 threshold is deliberately not treated as a generic startup or SaaS threshold: the Commission states that it applies only under specific establishment and supply conditions and is measured across the relevant current and preceding calendar-year supplies. The pack also avoids a universal “two location proofs” rule because EU implementing rules contain context- and turnover-dependent evidence presumptions.
+
+The Commission published revised OSS explanatory notes/guidelines in July 2026 incorporating ViDA changes that begin entering into force from **1 January 2027**, so releases crossing that date require a fresh primary-source review.
+
 **Always re-check current primary sources before making a legal conclusion.** Bundled legal records are research assets, not legal opinions.
 
 ## What Beacon does not do
@@ -163,6 +172,7 @@ Legal-rule changes must cite current primary sources, effective dates, applicabi
 - `references/uk-gdpr-pecr.json` — UK GDPR + PECR executable pack
 - `references/us-federal-digital.json` — selected US federal digital-product executable pack
 - `references/india-certin.json` — India CERT-In cyber-security directions executable pack
+- `references/eu-digital-vat.json` — EU digital-services VAT/OSS executable pack
 - `references/rules.json` — broader guided-review research seeds
 - `references/review-guide.md` — verification recipes
 - `CONTRIBUTING.md` — contribution contract
@@ -171,6 +181,6 @@ Legal-rule changes must cite current primary sources, effective dates, applicabi
 
 ## Version
 
-**v0.6.0** — executable India DPDP, EU/EEA, UK, selected US federal, and India CERT-In packs.
+**v0.7.0** — six executable legal/regulatory packs across privacy, cyber-security, digital marketing/content/accessibility and EU digital VAT.
 
 MIT. Third-party sources and linked documentation retain their own terms.

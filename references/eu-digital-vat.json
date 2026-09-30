@@ -1,0 +1,147 @@
+{
+  "pack_id": "eu-digital-vat",
+  "pack_version": "0.7.0",
+  "jurisdiction": "European Union — digital services VAT",
+  "as_of": "2026-10-01",
+  "applicability_model": "eu-vat-tbe-b2c-v1",
+  "timezone_offset_minutes": 60,
+  "status_model": [
+    "PASS",
+    "FAIL",
+    "REVIEW",
+    "UNKNOWN",
+    "NOT_APPLICABLE",
+    "FUTURE_EFFECTIVE"
+  ],
+  "applicability_profile_fields": [
+    "eu_vat_supplies_tbe_to_eu_consumers",
+    "eu_vat_supplies_services_to_eu_businesses",
+    "eu_vat_supplier_established_in_single_member_state",
+    "eu_vat_crossborder_tbe_and_distance_sales_current_year_eur",
+    "eu_vat_crossborder_tbe_and_distance_sales_prior_year_eur",
+    "eu_vat_uses_or_plans_oss_for_crossborder_b2c",
+    "eu_vat_supplier_established_outside_eu",
+    "eu_vat_customer_location_evidence",
+    "eu_vat_customer_vat_id_validation"
+  ],
+  "checks": [
+    {
+      "id": "EU-VAT-SCOPE",
+      "title": "Digital-service supply classification and customer status",
+      "effective": "current",
+      "applicability_model": "eu-vat-tbe-b2c-v1",
+      "required_evidence_types": [
+        "questionnaire",
+        "legal"
+      ],
+      "runtime_tests": [],
+      "verify": "Classify the supplied service, customer status and relevant Member States before applying TBE/electronic-services rules. Do not treat every online service as an electronically supplied service without legal review."
+    },
+    {
+      "id": "EU-VAT-B2C-TBE-PLACE",
+      "title": "B2C TBE/electronic-service place of supply",
+      "effective": "current",
+      "applicability_model": "eu-vat-tbe-b2c-v1",
+      "required_evidence_types": [
+        "questionnaire",
+        "config",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Using synthetic consumer orders from different Member States, verify the tax engine resolves the intended customer country and applies the configured VAT treatment consistently."
+      ],
+      "verify": "Review VAT Directive place-of-supply rules for B2C telecommunications, broadcasting and electronic services. The general rule places these supplies where the customer belongs, subject to the EUR 10,000 threshold conditions and other exceptions."
+    },
+    {
+      "id": "EU-VAT-10K-THRESHOLD",
+      "title": "EUR 10,000 cross-border threshold eligibility",
+      "effective": "current",
+      "applicability_model": "eu-vat-threshold-v1",
+      "required_evidence_types": [
+        "questionnaire",
+        "config",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Recalculate current and preceding calendar-year totals for cross-border TBE services and relevant intra-EU distance sales; verify the threshold logic switches treatment when the aggregate threshold is exceeded."
+      ],
+      "verify": "Review the EUR 10,000 threshold conditions. It is not a general digital-business threshold: it applies only where the supplier is established in a single Member State and the relevant current/preceding-year supplies stay within the threshold."
+    },
+    {
+      "id": "EU-VAT-CUSTOMER-LOCATION",
+      "title": "Customer-location evidence for electronic services",
+      "effective": "current",
+      "applicability_model": "eu-vat-tbe-b2c-v1",
+      "required_evidence_types": [
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Inspect the evidence used to determine customer location for representative electronic-service orders, including billing/payment/geolocation evidence where applicable, and verify contradictory evidence is handled rather than silently ignored."
+      ],
+      "verify": "Review Implementing Regulation (EU) No 282/2011 customer-location presumptions and evidence rules. Depending on circumstances and turnover, one or two qualifying items of evidence may be relevant; do not hard-code a universal 'two proofs' rule."
+    },
+    {
+      "id": "EU-VAT-B2B-SERVICES",
+      "title": "Cross-border B2B service place-of-supply and customer status",
+      "effective": "current",
+      "applicability_model": "eu-vat-b2b-services-v1",
+      "required_evidence_types": [
+        "questionnaire",
+        "config",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Using synthetic business customers, verify VAT ID/customer-status checks, invoice/tax treatment and reverse-charge configuration where the applicable place-of-supply rules require it."
+      ],
+      "verify": "Review the VAT Directive B2B place-of-supply rule and Article 196 reverse-charge conditions. A supplied VAT number alone should not be treated as conclusive without appropriate validation."
+    },
+    {
+      "id": "EU-VAT-OSS",
+      "title": "One Stop Shop registration and reporting workflow",
+      "effective": "current",
+      "applicability_model": "eu-vat-oss-v1",
+      "required_evidence_types": [
+        "questionnaire",
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Reconcile synthetic cross-border B2C sales by Member State against the OSS export/return data; verify customer-country VAT rate, taxable amount, corrections and payment/reporting ownership."
+      ],
+      "verify": "Review the applicable OSS scheme, Member State of Identification, covered supplies and current reporting rules. OSS is a simplification mechanism, not a substitute for determining place of supply and taxable treatment."
+    },
+    {
+      "id": "EU-VAT-RATES-RECORDS",
+      "title": "Customer-country VAT rates and supporting records",
+      "effective": "current",
+      "applicability_model": "eu-vat-tbe-b2c-v1",
+      "required_evidence_types": [
+        "config",
+        "runtime",
+        "legal"
+      ],
+      "runtime_tests": [
+        "Compare configured VAT rates for representative Member States with current national/EU sources and verify transaction records preserve the data needed to support customer location, rate selection and reported amounts."
+      ],
+      "verify": "VAT rates vary by Member State and can change. Verify the current rate applicable to the specific service and retain supporting records required by the applicable scheme and national law."
+    }
+  ],
+  "primary_sources": [
+    "https://vat-one-stop-shop.ec.europa.eu/",
+    "https://vat-one-stop-shop.ec.europa.eu/one-stop-shop_en",
+    "https://vat-one-stop-shop.ec.europa.eu/guides_en",
+    "https://europa.eu/youreurope/business/finance-and-tax/vat/one-stop-shop/index_en.htm",
+    "https://taxation-customs.ec.europa.eu/where-tax_en",
+    "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02011R0282-20220701"
+  ],
+  "limitations": [
+    "This pack is limited to selected EU digital-service VAT/OSS readiness and does not cover all VAT, customs, marketplace, invoicing or national tax obligations.",
+    "The EUR 10,000 threshold is conditional and not available to every supplier; Beacon does not infer threshold eligibility from revenue alone.",
+    "VAT rates and national implementation details must be rechecked against current sources.",
+    "European Commission 2026 OSS guidance includes ViDA changes that start entering into force from 1 January 2027; re-check the then-current rules before releases crossing that date.",
+    "A PASS reflects supplied evidence for a modeled readiness check, not tax advice or a tax-authority determination."
+  ]
+}

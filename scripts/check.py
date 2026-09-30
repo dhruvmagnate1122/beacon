@@ -3,12 +3,12 @@
 import argparse, datetime as dt, json, os, re, sys
 from pathlib import Path
 
-VERSION='0.6.0'
+VERSION='0.7.0'
 STATUSES={'PASS','FAIL','REVIEW','UNKNOWN','NOT_APPLICABLE','FUTURE_EFFECTIVE'}
 SKIP={'.git','node_modules','.next','dist','build','.venv','venv','__pycache__','vendor','coverage'}
 EXTENSIONS={'.js','.jsx','.ts','.tsx','.mjs','.cjs','.html','.css','.sql','.json','.py','.yml','.yaml','.toml'}
 LIMIT=1024*1024; MAX_FILES=10000
-PACK_FILES=('india-dpdp.json','eu-gdpr-eprivacy.json','uk-gdpr-pecr.json','us-federal-digital.json','india-certin.json')
+PACK_FILES=('india-dpdp.json','eu-gdpr-eprivacy.json','uk-gdpr-pecr.json','us-federal-digital.json','india-certin.json','eu-digital-vat.json')
 PATTERNS=[
  ('SEC-001','high','Possible embedded private key or live credential',r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|\bsk_live_[A-Za-z0-9]{16,}|\bAKIA[A-Z0-9]{16}\b'),
  ('DB-001','high','SQL explicitly disables row-level security',r'\bDISABLE\s+ROW\s+LEVEL\s+SECURITY\b'),
@@ -248,6 +248,36 @@ def _certin_virtual_asset_applicability(profile):
  if covered is False: return False
  return None
 
+
+def _eu_vat_tbe_b2c_applicability(profile):
+ if not profile: return None
+ applies=profile.get('eu_vat_supplies_tbe_to_eu_consumers')
+ if applies is True: return True
+ if applies is False: return False
+ return None
+
+def _eu_vat_b2b_services_applicability(profile):
+ if not profile: return None
+ applies=profile.get('eu_vat_supplies_services_to_eu_businesses')
+ if applies is True: return True
+ if applies is False: return False
+ return None
+
+def _eu_vat_threshold_applicability(profile):
+ if not profile: return None
+ tbe=profile.get('eu_vat_supplies_tbe_to_eu_consumers')
+ single=profile.get('eu_vat_supplier_established_in_single_member_state')
+ if tbe is True and single is True: return True
+ if tbe is False or single is False: return False
+ return None
+
+def _eu_vat_oss_applicability(profile):
+ if not profile: return None
+ uses=profile.get('eu_vat_uses_or_plans_oss_for_crossborder_b2c')
+ if uses is True: return True
+ if uses is False: return False
+ return None
+
 APPLICABILITY_MODELS={
  'india-dpdp-v1':_india_applicability,
  'eu-gdpr-v1':_eu_applicability,
@@ -264,6 +294,10 @@ APPLICABILITY_MODELS={
  'india-certin-incident-v1':_certin_incident_applicability,
  'india-certin-provider-records-v1':_certin_provider_records_applicability,
  'india-certin-virtual-asset-v1':_certin_virtual_asset_applicability,
+ 'eu-vat-tbe-b2c-v1':_eu_vat_tbe_b2c_applicability,
+ 'eu-vat-b2b-services-v1':_eu_vat_b2b_services_applicability,
+ 'eu-vat-threshold-v1':_eu_vat_threshold_applicability,
+ 'eu-vat-oss-v1':_eu_vat_oss_applicability,
 }
 
 def _evidence_for(rule_id,evidence):

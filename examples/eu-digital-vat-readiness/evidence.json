@@ -1,0 +1,16 @@
+{
+  "EU-VAT-CUSTOMER-LOCATION": [
+    {
+      "type": "runtime",
+      "result": "FAIL",
+      "details": "Synthetic fixture stores only one self-declared billing country with no qualifying independent evidence for a representative electronic-service order.",
+      "observed_at": "2026-10-01T00:00:00Z",
+      "environment": "fixture",
+      "producer": {
+        "kind": "manual",
+        "name": "Beacon fixture"
+      },
+      "reference": "synthetic://eu-vat/customer-location"
+    }
+  ]
+}

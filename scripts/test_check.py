@@ -62,7 +62,7 @@ class Checks(unittest.TestCase):
   script=str(Path(__file__).with_name('check.py')); profile=self.put('profile.json','[]')
   p=subprocess.run([sys.executable,script,str(self.root),'--profile',str(profile)],capture_output=True,text=True); self.assertEqual(p.returncode,2)
  def test_profile_schema(self):
-  p=json.loads((Path(__file__).parents[1]/'assets/project-profile.json').read_text()); self.assertEqual(p['schema_version'],'0.6.0'); self.assertIn('consent_ui_default_state',p); self.assertIn('processing_digital_personal_data_within_india',p)
+  p=json.loads((Path(__file__).parents[1]/'assets/project-profile.json').read_text()); self.assertEqual(p['schema_version'],'0.7.0'); self.assertIn('consent_ui_default_state',p); self.assertIn('processing_digital_personal_data_within_india',p)
  def test_evidence_valid(self):
   self.assertEqual(validate_evidence({'IN-DPDP-CONSENT':[ev()]}),{'IN-DPDP-CONSENT':[ev()]})
  def test_evidence_accepts_reference_alias(self):
@@ -314,5 +314,37 @@ class Checks(unittest.TestCase):
  def test_certin_evidence_isolated(self):
   profile={'jurisdiction_packs':['india-dpdp'],'processing_digital_personal_data_outside_india':True,'offers_goods_or_services_to_people_in_india':True}
   with self.assertRaises(ValueError): scan(self.root,profile,{'IN-CERTIN-LOGS-180D':[ev('runtime','FAIL')]})
+
+ def test_eu_vat_pack_schema(self):
+  p=json.loads((Path(__file__).parents[1]/'references/eu-digital-vat.json').read_text()); ids=[x['id'] for x in p['checks']]
+  self.assertEqual(p['pack_id'],'eu-digital-vat'); self.assertEqual(len(ids),len(set(ids)))
+  self.assertIn('EU-VAT-B2C-TBE-PLACE',ids); self.assertIn('EU-VAT-10K-THRESHOLD',ids); self.assertIn('EU-VAT-OSS',ids)
+ def test_eu_vat_tbe_and_b2b_independent_applicability(self):
+  profile={'jurisdiction_packs':['eu-digital-vat'],'eu_vat_supplies_tbe_to_eu_consumers':True,
+   'eu_vat_supplies_services_to_eu_businesses':False,'eu_vat_supplier_established_in_single_member_state':True,
+   'eu_vat_uses_or_plans_oss_for_crossborder_b2c':False}
+  r=scan(self.root,profile)
+  d={f['rule_id']:f for f in r['findings'] if f.get('pack_id')=='eu-digital-vat'}
+  self.assertEqual(d['EU-VAT-B2C-TBE-PLACE']['status'],'UNKNOWN')
+  self.assertEqual(d['EU-VAT-B2B-SERVICES']['status'],'NOT_APPLICABLE')
+ def test_eu_vat_threshold_requires_single_member_state(self):
+  profile={'jurisdiction_packs':['eu-digital-vat'],'eu_vat_supplies_tbe_to_eu_consumers':True,
+   'eu_vat_supplies_services_to_eu_businesses':False,'eu_vat_supplier_established_in_single_member_state':False,
+   'eu_vat_uses_or_plans_oss_for_crossborder_b2c':False}
+  r=scan(self.root,profile)
+  d={f['rule_id']:f for f in r['findings'] if f.get('pack_id')=='eu-digital-vat'}
+  self.assertEqual(d['EU-VAT-10K-THRESHOLD']['status'],'NOT_APPLICABLE')
+  self.assertEqual(d['EU-VAT-B2C-TBE-PLACE']['status'],'UNKNOWN')
+ def test_eu_vat_oss_independent_applicability(self):
+  profile={'jurisdiction_packs':['eu-digital-vat'],'eu_vat_supplies_tbe_to_eu_consumers':False,
+   'eu_vat_supplies_services_to_eu_businesses':False,'eu_vat_supplier_established_in_single_member_state':False,
+   'eu_vat_uses_or_plans_oss_for_crossborder_b2c':True}
+  r=scan(self.root,profile)
+  d={f['rule_id']:f for f in r['findings'] if f.get('pack_id')=='eu-digital-vat'}
+  self.assertEqual(d['EU-VAT-OSS']['status'],'UNKNOWN')
+  self.assertEqual(d['EU-VAT-SCOPE']['status'],'NOT_APPLICABLE')
+ def test_eu_vat_evidence_isolated(self):
+  profile={'jurisdiction_packs':['eu-gdpr-eprivacy'],'processes_personal_data':True,'offers_goods_or_services_to_people_in_eu_eea':True}
+  with self.assertRaises(ValueError): scan(self.root,profile,{'EU-VAT-OSS':[ev('runtime','FAIL')]})
 
 if __name__=='__main__': unittest.main()
