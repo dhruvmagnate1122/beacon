@@ -2,7 +2,7 @@
 
 ## Source and applicability
 
-Bundled legal records are research seeds reviewed 2026-09-30, not legal opinions. Open current primary sources; distinguish statutes, rules, notifications, regulator guidance, decisions, vendor contracts and engineering recommendations.
+Bundled legal records and executable packs are research assets, not legal opinions. India DPDP was reviewed 2026-09-30; the EU/EEA GDPR + ePrivacy pack was reviewed 2026-10-01. Open current primary sources; distinguish statutes, rules, notifications, regulator guidance, decisions, vendor contracts and engineering recommendations.
 
 For India, use `india-dpdp.json`. The 13 November 2025 Act commencement notification phases substantive provisions; the final DPDP Rules likewise phase commencement, and MeitY lists a December 2025 corrigendum. Therefore a missing future-effective control is a readiness gap, not automatically a present statutory violation. Recheck notifications on every release.
 
@@ -20,6 +20,19 @@ For India, use `india-dpdp.json`. The 13 November 2025 Act commencement notifica
 - Cross-border: inventory destinations/vendors and check current Central Government restrictions; do not assume blanket localisation.
 - Consent Manager: distinguish a registered Consent Manager under the Act/Rules from ordinary consent-management UI.
 
+## EU/EEA GDPR + ePrivacy verification
+
+- Scope: establish whether GDPR Article 3 applies through EU/EEA establishment context or, for a non-EU/EEA controller/processor, offering goods/services to or monitoring the behaviour of people in the Union. Do not infer targeting solely from technical accessibility.
+- Principles/lawful basis: map each material processing purpose to an Article 6 basis and test actual minimisation, purpose and retention behavior rather than relying only on policy text.
+- Transparency/consent: inspect the actual collection flow and privacy information; when consent is relied on, test affirmative choice and withdrawal against GDPR Articles 4(11) and 7 and current EDPB guidance.
+- Rights: exercise representative access, rectification, erasure, restriction, portability and objection workflows with safe synthetic data; record applicable exceptions rather than assuming every right always applies.
+- Children: determine the relevant Member State threshold under Article 8 where consent is the basis for an information-society service offered directly to a child.
+- Roles/processors: determine controller/processor/joint-controller roles per processing activity and compare actual subprocessors/data flows with Article 28 arrangements.
+- Design/security/breach: test defaults, access boundaries and incident workflows; apply Articles 25, 32-34 based on actual risk and context.
+- DPIA/DPO/representative: determine applicability from Articles 27 and 35-39 and relevant regulator lists/guidance rather than job titles or company size alone.
+- Transfers: inventory actual third-country access/processing and the relied-on Chapter V mechanism; re-check adequacy decisions, SCC use and other safeguards.
+- ePrivacy: inspect terminal-equipment storage/access and electronic marketing separately from the GDPR. Because Directive 2002/58/EC is implemented by Member State law, verify the national law/guidance for each relevant market or establishment before drawing conclusions.
+
 ## Other verification recipes
 
 - Database: seed two tenants; test anonymous, owner, cross-tenant and privileged access in isolation.
@@ -33,14 +46,14 @@ For India, use `india-dpdp.json`. The 13 November 2025 Act commencement notifica
 
 State project/version, environment, profile unknowns, evidence date, scan coverage and omissions. Separate source candidates, verified behavior, legal applicability and future-effective readiness. For each item record ID, source/date, applicability rationale, sanitized evidence, confidence, fix/next action, test result and owner. Never sum hypothetical penalties.
 
-## v0.2.1 boundaries
+## v0.3.0 boundaries
 
-Automated source triage remains six regex signals. The India pack adds profile-driven statuses/evidence prompts; it does not parse privacy notices, make legal determinations or execute runtime tests. India DPDP is currently the only full executable jurisdiction pack; other jurisdiction entries in `rules.json` remain guided-review research seeds. No auto-fix engine, cloud adapter, scheduled monitoring, SARIF exporter or worldwide certification is included.
+Automated source triage remains six regex signals. Beacon has two executable legal packs: `india-dpdp` and `eu-gdpr-eprivacy`. Packs add profile-driven applicability, statuses and evidence prompts; the CLI does not parse privacy notices, make legal determinations or autonomously execute runtime tests. UK/US/CERT-In/tax entries in `rules.json` remain guided-review research seeds. No auto-fix engine, cloud adapter, scheduled monitoring, SARIF exporter or worldwide certification is included.
 
 
 ## Evidence and status engine
 
-Each India check declares required evidence types from: `source`, `config`, `questionnaire`, `runtime`, and `legal`. Evidence keys must match a known rule ID in the executable India pack; unknown IDs are rejected rather than silently ignored.
+Each executable-pack check declares required evidence types from: `source`, `config`, `questionnaire`, `runtime`, and `legal`. Evidence keys must match a known rule ID in the executable India pack; unknown IDs are rejected rather than silently ignored.
 
 - `PASS`: all declared evidence types are present with passing evidence after the requirement is effective.
 - `FAIL`: a required technical or behavioral verification failed. Do not translate this automatically into a statutory violation.
@@ -61,3 +74,10 @@ For Act section 3, Beacon requires explicit facts for the applicable route inste
 ## SDF modeling
 
 `IN-DPDP-SDF` is conditional on current Significant Data Fiduciary designation evidence. Review Act section 10 and final Rule 13, including annual DPIA/audit, reporting significant observations to the Board, due diligence for technical measures including algorithmic software, DPO/auditor duties, and any personal-data/traffic-data transfer restriction specified under Rule 13(4).
+
+
+## Multi-jurisdiction operation
+
+Use `jurisdiction_packs` to select one or more executable packs. Findings retain `pack_id` and `jurisdiction`, and `readiness_summary.packs` rolls each pack up separately. Evidence for an unknown rule ID or a rule in an inactive pack is rejected so evidence cannot be silently attached to the wrong legal regime.
+
+A pack-level `PASS` is intentionally not produced. Individual rule `PASS` means only that the rule's declared evidence types contain passing assertions under the current applicability model. Cross-jurisdiction conflicts, national derogations and sector-specific overlays must remain explicit legal review rather than being collapsed into one global compliance score.
